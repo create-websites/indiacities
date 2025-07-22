@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infographic: Sentinels of India</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Energetic & Playful -->
+    <!-- Application Structure Plan: A top-down narrative infographic. It starts with a bold hook, then logically flows through key themes from the report: 1) Defining the types of forts (Typology), 2) Highlighting the most significant forts with key data points (The Crown Jewels), 3) Visually comparing their immense scale (By The Numbers), and 4) Showcasing unique architectural feats. This linear, scrolling narrative is ideal for an infographic format, guiding the user through a curated story without requiring complex interaction. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Fort classifications (Giri-durga, etc.). Goal: Inform/Organize. Viz/Method: Icon-based cards using Unicode characters and styled HTML/CSS. Justification: Quickly conveys categories visually. NO SVG.
+        - Report Info: Key stats for major forts (Mehrangarh, Red Fort, Amer). Goal: Inform. Viz/Method: "Big Number" callouts in styled cards. Justification: Makes key data points immediately impactful. NO SVG.
+        - Report Info: Kumbhalgarh's wall length. Goal: Compare. Viz/Method: Horizontal Bar Chart. Justification: Provides a dramatic visual comparison to a well-known benchmark (Great Wall of China). Library: Chart.js/Canvas.
+        - Report Info: UNESCO status of forts. Goal: Compare/Inform. Viz/Method: Donut Chart. Justification: Shows the proportion of recognized sites in a simple, clean format. Library: Chart.js/Canvas.
+        - Report Info: Golconda's acoustics. Goal: Organize/Inform. Viz/Method: Simplified flowchart using styled HTML divs and borders. Justification: Explains a complex process visually without needing complex diagrams. NO SVG/Mermaid.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f4f8;
+        }
+        h1, h2, h3, .stat-number {
+            font-family: 'Oswald', sans-serif;
+        }
+        .bg-energetic-purple { background-color: #8F2D56; }
+        .text-energetic-purple { color: #8F2D56; }
+        .bg-energetic-magenta { background-color: #D81159; }
+        .text-energetic-magenta { color: #D81159; }
+        .bg-energetic-orange { background-color: #F37748; }
+        .text-energetic-orange { color: #F37748; }
+        .bg-energetic-yellow { background-color: #FFBC42; }
+        .text-energetic-yellow { color: #FFBC42; }
+        .bg-energetic-blue { background-color: #00A6FB; }
+        .text-energetic-blue { color: #00A6FB; }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="bg-energetic-purple text-white text-center p-12 md:p-20">
+        <h1 class="text-5xl md:text-7xl font-bold uppercase tracking-wider">Sentinels of Stone</h1>
+        <p class="mt-4 text-lg md:text-xl max-w-3xl mx-auto">An infographic journey into the epic scale, strategic genius, and enduring legacy of India's greatest forts.</p>
+    </div>
+
+    <div class="container mx-auto p-6 md:p-12">
+
+        <section class="mb-16">
+            <h2 class="text-4xl font-bold text-center mb-8 text-energetic-purple uppercase">A Fortress for Every Terrain</h2>
+            <p class="text-center max-w-3xl mx-auto mb-10 text-lg">Ancient Indian strategists didn't just build forts; they mastered their environment. Forts (*durga*) were classified by their greatest defense: the landscape itself. This showcases a sophisticated understanding of environmental warfare.</p>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 text-center">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <span class="text-6xl">⛰️</span>
+                    <h3 class="text-2xl font-bold mt-4 text-energetic-orange">Giri-durga</h3>
+                    <p class="mt-2 text-gray-600">Hill Forts</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <span class="text-6xl">🌊</span>
+                    <h3 class="text-2xl font-bold mt-4 text-energetic-blue">Jala-durga</h3>
+                    <p class="mt-2 text-gray-600">Water Forts</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <span class="text-6xl">🏜️</span>
+                    <h3 class="text-2xl font-bold mt-4 text-energetic-yellow">Maru-durga</h3>
+                    <p class="mt-2 text-gray-600">Desert Forts</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <span class="text-6xl">🌳</span>
+                    <h3 class="text-2xl font-bold mt-4 text-energetic-purple">Vana-durga</h3>
+                    <p class="mt-2 text-gray-600">Forest Forts</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg col-span-2 md:col-span-1 lg:col-span-1">
+                    <span class="text-6xl">🌍</span>
+                    <h3 class="text-2xl font-bold mt-4 text-energetic-magenta">Mahi-durga</h3>
+                    <p class="mt-2 text-gray-600">Earthen Forts</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-4xl font-bold text-center mb-10 text-energetic-purple uppercase">The Crown Jewels</h2>
+            <p class="text-center max-w-3xl mx-auto mb-10 text-lg">Three forts stand as monuments to imperial might and artistic vision, each telling a unique story of power. Their statistics reveal the sheer ambition of their creators.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-lg shadow-xl text-center border-t-8 border-energetic-orange">
+                    <h3 class="text-3xl font-bold">Mehrangarh Fort</h3>
+                    <p class="text-gray-500 mb-4">Jodhpur</p>
+                    <p class="stat-number text-7xl font-bold text-energetic-orange">36m</p>
+                    <p class="text-xl font-semibold mt-2">Max Wall Height</p>
+                    <p class="mt-4 text-gray-700">A testament to Rathore pride, its walls seem to grow directly from the rock, a symbol of defiant power.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-xl text-center border-t-8 border-energetic-magenta">
+                    <h3 class="text-3xl font-bold">Red Fort</h3>
+                    <p class="text-gray-500 mb-4">Delhi</p>
+                    <p class="stat-number text-7xl font-bold text-energetic-magenta">1648</p>
+                    <p class="text-xl font-semibold mt-2">Year Completed</p>
+                    <p class="mt-4 text-gray-700">The heart of the Mughal Empire and now a symbol of India's independence, representing the zenith of Mughal creativity.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-xl text-center border-t-8 border-energetic-blue">
+                    <h3 class="text-3xl font-bold">Amer Fort</h3>
+                    <p class="text-gray-500 mb-4">Jaipur</p>
+                    <p class="stat-number text-7xl font-bold text-energetic-blue">1592</p>
+                    <p class="text-xl font-semibold mt-2">Construction Started</p>
+                    <p class="mt-4 text-gray-700">A stunning fusion of Rajput and Mughal styles, famed for its artistic beauty like the Sheesh Mahal (Mirror Palace).</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-4xl font-bold text-center mb-10 text-energetic-purple uppercase">By The Numbers: A Sense of Scale</h2>
+            <p class="text-center max-w-3xl mx-auto mb-10 text-lg">The scale of these fortifications is difficult to comprehend. Visualizing the data reveals the incredible engineering feats required to build and sustain these colossal structures.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-center mb-4">The Unconquered Wall</h3>
+                    <p class="text-center mb-4">Kumbhalgarh's perimeter wall is a world wonder, second only to one other famous wall. This chart puts its immense length into perspective.</p>
+                    <div class="chart-container h-64 md:h-auto">
+                        <canvas id="wallChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-center mb-4">A Legacy Recognized</h3>
+                     <p class="text-center mb-4">Many of India's most significant forts are recognized by UNESCO as World Heritage Sites, highlighting their global cultural importance. </p>
+                    <div class="chart-container h-64 md:h-auto">
+                        <canvas id="unescoChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-4xl font-bold text-center mb-10 text-energetic-purple uppercase">Architectural Ingenuity</h2>
+            <p class="text-center max-w-3xl mx-auto mb-10 text-lg">Beyond brute force, Indian forts display incredible scientific and artistic brilliance. Golconda Fort's acoustic system is a prime example of security through science.</p>
+            <div class="bg-white p-8 rounded-lg shadow-lg max-w-4xl mx-auto">
+                <h3 class="text-2xl font-bold text-center mb-6">Golconda's Acoustic Alarm</h3>
+                <div class="flex flex-col md:flex-row items-center justify-around space-y-4 md:space-y-0 text-center">
+                    <div class="flex flex-col items-center">
+                        <div class="bg-energetic-blue text-white rounded-full w-24 h-24 flex items-center justify-center text-4xl shadow-md">👏</div>
+                        <p class="font-bold text-lg mt-2">1. Clap at Gate</p>
+                        <p class="max-w-xs text-gray-600">A single handclap at the Fateh Darwaza gate...</p>
+                    </div>
+                    <div class="text-4xl text-energetic-blue font-bold transform rotate-90 md:rotate-0">→</div>
+                    <div class="flex flex-col items-center">
+                        <div class="bg-energetic-blue text-white rounded-full w-24 h-24 flex items-center justify-center text-4xl shadow-md">🔊</div>
+                        <p class="font-bold text-lg mt-2">2. Sound Travels</p>
+                        <p class="max-w-xs text-gray-600">...travels through precisely engineered arches...</p>
+                    </div>
+                    <div class="text-4xl text-energetic-blue font-bold transform rotate-90 md:rotate-0">→</div>
+                    <div class="flex flex-col items-center">
+                        <div class="bg-energetic-blue text-white rounded-full w-24 h-24 flex items-center justify-center text-4xl shadow-md">👂</div>
+                        <p class="font-bold text-lg mt-2">3. Heard 1km Away</p>
+                        <p class="max-w-xs text-gray-600">...and is heard clearly at the highest point, serving as a perfect alarm.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="bg-energetic-purple text-white text-center p-8 mt-12">
+        <p class="font-semibold">A legacy written in stone, telling a timeless story of power, art, and survival.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const wrapLabel = (label) => {
+                if (label.length > 16) {
+                    const words = label.split(' ');
+                    const lines = [];
+                    let currentLine = '';
+                    words.forEach(word => {
+                        if ((currentLine + word).length > 16) {
+                            lines.push(currentLine.trim());
+                            currentLine = '';
+                        }
+                        currentLine += word + ' ';
+                    });
+                    lines.push(currentLine.trim());
+                    return lines;
+                }
+                return label;
+            };
+
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                    return label.join(' ');
+                }
+                return label;
+            };
+
+            const wallCtx = document.getElementById('wallChart').getContext('2d');
+            new Chart(wallCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Kumbhalgarh Fort', 'Great Wall of China'],
+                    datasets: [{
+                        label: 'Wall Length (km)',
+                        data: [36, 21196],
+                        backgroundColor: ['#F37748', '#FFBC42'],
+                        borderColor: ['#F37748', '#FFBC42'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { title: tooltipTitleCallback } }
+                    },
+                    scales: {
+                        x: {
+                            type: 'logarithmic',
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    if (value === 10 || value === 100 || value === 1000 || value === 10000 || value === 20000) {
+                                        return value.toLocaleString() + ' km';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const unescoCtx = document.getElementById('unescoChart').getContext('2d');
+            new Chart(unescoCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['UNESCO World Heritage Site', 'Not Listed / Tentative'],
+                    datasets: [{
+                        data: [5, 3], 
+                        backgroundColor: ['#00A6FB', '#D81159'],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        tooltip: { callbacks: { title: tooltipTitleCallback } }
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

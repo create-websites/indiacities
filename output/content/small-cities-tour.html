@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>India's Hidden Canvases: An Interactive Travel Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Earthy Neutrals (Sand, Terracotta, Slate, Forest Green) -->
+    <!-- Application Structure Plan: The application is designed as a non-linear, filterable dashboard. The core is a grid of destination cards that users can filter by Region, Travel Style (Allure), and Season. This user-driven approach is better for trip planning than a linear report. Clicking a card opens a modal with tabbed content (Overview, Sights, Culture, Travel Info), preventing information overload. Thematic sections from the report, like comparisons and itineraries, are presented as distinct, interactive modules below the main dashboard to maintain a clean UI. This structure prioritizes user exploration and discovery over passive reading. -->
+    <!-- Visualization & Content Choices: Report Info: List of 10 cities -> Goal: Organize/Filter -> Viz: Interactive Card Grid -> Interaction: Click for modal, filter controls -> Justification: Enables user-driven discovery. Report Info: Best Time to Visit -> Goal: Compare -> Viz: Bar Chart in Modal -> Interaction: View ideal months -> Justification: More intuitive than text list. Report Info: Regional Distribution -> Goal: Inform -> Viz: Donut Chart -> Interaction: Hover for details -> Justification: Quick visual summary of geographic spread. Report Info: Itineraries -> Goal: Guide -> Viz: Accordion/Collapsible sections -> Interaction: Click to expand -> Justification: Manages complexity, keeps UI clean. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF5;
+            color: #4A4A4A;
+        }
+        .font-lora {
+            font-family: 'Lora', serif;
+        }
+        .bg-sand { background-color: #FDFBF5; }
+        .bg-terracotta { background-color: #E27D60; }
+        .text-terracotta { color: #E27D60; }
+        .border-terracotta { border-color: #E27D60; }
+        .bg-slate { background-color: #85A39C; }
+        .text-slate { color: #85A39C; }
+        .bg-forest { background-color: #4A5759; }
+        .text-forest { color: #4A5759; }
+        .card-hover {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .modal-enter {
+            animation: fadeIn 0.3s ease-out;
+        }
+        .modal-leave {
+            animation: fadeOut 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.95); }
+        }
+        .tab-active {
+            border-bottom-color: #E27D60;
+            color: #E27D60;
+            font-weight: 600;
+        }
+        .tab-inactive {
+            border-bottom-color: transparent;
+            color: #85A39C;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 250px;
+            max-height: 300px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-sand">
+
+    <div id="app" class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-lora font-bold text-forest mb-2">India's Hidden Canvases</h1>
+            <p class="text-lg text-slate max-w-3xl mx-auto">An interactive guide to the subcontinent's most captivating small cities. Move beyond the metropolis and discover the soul of India through its art, culture, and serene landscapes.</p>
+        </header>
+
+        <main>
+            <section id="explorer" class="mb-12 p-6 bg-white rounded-2xl shadow-sm">
+                <h2 class="text-2xl font-lora font-semibold text-forest mb-4 text-center">Design Your Journey</h2>
+                <p class="text-center text-slate mb-6">Use the filters below to find the perfect destination for your travel style. The map and destinations will update based on your selections.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div>
+                        <label for="region-filter" class="block text-sm font-medium text-forest">Region</label>
+                        <select id="region-filter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-terracotta focus:border-terracotta sm:text-sm rounded-md">
+                            <option value="all">All Regions</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="allure-filter" class="block text-sm font-medium text-forest">Travel Style / Allure</label>
+                        <select id="allure-filter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-terracotta focus:border-terracotta sm:text-sm rounded-md">
+                            <option value="all">All Styles</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="season-filter" class="block text-sm font-medium text-forest">Best Season to Visit</label>
+                        <select id="season-filter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-terracotta focus:border-terracotta sm:text-sm rounded-md">
+                            <option value="all">Any Season</option>
+                            <option value="winter">Winter (Oct - Mar)</option>
+                            <option value="summer">Summer (Apr - Jun)</option>
+                            <option value="monsoon">Anytime (Year-round appeal)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="region-chart"></canvas>
+                </div>
+                 <p class="text-center text-xs text-slate mt-2">Distribution of featured destinations by region.</p>
+            </section>
+
+            <section id="destinations-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            </section>
+            
+            <section id="thematic-sections" class="mt-16">
+                <h2 class="text-3xl font-lora font-bold text-forest mb-8 text-center">Thematic Deep Dives</h2>
+                <div class="space-y-12">
+                    <div class="p-6 bg-white rounded-2xl shadow-sm">
+                        <h3 class="text-2xl font-lora font-semibold text-forest mb-4 text-center">Curated Journeys</h3>
+                        <p class="text-center text-slate mb-6 max-w-2xl mx-auto">For a more structured adventure, explore these handcrafted itineraries that connect some of India's most remarkable small towns into logical, rewarding trips.</p>
+                        <div id="itineraries-container" class="space-y-4"></div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 hidden">
+    </div>
+
+<script>
+const destinations = [
+    {
+        id: 'landour',
+        name: 'Landour, Uttarakhand',
+        region: 'North',
+        allure: ['Colonial Charm', 'Literary Serenity', 'Nature & Serenity'],
+        best_season: ['winter', 'summer', 'monsoon'],
+        nearest_hub: 'Dehradun',
+        tagline: 'Colonial charm & literary serenity in the Himalayas.',
+        icon: '⛰️',
+        overview: `To arrive in Landour is to step into a beautifully preserved miniature, a pocket of the past nestled just above the bustling hill station of Mussoorie. It is a place sought not for what it has, but for what it lacks: the clamorous crowds and commercial storefronts. In the shade of towering deodar forests, this colonial-era cantonment town continues its life at an unhurried, literary pace, famously being the home of author Ruskin Bond.`,
+        sights: `The experience of Landour is one of leisurely discovery on foot. Key sights include the colonial-era St. Paul's Church and Kellogg's Memorial Church. A short walk leads to Lal Tibba, the highest point, offering panoramic views of the Garhwal Himalayas. The heart of Landour beats in Sisters Bazaar and the iconic Char Dukan ("Four Shops"), the town's living room where life unfolds slowly. For nature lovers, the Jabarkhet Nature Reserve provides a protected space to explore the region's wilderness.`,
+        culture_cuisine: `Landour's culinary landscape is a primary attraction, blending colonial heritage with local traditions. The Landour Bakehouse serves vintage lemon cakes and apple pies. This is complemented by modern cafés and the simple pleasures of Char Dukan, famous for its bun omelettes and pancakes. The century-old Prakash Store in Sisters Bazaar offers homemade jams, peanut butter, and artisanal cheeses, which are edible artifacts of Landour's heritage.`,
+        travel_almanac: `**Connectivity:** Reached by road from Dehradun (approx. 35 km), which has an airport and railway station. The final leg from Mussoorie can have traffic. **Accommodation:** Options are fewer and more upmarket than Mussoorie, emphasizing boutique and heritage stays like Rokeby Manor. **Local Transport:** The town is perfect for exploring on foot; leisurely strolls are a key part of the experience.`,
+        best_months: [0, 1, 2, 3, 4, 5, 9, 10, 11]
+    },
+    {
+        id: 'ziro',
+        name: 'Ziro Valley, Arunachal Pradesh',
+        region: 'Northeast',
+        allure: ['Indigenous Culture', 'Music Festival', 'Nature & Serenity'],
+        best_season: ['winter', 'summer'],
+        nearest_hub: 'Itanagar / Lilabari',
+        tagline: 'Indigenous Apatani culture in a misty Himalayan valley.',
+        icon: '🌾',
+        overview: `Deep in the Eastern Himalayas lies Ziro Valley, a UNESCO World Heritage Site and the heartland of the Apatani tribe. A journey here is into a world where culture and ecology are in perfect symbiosis. The Apatani's unique agricultural system, combining wet rice cultivation with fish farming, is a marvel of ecological engineering. To visit Ziro is to witness a living culture that is an inextricable part of its landscape.`,
+        sights: `Immerse yourself in the Apatani way of life with walking tours of traditional villages like Hong and Hari. A key sight is the Tarin Fish Farm, showcasing their ingenious paddy-cum-fish cultivation. For the adventurous, Kile Pakho Ridge offers a stunning dual panorama of the valley and the snow-capped Himalayas. Each September, the Ziro Music Festival transforms the valley, drawing indie artists and music lovers from around the globe.`,
+        culture_cuisine: `The local cuisine is centered on rice, pork, river fish, and foraged greens. Dining in a homestay is the best way to experience authentic Apatani dishes like *Pike Pila* (a spicy dish of bamboo shoot and pork fat). Be sure to try *Apong*, the ubiquitous local rice beer. The Apatani are also skilled artisans, known for their intricately woven bamboo baskets and bags.`,
+        travel_almanac: `**Connectivity:** Reaching Ziro is an adventure. The nearest airport is Lilabari in Assam (110 km). The final journey is a full day by road. **Permits:** An Inner Line Permit (ILP) for Indian tourists or a Protected Area Permit (PAP) for foreign nationals is mandatory. **Accommodation:** Authentic homestays run by Apatani families are the most rewarding option. **Practicalities:** Carry sufficient cash as ATMs are scarce and network coverage can be weak.`,
+        best_months: [2, 3, 4, 5, 6, 7, 8, 9]
+    },
+    {
+        id: 'orchha',
+        name: 'Orchha, Madhya Pradesh',
+        region: 'Central',
+        allure: ['Royal History', 'Riverside Architecture', 'History & Architecture'],
+        best_season: ['winter'],
+        nearest_hub: 'Gwalior / Jhansi',
+        tagline: 'A medieval movie set of palaces and temples on the Betwa River.',
+        icon: '🏰',
+        overview: `Nestled on the banks of the serene Betwa River, Orchha is a "medieval movie set" come to life. Once the powerful capital of the Bundela Rajputs, this small town now exists in a state of haunting beauty, where towering palaces and temples rise above a sleepy village. Unlike formalized monuments, Orchha's history is accessible and integrated into the town, offering a chance to wander through a "living ruin".`,
+        sights: `The journey begins at the formidable Fort Complex, housing the Raj Mahal (famed for its murals), the magnificent Jahangir Mahal, and the Rai Praveen Mahal. A short walk away, 15 elegant *chhatris* (cenotaphs) line the Betwa River, creating a spectacular silhouette at sunrise and sunset. The town's spiritual heart is the Ram Raja Mandir, unique for worshipping Lord Rama as a king.`,
+        culture_cuisine: `Orchha is the cradle of the Bundelkhand school of miniature painting, visible in the vibrant murals of the Raj Mahal. While tourist restaurants are common, a true taste of the region lies in Bundelkhandi food. Seek out delicacies like *Bundeli Gosht* (mutton curry) and *Raas ki Kheer*, a unique dessert made with milk, millets, and the extract of the local Mahua flower.`,
+        travel_almanac: `**Connectivity:** Easily accessible from Jhansi (15-18 km), a major railway junction. The nearest airports are in Gwalior and Khajuraho. **Accommodation:** Offers a good spectrum, from staying in a heritage hotel like Sheesh Mahal within the fort complex to beautiful riverside resorts like Amar Mahal. **Etiquette:** Modest dress is required for temples. Comfortable walking shoes are essential.`,
+        best_months: [0, 1, 2, 9, 10, 11]
+    },
+    {
+        id: 'mandawa',
+        name: 'Mandawa, Rajasthan',
+        region: 'West',
+        allure: ['Frescoed Havelis', 'Open-Air Art', 'History & Architecture', 'Culture & Crafts'],
+        best_season: ['winter'],
+        nearest_hub: 'Jaipur',
+        tagline: 'An open-air art gallery of exquisitely painted merchant mansions.',
+        icon: '🎨',
+        overview: `In the heart of Rajasthan's Shekhawati region, Mandawa functions as a vast "open-air art gallery." Its fame rests on hundreds of exquisitely painted *havelis*—opulent mansions of 18th and 19th-century Marwari merchants. The frescoes are a unique social document, chronicling the community's prosperity, piety, and fascination with modern inventions like the motorcar and telephone, brought back from their global trade routes.`,
+        sights: `The principal activity is to wander and discover. The town is best explored on foot. "Must-see" havelis include the Murmuria Haveli (famous for a fresco of Nehru on horseback), the Hanuman Prasad Goenka Haveli, and the opulent Goenka Double Haveli. The 18th-century Mandawa Fort, now a heritage hotel, also offers a glimpse into the town's past with its own fine frescoes.`,
+        culture_cuisine: `The primary cultural offering is the art itself. This visual feast is complemented by the robust flavours of classic Rajasthani cuisine. Local restaurants and haveli hotels serve regional specialties like *Dal Baati Churma*, *Ker Sangri* (a curry of desert beans), and *Gatte ki Sabzi*. For dessert, try the traditional *Ghevar* or *Malpua*.`,
+        travel_almanac: `**Connectivity:** Most conveniently accessed by road from Jaipur (approx. 168 km). The nearest railway station is in Jhunjhunu (30 km). **Accommodation:** A unique aspect is the opportunity to stay within a restored heritage haveli, offering an immersive experience. **Best Time to Visit:** The cooler winter months, from October to March, are ideal.`,
+        best_months: [0, 1, 2, 9, 10, 11]
+    },
+    {
+        id: 'kutch',
+        name: 'Kutch, Gujarat',
+        region: 'West',
+        allure: ['Handicrafts', 'White Desert Landscape', 'Culture & Crafts'],
+        best_season: ['winter'],
+        nearest_hub: 'Bhuj',
+        tagline: 'A universe of vibrant crafts set against a white desert landscape.',
+        icon: '🏜️',
+        overview: `The arid landscape of Kutch has given rise to some of India's most vibrant and diverse craft traditions. It is a land of world-famous embroidery and mirror work, with distinct styles belonging to communities like the Rabari and Mutwa. Beyond textiles, Kutch is home to rare arts like Rogan painting and lacquer work. A visit here is an engagement with the story, identity, and heritage of its people.`,
+        sights: `The main attraction is the Great Rann of Kutch, a vast salt marsh that transforms into a surreal white desert in winter, especially magical under the full moon. The Rann Utsav, a cultural festival, is held here from October to March. Explore artisan villages like Nirona (for Rogan art and copper bells) and Hodko. The city of Bhuj, with its Aina Mahal (Palace of Mirrors), is the region's historical hub.`,
+        culture_cuisine: `Kutchi craft is the primary cultural draw. The food is typically vegetarian Gujarati cuisine, with staples like *bajra no rotlo* (millet flatbread), *kadhi* (yogurt-based soup), and *khichdi*. A Kutchi *thali* offers a chance to sample a wide variety of local dishes.`,
+        travel_almanac: `**Connectivity:** Bhuj is the main gateway, with a well-connected airport and railway station. The Rann of Kutch is about 85 km from Bhuj. **Accommodation:** During Rann Utsav, a large tent city offers accommodation. Otherwise, stay in Bhuj or in traditional *bhungas* (mud huts) in villages like Hodko for an authentic experience.`,
+        best_months: [0, 1, 2, 9, 10, 11]
+    },
+    {
+        id: 'chettinad',
+        name: 'Chettinad, Tamil Nadu',
+        region: 'South',
+        allure: ['Palatial Mansions', 'Unique Cuisine', 'History & Architecture', 'Culture & Crafts'],
+        best_season: ['winter'],
+        nearest_hub: 'Trichy / Madurai',
+        tagline: 'Palatial mansions and fiercely aromatic cuisine in Tamil Nadu.',
+        icon: '🏛️',
+        overview: `In the Chettinad region, the highest form of craft is expressed in architecture and cuisine. The area is famed for the magnificent mansions of the Chettiar merchant community, built with materials sourced globally, featuring Burma teak pillars and handmade Athangudi tiles. This architectural grandeur is matched by the refinement of Chettinad cuisine, renowned for its complex and precise spice blends.`,
+        sights: `The main activity is exploring the grand, yet often deserted, Chettiar mansions in towns like Karaikudi and Kanadukathan. Many are open to visitors for a small fee. Visit a workshop in Athangudi village to see the famous tiles being made by hand. The region's antique shops are a treasure trove of artifacts from the grand old homes.`,
+        culture_cuisine: `Chettinad cuisine is an art form. It is renowned for the complexity of its freshly ground *masalas*, which incorporate unique ingredients like star anise and *kalpasi* (stone flower). The signature dish is Chicken Chettinad, but there are countless vegetarian and seafood preparations. Don't miss the fluffy *paniyaram* (savory rice cakes).`,
+        travel_almanac: `**Connectivity:** The nearest airports are in Trichy and Madurai. The region is best explored by hiring a car. **Accommodation:** Stay in a converted heritage mansion like The Bangala or Visalam for an immersive experience that includes authentic Chettinad meals. **Best Time to Visit:** The cooler, drier months from October to March are most comfortable.`,
+        best_months: [0, 1, 2, 9, 10, 11]
+    },
+    {
+        id: 'gokarna',
+        name: 'Gokarna, Karnataka',
+        region: 'South',
+        allure: ['Sacred Beaches', 'Laid-back Vibe', 'Beaches & Wellness', 'Spiritual'],
+        best_season: ['winter'],
+        nearest_hub: 'Goa (Dabolim)',
+        tagline: 'A laid-back pilgrimage town with a string of sacred beaches.',
+        icon: '🌊',
+        overview: `Gokarna offers a more rustic and spiritual alternative to the commercialized beaches of Goa. It is foremost a Hindu pilgrimage center, home to the ancient Mahabaleshwar Temple, which gives the main town a deeply traditional feel. This spiritual core is fringed by a series of beautiful, clean beaches, each with its own distinct vibe, attracting backpackers, yoga enthusiasts, and travelers seeking a quieter coastal escape.`,
+        sights: `The main activity is beach-hopping. Start at the main Gokarna Beach, then trek or take a boat to the more secluded Kudle Beach, Om Beach (famously shaped like the Om symbol), Half Moon Beach, and the remote Paradise Beach. The trek between these beaches is a beautiful coastal walk. A visit to the revered Mahabaleshwar Temple, dedicated to Lord Shiva, is essential to understanding the town's soul.`,
+        culture_cuisine: `The food scene is a mix of simple South Indian fare in the town and global health-conscious café food on the beaches. You'll find everything from traditional *idli* and *dosa* to wood-fired pizzas and vegan smoothie bowls. The vibe is relaxed and unpretentious.`,
+        travel_almanac: `**Connectivity:** The nearest airport is Dabolim in Goa (around 140 km away), making it a convenient add-on to a Goa trip. Gokarna has its own railway station. **Accommodation:** Ranges from simple guesthouses and beach shacks to a few upscale resorts. Many travelers opt for rustic huts right on Kudle or Om beach. **Best Time to Visit:** November to February offers pleasant weather for beach activities.`,
+        best_months: [0, 1, 10, 11]
+    },
+    {
+        id: 'varkala',
+        name: 'Varkala, Kerala',
+        region: 'South',
+        allure: ['Cliffside Beaches', 'Wellness', 'Beaches & Wellness', 'Spiritual'],
+        best_season: ['winter'],
+        nearest_hub: 'Trivandrum',
+        tagline: 'Stunning cliffside beaches and a hub for yoga and wellness.',
+        icon: '🧘',
+        overview: `Varkala's geography is unique in Kerala: it's the only place where cliffs are found adjacent to the Arabian Sea. This dramatic setting of red laterite cliffs overlooking the ocean creates a stunning backdrop. The North Cliff is lined with a vibrant strip of shops, cafes, and guesthouses, offering panoramic sea views. Varkala is also a spiritual center, known for the 2,000-year-old Janardanaswamy Temple and as a hub for yoga and Ayurveda.`,
+        sights: `Spend your days exploring the vibrant North Cliff, relaxing on Papanasam Beach (believed to wash away sins), or discovering the quieter Black Beach. The 2,000-year-old Janardanaswamy Temple is a major pilgrimage site. Varkala is a premier destination for wellness; indulge in an Ayurvedic treatment or join one of the many yoga and meditation classes offered along the cliff.`,
+        culture_cuisine: `The clifftop is packed with restaurants serving fresh seafood and a variety of international cuisines, from Italian to Tibetan. It's the perfect place to enjoy a candlelit dinner while watching the sunset over the Arabian Sea. Traditional Keralan food is readily available in the main town.`,
+        travel_almanac: `**Connectivity:** The nearest airport is in Trivandrum (Thiruvananthapuram), about 45 km away. Varkala has its own railway station (Varkala Sivagiri) with good connections. **Accommodation:** A wide range of options are available, from budget guesthouses to boutique resorts, most concentrated along the North Cliff for the best views. **Best Time to Visit:** October to February is ideal, with pleasant weather and a lively atmosphere.`,
+        best_months: [0, 1, 9, 10, 11]
+    },
+    {
+        id: 'majuli',
+        name: 'Majuli, Assam',
+        region: 'Northeast',
+        allure: ['River Island Culture', 'Neo-Vaishnavism', 'Indigenous Culture', 'Nature & Serenity'],
+        best_season: ['winter'],
+        nearest_hub: 'Jorhat',
+        tagline: 'The world\'s largest river island, a center of unique Vaishnavite culture.',
+        icon: '🎭',
+        overview: `Majuli is the world's largest river island, nestled in the mighty Brahmaputra River. It is a place of serene, pastoral beauty and the heart of Assamese neo-Vaishnavite culture, a monotheistic branch of Hinduism established in the 15th century. The island is dotted with *satras* (monasteries or hermitages) that serve as centers for religion, art, and culture, preserving traditions like mask-making, classical dance, and music.`,
+        sights: `The core experience is visiting the *satras*. Don't miss the Samaguri Satra, famous for its tradition of intricate mask-making, and the Auniati Satra, known for its collection of ancient Assamese artifacts. Explore the island by renting a bicycle or scooter, cycling through lush green paddy fields and Mising tribal villages with their distinctive stilt houses. Sunset over the Brahmaputra is a magical experience.`,
+        culture_cuisine: `Experience the unique culture of the Mising tribe by staying in a traditional bamboo stilt house. Their cuisine is distinct, featuring dishes made with pork, fish, and local herbs. A must-try is *Apong*, the traditional rice beer. In the satras, you can have a simple but wholesome vegetarian meal.`,
+        travel_almanac: `**Connectivity:** Reached by ferry from Nimati Ghat, near Jorhat. Jorhat has an airport and is the main gateway. The ferry ride itself is part of the experience. **Accommodation:** Options are basic but authentic. The best experience is a homestay in a Mising village or a simple guesthouse near the main town of Kamalabari. **Best Time to Visit:** October to March, after the monsoons, when the island is accessible and lush.`,
+        best_months: [0, 1, 2, 9, 10, 11]
+    },
+    {
+        id: 'puri',
+        name: 'Puri, Odisha',
+        region: 'East',
+        allure: ['Spiritual Epicenter', 'Coastal Culture', 'Spiritual', 'Beaches & Wellness'],
+        best_season: ['winter'],
+        nearest_hub: 'Bhubaneswar',
+        tagline: 'A spiritual epicenter and vibrant coastal town on the Bay of Bengal.',
+        icon: '🕉️',
+        overview: `Puri is one of India's most sacred pilgrimage sites, one of the four Char Dham. The city's life revolves around the colossal Jagannath Temple, a 12th-century marvel that draws millions of devotees. This intense spiritual energy blends with the relaxed vibe of a classic seaside town, with a long golden beach, bustling markets, and a rich artistic heritage, making for a unique and multifaceted travel experience.`,
+        sights: `The Jagannath Temple is the primary landmark (note: non-Hindus are typically not allowed inside the main sanctum but can view the complex from the Raghunandan Library rooftop). Witness the spectacular Rath Yatra (Chariot Festival) if visiting in June/July. Relax on the long stretch of Puri Beach, famous for its golden sands and lively atmosphere. Visit the nearby village of Raghurajpur, a heritage crafts village where every household is involved in Pattachitra painting.`,
+        culture_cuisine: `Puri is a center for Odishan art, especially Pattachitra (cloth-based scroll painting) and sand art. The food is a highlight. Don't miss the *Mahaprasad* from the Jagannath Temple, a massive offering of 56 dishes cooked in temple kitchens. Sample local seafood at beachside shacks and try Odia sweets like *Chhena Poda* (a baked cheese dessert).`,
+        travel_almanac: `**Connectivity:** The nearest airport is in Bhubaneswar (about 60 km away). Puri is a major railway terminus with excellent connections across India. **Accommodation:** A vast range of options are available, from pilgrim guesthouses to luxury beach resorts. **Best Time to Visit:** October to March offers the most pleasant weather for sightseeing and beach activities.`,
+        best_months: [0, 1, 2, 9, 10, 11]
+    }
+];
+
+const itineraries = [
+    {
+        title: "The Royal & Artistic Heartland (7-9 Days)",
+        description: "Delve into the regal history of Central India and Rajasthan.",
+        details: `
+            <ul class="list-disc list-inside space-y-2 text-sm text-slate">
+                <li><strong>Day 1-2: Gwalior & Orchha.</strong> Arrive in Gwalior, then travel to Orchha.</li>
+                <li><strong>Day 3: Orchha.</strong> Explore the Fort Complex, temples, and cenotaphs.</li>
+                <li><strong>Day 4: Journey to Rajasthan.</strong> Train from Jhansi to Jaipur.</li>
+                <li><strong>Day 5: Mandawa.</strong> Drive to Mandawa for a walking tour of the frescoed havelis.</li>
+                <li><strong>Day 6: Shekhawati & Bikaner.</strong> Explore more havelis, then continue to Bikaner.</li>
+                <li><strong>Day 7-9: Bikaner & Departure.</strong> Explore Bikaner before departing.</li>
+            </ul>
+        `
+    },
+    {
+        title: "A Southern Sojourn of Spice & Shore (10-12 Days)",
+        description: "A feast for the senses through Tamil Nadu, Kerala, and Karnataka.",
+        details: `
+            <ul class="list-disc list-inside space-y-2 text-sm text-slate">
+                <li><strong>Day 1-2: Chettinad.</strong> Explore palatial mansions and indulge in the spicy cuisine.</li>
+                <li><strong>Day 3-4: Journey to Kerala.</strong> Travel to Varkala on the coast.</li>
+                <li><strong>Day 5-6: Varkala.</strong> Relax on the cliffside beaches and try yoga or Ayurveda.</li>
+                <li><strong>Day 7: Coastal Train to Gokarna.</strong> A scenic train journey up the coast.</li>
+                <li><strong>Day 8-10: Gokarna.</strong> Beach-hop between Om, Kudle, and Paradise beaches.</li>
+                <li><strong>Day 11-12: Departure via Goa.</strong> Depart from Goa's Dabolim Airport.</li>
+            </ul>
+        `
+    },
+    {
+        title: "The Northeast Passage of Culture & Nature (8-10 Days)",
+        description: "An adventurous dive into the unique cultures of Assam and Arunachal Pradesh.",
+        details: `
+            <ul class="list-disc list-inside space-y-2 text-sm text-slate">
+                <li><strong>Day 1: Arrival in Assam.</strong> Fly into Jorhat, the gateway to Majuli.</li>
+                <li><strong>Day 2-4: Majuli.</strong> Explore the river island's monasteries (satras) and tribal villages.</li>
+                <li><strong>Day 5: Journey to Arunachal.</strong> Travel by road towards the staging points for Ziro.</li>
+                <li><strong>Day 6-8: Ziro Valley.</strong> Immerse yourself in Apatani culture and trek to stunning viewpoints.</li>
+                <li><strong>Day 9-10: Return Journey.</strong> Travel back from Ziro for your onward flight.</li>
+            </ul>
+        `
+    }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+    const grid = document.getElementById('destinations-grid');
+    const regionFilter = document.getElementById('region-filter');
+    const allureFilter = document.getElementById('allure-filter');
+    const seasonFilter = document.getElementById('season-filter');
+    const modalContainer = document.getElementById('modal-container');
+    const itinerariesContainer = document.getElementById('itineraries-container');
+
+    let regionChart;
+
+    function getUniqueValues(key) {
+        const allValues = destinations.flatMap(d => d[key]);
+        return [...new Set(allValues)].sort();
+    }
+
+    function populateFilters() {
+        const regions = getUniqueValues('region');
+        regions.forEach(region => {
+            const option = document.createElement('option');
+            option.value = region;
+            option.textContent = region;
+            regionFilter.appendChild(option);
+        });
+
+        const allures = getUniqueValues('allure');
+        allures.forEach(allure => {
+            const option = document.createElement('option');
+            option.value = allure;
+            option.textContent = allure;
+            allureFilter.appendChild(option);
+        });
+    }
+
+    function renderGrid(filteredDestinations) {
+        grid.innerHTML = '';
+        if (filteredDestinations.length === 0) {
+            grid.innerHTML = `<p class="col-span-full text-center text-slate">No destinations match your criteria. Try adjusting your filters.</p>`;
+            return;
+        }
+        filteredDestinations.forEach(dest => {
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer card-hover';
+            card.dataset.id = dest.id;
+            card.innerHTML = `
+                <div class="p-5">
+                    <div class="flex items-center mb-3">
+                        <div class="text-3xl mr-3">${dest.icon}</div>
+                        <div>
+                            <h3 class="font-lora text-lg font-semibold text-forest">${dest.name}</h3>
+                            <p class="text-xs text-slate">${dest.region}</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate">${dest.tagline}</p>
+                </div>
+                <div class="px-5 pb-4">
+                    <span class="inline-block bg-terracotta bg-opacity-10 text-terracotta text-xs font-semibold px-2 py-1 rounded-full">${dest.allure[0]}</span>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+    
+    function renderItineraries() {
+        itinerariesContainer.innerHTML = '';
+        itineraries.forEach((itinerary, index) => {
+            const div = document.createElement('div');
+            div.className = 'border border-gray-200 rounded-lg';
+            div.innerHTML = `
+                <button class="w-full text-left p-4 flex justify-between items-center focus:outline-none" data-itinerary-toggle="${index}">
+                    <div>
+                        <h4 class="font-lora font-semibold text-forest">${itinerary.title}</h4>
+                        <p class="text-sm text-slate">${itinerary.description}</p>
+                    </div>
+                    <span class="transform transition-transform duration-300 text-terracotta">▼</span>
+                </button>
+                <div id="itinerary-content-${index}" class="px-4 pb-4 hidden">
+                    ${itinerary.details}
+                </div>
+            `;
+            itinerariesContainer.appendChild(div);
+        });
+    }
+
+    function filterDestinations() {
+        const selectedRegion = regionFilter.value;
+        const selectedAllure = allureFilter.value;
+        const selectedSeason = seasonFilter.value;
+
+        const filtered = destinations.filter(dest => {
+            const regionMatch = selectedRegion === 'all' || dest.region === selectedRegion;
+            const allureMatch = selectedAllure === 'all' || dest.allure.includes(selectedAllure);
+            const seasonMatch = selectedSeason === 'all' || dest.best_season.includes(selectedSeason);
+            return regionMatch && allureMatch && seasonMatch;
+        });
+
+        renderGrid(filtered);
+    }
+
+    function showModal(destination) {
+        modalContainer.innerHTML = '';
+        const modalContent = document.createElement('div');
+        modalContent.className = 'bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto modal-enter';
+        
+        modalContent.innerHTML = `
+            <div class="sticky top-0 bg-white p-4 sm:p-6 border-b border-gray-200 z-10 flex justify-between items-start">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-lora font-bold text-forest">${destination.name}</h2>
+                    <p class="text-slate">${destination.region} | Nearest Hub: ${destination.nearest_hub}</p>
+                </div>
+                <button id="close-modal" class="text-2xl text-slate hover:text-terracotta">&times;</button>
+            </div>
+            <div class="p-4 sm:p-6">
+                <div class="mb-6">
+                    <div class="flex border-b border-gray-200">
+                        <button class="tab-btn py-2 px-4 border-b-2 tab-active" data-tab="overview">Overview</button>
+                        <button class="tab-btn py-2 px-4 border-b-2 tab-inactive" data-tab="sights">Sights</button>
+                        <button class="tab-btn py-2 px-4 border-b-2 tab-inactive" data-tab="culture">Culture & Cuisine</button>
+                        <button class="tab-btn py-2 px-4 border-b-2 tab-inactive" data-tab="almanac">Travel Info</button>
+                    </div>
+                    <div id="tab-content" class="mt-4 text-slate leading-relaxed">
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-lora text-xl font-semibold text-forest mb-2 text-center">Best Months to Visit</h4>
+                    <div class="chart-container">
+                        <canvas id="month-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        modalContainer.appendChild(modalContent);
+        modalContainer.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+
+        const tabs = {
+            overview: `<p>${destination.overview}</p>`,
+            sights: `<p>${destination.sights}</p>`,
+            culture: `<p>${destination.culture_cuisine}</p>`,
+            almanac: `<p>${destination.travel_almanac.replace(/\*\*(.*?)\*\*/g, '<strong class="text-forest">$1</strong>')}</p>`
+        };
+
+        const tabContentEl = document.getElementById('tab-content');
+        const tabBtns = modalContent.querySelectorAll('.tab-btn');
+
+        function switchTab(tabName) {
+            tabContentEl.innerHTML = tabs[tabName];
+            tabBtns.forEach(btn => {
+                if (btn.dataset.tab === tabName) {
+                    btn.classList.add('tab-active');
+                    btn.classList.remove('tab-inactive');
+                } else {
+                    btn.classList.add('tab-inactive');
+                    btn.classList.remove('tab-active');
+                }
+            });
+        }
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+        });
+
+        switchTab('overview');
+
+        const monthChartCtx = document.getElementById('month-chart').getContext('2d');
+        const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const monthData = monthLabels.map((_, i) => destination.best_months.includes(i) ? 1 : 0.2);
+
+        new Chart(monthChartCtx, {
+            type: 'bar',
+            data: {
+                labels: monthLabels,
+                datasets: [{
+                    label: 'Ideal Time to Visit',
+                    data: monthData,
+                    backgroundColor: (context) => context.raw > 0.5 ? '#85A39C' : '#E0E0E0',
+                    borderColor: (context) => context.raw > 0.5 ? '#85A39C' : '#E0E0E0',
+                    borderWidth: 1,
+                    barPercentage: 0.8,
+                    categoryPercentage: 0.9
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        enabled: false
+                    }
+                },
+                scales: {
+                    y: { display: false },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        document.getElementById('close-modal').addEventListener('click', () => {
+            modalContent.classList.add('modal-leave');
+            modalContent.addEventListener('animationend', () => {
+                modalContainer.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }, { once: true });
+        });
+    }
+    
+    function createRegionChart() {
+        const regionCounts = destinations.reduce((acc, dest) => {
+            acc[dest.region] = (acc[dest.region] || 0) + 1;
+            return acc;
+        }, {});
+        
+        const chartLabels = Object.keys(regionCounts);
+        const chartData = Object.values(regionCounts);
+        
+        const regionChartCtx = document.getElementById('region-chart').getContext('2d');
+        regionChart = new Chart(regionChartCtx, {
+            type: 'doughnut',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Destinations by Region',
+                    data: chartData,
+                    backgroundColor: ['#E27D60', '#85A39C', '#4A5759', '#E8A87C', '#C38D9E'],
+                    borderColor: '#FDFBF5',
+                    borderWidth: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            font: { family: "'Inter', sans-serif" },
+                            color: '#4A4A4A'
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    grid.addEventListener('click', (e) => {
+        const card = e.target.closest('[data-id]');
+        if (card) {
+            const destId = card.dataset.id;
+            const destination = destinations.find(d => d.id === destId);
+            if (destination) {
+                showModal(destination);
+            }
+        }
+    });
+    
+    itinerariesContainer.addEventListener('click', (e) => {
+        const button = e.target.closest('[data-itinerary-toggle]');
+        if (button) {
+            const index = button.dataset.itineraryToggle;
+            const content = document.getElementById(`itinerary-content-${index}`);
+            const icon = button.querySelector('span');
+            content.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+        }
+    });
+
+    regionFilter.addEventListener('change', filterDestinations);
+    allureFilter.addEventListener('change', filterDestinations);
+    seasonFilter.addEventListener('change', filterDestinations);
+
+    populateFilters();
+    renderGrid(destinations);
+    renderItineraries();
+    createRegionChart();
+});
+</script>
+
+</body>
+</html>

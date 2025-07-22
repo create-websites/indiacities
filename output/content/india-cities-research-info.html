@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infographic: India's Urban Tapestry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Energetic & Playful -->
+    <!-- Application Structure Plan: The infographic follows a clear narrative structure based on the source report. It starts with a high-level hook ("The Soul of Urban India"), using a donut chart to show the thematic composition of tourism drivers. It then moves to a comparative deep-dive ("The Four Pillars") using a 2x2 grid to profile Delhi, Mumbai, Kolkata, and Jaipur. A dedicated section ("A Tale of Two Eras") uses a bar chart to visually contrast the historical architectural layers across these cities. The narrative concludes with a "Culinary Journey," reinforcing the cultural identity of each city through its food. This top-down structure, from broad overview to specific detail, makes the complex information easily digestible for the user. -->
+    <!-- Visualization & Content Choices: 
+        - Tourism Drivers: Report Info -> Thematic reasons for visiting (history, culture, etc.). Goal -> Inform/Show Composition. Viz -> Donut Chart (Chart.js). Justification -> Best for showing parts of a whole in a visually engaging way.
+        - City Profiles: Report Info -> Detailed city descriptions. Goal -> Organize/Compare. Viz -> Styled Cards with Icons and Text (HTML/CSS). Justification -> Allows for concise, parallel comparison of the four main cities in a clear grid format.
+        - Architectural Legacy: Report Info -> Duality of Mughal/Colonial architecture. Goal -> Compare. Viz -> Grouped Bar Chart (Chart.js). Justification -> Perfect for directly comparing two distinct categories (Mughal vs. Colonial influence) across multiple items (the cities).
+        - Culinary Highlights: Report Info -> Signature dishes for each city. Goal -> Organize/Inform. Viz -> Styled Grid with Icons (HTML/CSS). Justification -> A simple, visual grid is more effective and scannable for presenting quick, punchy food information than a complex chart.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+        .chart-container { position: relative; width: 100%; max-width: 450px; margin-left: auto; margin-right: auto; height: 350px; max-height: 40vh; }
+        .bar-chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 400px; max-height: 50vh; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="text-center py-12 bg-white shadow-sm">
+        <div class="container mx-auto px-6">
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-[#073B4C]">India's Urban Tapestry</h1>
+            <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+                India's cities are living museums, where millennia of history, culture, and spirituality are woven into the fabric of modern life. This guide explores the soul of urban India through its four most iconic centers.
+            </p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-16">
+
+        <section id="overview" class="mb-20">
+            <h2 class="text-3xl font-bold text-center mb-4">The Soul of Urban India</h2>
+            <p class="text-center max-w-2xl mx-auto mb-10 text-gray-600">Travel to India's cities is a journey through time. The primary allure isn't just one thing, but a rich blend of deep-rooted history, vibrant cultural expressions, profound spirituality, and dynamic modernity, creating a unique and compelling travel experience.</p>
+            <div class="bg-white p-8 rounded-2xl shadow-lg">
+                <h3 class="text-2xl font-bold text-center mb-6">Primary Tourism Drivers</h3>
+                <div class="chart-container">
+                    <canvas id="tourismDriversChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="pillars" class="mb-20">
+            <h2 class="text-3xl font-bold text-center mb-10">The Four Pillars of Urban India</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <div class="text-5xl mb-4">🏛️</div>
+                    <h3 class="text-2xl font-bold text-[#118AB2]">Delhi: The City of Empires</h3>
+                    <p class="mt-2 text-gray-600 mb-4">A city of resilience and rebirth, Delhi's identity is layered with the legacies of the Mughal Empire and the British Raj, creating a unique duality of ancient grandeur and imperial planning.</p>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center"><span class="font-bold text-[#073B4C] w-32">Top Attraction:</span> Qutub Minar Complex</li>
+                        <li class="flex items-center"><span class="font-bold text-[#073B4C] w-32">Key Experience:</span> Exploring Old Delhi</li>
+                        <li class="flex items-center"><span class="font-bold text-[#073B4C] w-32">UNESCO Sites:</span> 3 (Red Fort, Humayun's Tomb, Qutub Minar)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <div class="text-5xl mb-4">🎬</div>
+                    <h3 class="text-2xl font-bold text-[#06D6A0]">Mumbai: The City of Dreams</h3>
+                    <p class="mt-2 text-gray-600 mb-4">India's financial capital and the heart of Bollywood, Mumbai is a melting pot of cultures defined by relentless energy, ambition, and a stunning collection of Victorian-era architecture.</p>
+                     <ul class="space-y-2 text-sm">
+                        <li class="flex items-center"><span class="font-bold text-[#073B4C] w-32">Top Attraction:</span> Gateway of India</li>
+                        <li class="flex items-center"><span class="font-bold text-[#073B4C] w-32">Key Experience:</span> Marine Drive at sunset</li>
+                        <li class="flex items-center"><span class="font-bold text-[#073B4C] w-32">UNESCO Sites:</span> 2 (Victoria Terminus, Elephanta Caves)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <div class="text-5xl mb-4">✍️</div>
+                    <h3 class="text-2xl font-bold text-[#FFD166]">Kolkata: The Cultural Capital</h3>
+                    <p class="mt-2 text-gray-600 mb-4">The epicenter of the Bengal Renaissance, Kolkata is a city of poets, artists, and thinkers. Its soul is found in its deep passion for literature, arts, and vibrant festivals like Durga Puja.</p>
+                     <ul class="space-y-2 text-sm">
+                        <li class="flex items-center"><span class="font-bold text-[#073B4C] w-32">Top Attraction:</span> Victoria Memorial</li>
+                        <li class="flex items-center"><span class="font-bold text-[#073B4C] w-32">Key Experience:</span> Durga Puja Festival</li>
+                        <li class="flex items-center"><span class="font-bold text-[#073B4C] w-32">Unique Feature:</span> India's only tram network</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <div class="text-5xl mb-4">🐘</div>
+                    <h3 class="text-2xl font-bold text-[#FF6B6B]">Jaipur: The Pink City</h3>
+                    <p class="mt-2 text-gray-600 mb-4">One of India's first planned cities, Jaipur is a celebration of Rajput royalty and Rajasthani heritage, famous for its magnificent forts, palaces, and living traditions of arts and crafts.</p>
+                     <ul class="space-y-2 text-sm">
+                        <li class="flex items-center"><span class="font-bold text-[#073B4C] w-32">Top Attraction:</span> Amber Fort</li>
+                        <li class="flex items-center"><span class="font-bold text-[#073B4C] w-32">Key Experience:</span> Exploring the Walled City</li>
+                        <li class="flex items-center"><span class="font-bold text-[#073B4C] w-32">UNESCO Sites:</span> 2 (Jantar Mantar, Walled City)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="architecture" class="mb-20">
+            <h2 class="text-3xl font-bold text-center mb-4">A Tale of Two Eras: The Architectural Legacy</h2>
+            <p class="text-center max-w-2xl mx-auto mb-10 text-gray-600">The skylines of India's cities tell a story of conquest and colonization. The grandeur of the Mughal and Sultanate periods coexists with the stately, formal structures of the British Raj, creating a unique and visually rich urban environment.</p>
+            <div class="bg-white p-8 rounded-2xl shadow-lg">
+                <h3 class="text-2xl font-bold text-center mb-6">Dominant Architectural Influences</h3>
+                <div class="bar-chart-container">
+                    <canvas id="architectureChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="cuisine">
+            <h2 class="text-3xl font-bold text-center mb-10">A Culinary Journey</h2>
+             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+                 <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <h3 class="text-xl font-bold text-[#118AB2] mb-2">Delhi</h3>
+                    <p class="text-5xl mb-3">🍲</p>
+                    <p class="font-semibold">Mughlai Cuisine</p>
+                    <p class="text-sm text-gray-500">Rich kebabs, aromatic biryanis, and street-food classics like Chaat.</p>
+                 </div>
+                 <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <h3 class="text-xl font-bold text-[#06D6A0] mb-2">Mumbai</h3>
+                    <p class="text-5xl mb-3">🌶️</p>
+                    <p class="font-semibold">Street Food Fusion</p>
+                    <p class="text-sm text-gray-500">A melting pot of flavors, famous for Vada Pav, Pav Bhaji, and Bhel Puri.</p>
+                 </div>
+                 <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <h3 class="text-xl font-bold text-[#FFD166] mb-2">Kolkata</h3>
+                    <p class="text-5xl mb-3"> मिठाई </p> <!-- Unicode for Sweets -->
+                    <p class="font-semibold">Bengali Sweets & Seafood</p>
+                    <p class="text-sm text-gray-500">Subtle fish curries and legendary sweets like Roshogolla and Sandesh.</p>
+                 </div>
+                 <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <h3 class="text-xl font-bold text-[#FF6B6B] mb-2">Jaipur</h3>
+                     <p class="text-5xl mb-3">🥘</p>
+                    <p class="font-semibold">Royal Rajasthani Thali</p>
+                    <p class="text-sm text-gray-500">Hearty, traditional platters featuring classics like Dal Baati Churma.</p>
+                 </div>
+             </div>
+        </section>
+    </main>
+
+    <footer class="text-center py-8 mt-16 bg-gray-800 text-white">
+        <p>An infographic inspired by the "India's Urban Tapestry" report.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const commonTooltipCallback = {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                  return label.join(' ');
+                                } else {
+                                  return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            
+            const tourismDriversCtx = document.getElementById('tourismDriversChart');
+            if(tourismDriversCtx) {
+                new Chart(tourismDriversCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Historical Sites', 'Cultural Experiences', 'Spiritual Centers', 'Modern Attractions'],
+                        datasets: [{
+                            label: 'Tourism Drivers',
+                            data: [45, 30, 15, 10],
+                            backgroundColor: ['#118AB2', '#06D6A0', '#FFD166', '#FF6B6B'],
+                            borderColor: '#ffffff',
+                            borderWidth: 4,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '60%',
+                        plugins: {
+                             ...commonTooltipCallback.plugins,
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20,
+                                    boxWidth: 15,
+                                    font: { size: 14 }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const architectureCtx = document.getElementById('architectureChart');
+            if(architectureCtx) {
+                new Chart(architectureCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Delhi', 'Mumbai', 'Kolkata', 'Jaipur'],
+                        datasets: [
+                            {
+                                label: 'Mughal & Sultanate Grandeur',
+                                data: [85, 20, 15, 90],
+                                backgroundColor: '#118AB2',
+                                borderRadius: 4,
+                            },
+                            {
+                                label: 'Colonial & Victorian Elegance',
+                                data: [75, 90, 85, 25],
+                                backgroundColor: '#FF6B6B',
+                                borderRadius: 4,
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, max: 100, ticks: { callback: value => value + '%' } },
+                            x: { grid: { display: false } }
+                        },
+                         plugins: {
+                             ...commonTooltipCallback.plugins,
+                            legend: {
+                                position: 'bottom'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Relative Influence Index on Cityscape',
+                                padding: { bottom: 20 },
+                                font: { size: 16, weight: 'normal' }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

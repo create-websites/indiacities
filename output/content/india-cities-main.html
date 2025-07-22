@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide to India's Major Cities</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals & Saffron Orange -->
+    <!-- Application Structure Plan: The SPA is designed as an interactive discovery portal based on the source report. It replaces the linear document structure with a dynamic, user-driven experience. The core architecture is a main navigation hub with four clickable cards (Delhi, Mumbai, Kolkata, Jaipur), leading to a detailed profile view for each city. Within the profile view, a tabbed interface (Identity, Attractions, Culture & Arts) organizes the dense information from the report into digestible sections. This allows users to directly access the content they are most interested in (e.g., food, history) without scrolling through lengthy text, significantly improving usability and engagement. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Comprehensive text on city history, culture, and tourism. Goal -> Organize & Inform. Viz/Presentation -> Interactive Tabbed Profiles. Interaction -> Click-to-load city profiles and click-to-switch tabs. Justification -> A tabbed layout is the most effective method for structuring dense, multi-faceted textual information. It prevents cognitive overload and empowers user-led exploration. Method -> HTML/Tailwind for structure, Vanilla JS for dynamic content switching.
+        - Report Info: Key landmarks and cultural elements (e.g., forts, cuisine, festivals). Goal -> Inform/Categorize. Viz/Presentation -> Styled lists with Unicode icons. Interaction -> Static. Justification -> Icons (e.g., 🏛️, 🍲, 🎉) provide quick visual cues that enhance scannability and make the text more engaging than plain paragraphs. Method -> HTML/CSS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fdfae_f5; color: #4a4a4a; }
+        .nav-card { transition: transform 0.3s, box-shadow 0.3s; }
+        .nav-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .nav-card.active { border-color: #F97316; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(249,115,22,0.2); }
+        .profile-tab { transition: all 0.2s ease-in-out; }
+        .profile-tab.active { background-color: #F97316; color: white; }
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header class="bg-white py-8 shadow-sm">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-tight">India's Urban Tapestry</h1>
+            <p class="mt-3 text-lg text-gray-600 max-w-3xl mx-auto">An interactive guide to the culture, history, and attractions of India's most iconic cities, based on the comprehensive tourism report.</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <section id="city-selector" class="mb-12">
+            <h2 class="text-2xl font-bold text-center text-gray-700 mb-8">Select a City to Explore</h2>
+            <div id="nav-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- City navigation cards will be injected here by JS -->
+            </div>
+        </section>
+
+        <section id="profile-section" class="hidden">
+            <div id="profile-container" class="bg-white rounded-2xl shadow-lg p-6 md:p-10 min-h-[500px]">
+                <!-- City profile content will be injected here by JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center p-6 mt-12">
+        <p class="text-sm text-gray-500">Built from the "India's Urban Tapestry" research report.</p>
+    </footer>
+
+    <script>
+        const appData = {
+            delhi: {
+                name: "Delhi",
+                icon: "🏛️",
+                tagline: "The City of Empires",
+                content: {
+                    identity: `
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Historical Perspective & Cultural Identity</h3>
+                        <p class="mb-4">Delhi's history is a story of resilience, destruction, and rebirth, having served as the capital for numerous powerful empires for over a thousand years. Its earliest architectural relics date back to the Mauryan period (c. 300 BCE). The city was the seat of the Delhi Sultanate and the mighty Mughal Empire, which left an indelible mark on its architecture and culture. Emperor Shah Jahan built the walled city of Shahjahanabad (Old Delhi), including the magnificent Red Fort and Jama Masjid.</p>
+                        <p class="mb-4">Later, the British Raj made Delhi its capital, commissioning architects like Edwin Lutyens to design New Delhi. This layered history has created a city with a unique architectural and cultural duality. Today, Delhi's culture is a vibrant amalgamation of its historical influences, where the grandeur of Mughal courtly life still resonates alongside the dynamism of a modern global metropolis.</p>
+                    `,
+                    attractions: `
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Tourism & Major Attractions</h3>
+                        <ul class="space-y-4">
+                            <li><strong class="text-orange-600">UNESCO World Heritage Sites:</strong> Explore the <span class="font-semibold">Qutub Minar Complex</span> with its towering 13th-century minaret, <span class="font-semibold">Humayun's Tomb</span>, a garden-tomb that inspired the Taj Mahal, and the <span class="font-semibold">Red Fort</span>, the opulent residence of Mughal emperors.</li>
+                            <li><strong class="text-orange-600">Spiritual Sites:</strong> Visit places of worship for multiple faiths, including the serene <span class="font-semibold">Lotus Temple</span> (Baha'i Faith), the vast <span class="font-semibold">Akshardham Temple</span> (Hinduism), and the historic <span class="font-semibold">Jama Masjid</span> (Islam).</li>
+                            <li><strong class="text-orange-600">Museums & Memorials:</strong> The <span class="font-semibold">National Museum</span> houses an extensive collection of Indian art and artifacts, while <span class="font-semibold">India Gate</span> stands as a solemn tribute to Indian soldiers. The <span class="font-semibold">Gandhi Smriti</span> is where Mahatma Gandhi spent his last days.</li>
+                        </ul>
+                    `,
+                    culture: `
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Culture, Arts & Cuisine</h3>
+                         <ul class="space-y-4">
+                            <li><strong class="text-orange-600">🍲 Cuisine:</strong> Delhi is a food lover's paradise, renowned for its rich <span class="font-semibold">Mughlai cuisine</span> (biryanis, kebabs, kormas) and legendary street food. The narrow lanes of <span class="font-semibold">Chandni Chowk</span> are a pilgrimage site for foodies, offering everything from spicy *chaat* to sweet *jalebis*.</li>
+                            <li><strong class="text-orange-600">🎭 Performing Arts:</strong> The city is a major center for classical Indian music and dance, with numerous venues hosting performances. It also has a thriving theatre scene, offering plays in Hindi, English, and other regional languages.</li>
+                        </ul>
+                    `
+                }
+            },
+            mumbai: {
+                name: "Mumbai",
+                icon: "🎬",
+                tagline: "The City of Dreams",
+                content: {
+                    identity: `
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Historical Perspective & Cultural Identity</h3>
+                        <p class="mb-4">Mumbai's history is intrinsically linked to its magnificent natural harbor. Originally an archipelago of seven islands, the British developed it into a major trading port. Ambitious 19th-century land reclamation projects merged the islands into a single landmass, cementing Mumbai's status as a premier global trading hub.</p>
+                        <p class="mb-4">Mumbai's identity is one of relentless energy, ambition, and cosmopolitanism. It is India's financial capital, the heart of its entertainment industry, and a melting pot of cultures from across the subcontinent.</p>
+                    `,
+                    attractions: `
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Tourism & Major Attractions</h3>
+                        <ul class="space-y-4">
+                            <li><strong class="text-orange-600">Iconic Landmarks:</strong> The <span class="font-semibold">Gateway of India</span> is the city's most famous landmark. From here, ferries depart for the <span class="font-semibold">Elephanta Caves</span>, a UNESCO site with rock-cut temples. The Victorian-era <span class="font-semibold">Chhatrapati Shivaji Maharaj Terminus</span> is another stunning UNESCO site.</li>
+                            <li><strong class="text-orange-600">Coastal Life:</strong> <span class="font-semibold">Marine Drive</span>, known as the "Queen's Necklace" for its lights at night, is a must-see. <span class="font-semibold">Juhu Beach</span> and <span class="font-semibold">Chowpatty Beach</span> are famous for their vibrant atmosphere and street food.</li>
+                            <li><strong class="text-orange-600">Spiritual & Cultural Sites:</strong> The <span class="font-semibold">Haji Ali Dargah</span>, a mosque and tomb located on an islet, is a striking sight. The <span class="font-semibold">Siddhivinayak Temple</span> is one of the city's most revered Hindu temples.</li>
+                        </ul>
+                    `,
+                    culture: `
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Culture, Arts & Cuisine</h3>
+                         <ul class="space-y-4">
+                            <li><strong class="text-orange-600">🎬 Bollywood:</strong> Mumbai is the undisputed center of the Hindi film industry. The glamour of cinema is woven into its cultural fabric, and a visit to <span class="font-semibold">Film City</span> offers a glimpse into this world.</li>
+                            <li><strong class="text-orange-600">🎨 Contemporary Arts:</strong> The city has a vibrant contemporary art scene, with numerous galleries in the <span class="font-semibold">Kala Ghoda</span> district showcasing modern Indian artists.</li>
+                            <li><strong class="text-orange-600">🍲 Cuisine:</strong> The city's food is as diverse as its people. Famous street foods include *Vada Pav*, *Pav Bhaji*, and *Bhel Puri*. The culinary scene ranges from historic Irani cafes to high-end modern restaurants.</li>
+                        </ul>
+                    `
+                }
+            },
+            kolkata: {
+                name: "Kolkata",
+                icon: "✍️",
+                tagline: "The Cultural Capital",
+                content: {
+                    identity: `
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Historical Perspective & Cultural Identity</h3>
+                        <p class="mb-4">Kolkata (formerly Calcutta) was the capital of British India from 1772 to 1911. The city grew into the most important commercial and cultural center of the British Empire in Asia. It was the epicenter of the 19th-century Bengal Renaissance, a period of profound social, cultural, and artistic awakening that shaped modern Indian thought.</p>
+                        <p class="mb-4">Today, Kolkata is widely regarded as the cultural and intellectual capital of India. It is a city of poets, artists, filmmakers, and thinkers, with a deep-seated passion for literature, art, and intellectual debate.</p>
+                    `,
+                    attractions: `
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Tourism & Major Attractions</h3>
+                        <ul class="space-y-4">
+                            <li><strong class="text-orange-600">Colonial Architecture:</strong> The <span class="font-semibold">Victoria Memorial</span>, a magnificent white marble monument, is the city's most iconic landmark. The area around <span class="font-semibold">B.B.D. Bagh</span> is filled with impressive colonial-era buildings.</li>
+                            <li><strong class="text-orange-600">Museums & Institutions:</strong> The <span class="font-semibold">Indian Museum</span>, founded in 1814, is the oldest and largest museum in India.</li>
+                            <li><strong class="text-orange-600">Spiritual Sites:</strong> The <span class="font-semibold">Dakshineswar Kali Temple</span> and <span class="font-semibold">Kalighat Temple</span> are important pilgrimage sites. <span class="font-semibold">Belur Math</span> is known for its unique architecture that fuses Hindu, Christian, and Islamic motifs.</li>
+                            <li><strong class="text-orange-600">Unique Experiences:</strong> A ride on the historic <span class="font-semibold">Kolkata Tram</span> or a walk across the iconic <span class="font-semibold">Howrah Bridge</span> are essential experiences.</li>
+                        </ul>
+                    `,
+                    culture: `
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Culture, Arts & Cuisine</h3>
+                         <ul class="space-y-4">
+                            <li><strong class="text-orange-600">✍️ Literary Heritage:</strong> The city was home to Nobel laureate <span class="font-semibold">Rabindranath Tagore</span> and remains a center for literature, hosting the International Kolkata Book Fair.</li>
+                             <li><strong class="text-orange-600">🎉 Festivals:</strong> The grandest festival is <span class="font-semibold">Durga Puja</span>, a five-day celebration where the city transforms into a massive art gallery with elaborate temporary structures (*pandals*).</li>
+                            <li><strong class="text-orange-600">🍲 Cuisine:</strong> Bengali cuisine is famous for its subtle flavors, particularly its fish preparations like *machher jhol* and sweets like *roshogolla* and *sandesh*.</li>
+                        </ul>
+                    `
+                }
+            },
+            jaipur: {
+                name: "Jaipur",
+                icon: "🐘",
+                tagline: "The Pink City of Royalty",
+                content: {
+                    identity: `
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Historical Perspective & Cultural Identity</h3>
+                        <p class="mb-4">Jaipur, the capital of Rajasthan, was founded in 1727 by Maharaja Sawai Jai Singh II and is one of India's first planned cities. In 1876, the city was painted terracotta pink—a color of hospitality—to welcome the Prince of Wales, earning it the moniker "The Pink City."</p>
+                        <p class="mb-4">Jaipur's culture is a vibrant celebration of Rajasthani heritage. It is a UNESCO World Heritage City, recognized for its exceptional urban planning and its living traditions of arts and crafts.</p>
+                    `,
+                    attractions: `
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Tourism & Major Attractions</h3>
+                        <ul class="space-y-4">
+                            <li><strong class="text-orange-600">The Hill Forts:</strong> <span class="font-semibold">Amber Fort (Amer Fort)</span>, a majestic hilltop fortress, is the city's star attraction. <span class="font-semibold">Nahargarh Fort</span> offers stunning panoramic views, while <span class="font-semibold">Jaigarh Fort</span> houses the world's largest cannon on wheels.</li>
+                            <li><strong class="text-orange-600">City Landmarks:</strong> The <span class="font-semibold">City Palace</span> complex is still home to the former royal family. The iconic <span class="font-semibold">Hawa Mahal (Palace of Winds)</span> is a five-story facade with 953 windows. The <span class="font-semibold">Jantar Mantar</span>, another UNESCO site, is an extraordinary collection of 18th-century astronomical instruments.</li>
+                             <li><strong class="text-orange-600">Other Attractions:</strong> The picturesque <span class="font-semibold">Jal Mahal (Water Palace)</span> sits in the middle of Man Sagar Lake.</li>
+                        </ul>
+                    `,
+                    culture: `
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Culture, Arts & Cuisine</h3>
+                         <ul class="space-y-4">
+                             <li><strong class="text-orange-600">🎨 Arts & Crafts:</strong> Jaipur is world-renowned for traditional crafts like <span class="font-semibold">Blue Pottery</span>, gemstones, jewelry (<span class="font-semibold">Kundan and Meenakari</span> work), textiles (<span class="font-semibold">block printing</span>), and leatherwork.</li>
+                            <li><strong class="text-orange-600">🎉 Festivals:</strong> Jaipur hosts the vibrant <span class="font-semibold">Teej Festival</span> and the prestigious <span class="font-semibold">Jaipur Literature Festival</span>.</li>
+                            <li><strong class="text-orange-600">🍲 Cuisine:</strong> A must-try is the traditional Rajasthani thali, featuring dishes like <span class="font-semibold">Dal Baati Churma</span>. The city is also famous for its sweet *ghewar*.</li>
+                        </ul>
+                    `
+                }
+            }
+        };
+
+        const navGrid = document.getElementById('nav-grid');
+        const profileSection = document.getElementById('profile-section');
+        const profileContainer = document.getElementById('profile-container');
+        
+        let activeCityKey = '';
+
+        function renderNavCards() {
+            Object.keys(appData).forEach(key => {
+                const city = appData[key];
+                const card = document.createElement('div');
+                card.id = `nav-${key}`;
+                card.className = 'nav-card bg-white rounded-lg shadow-md p-6 text-center cursor-pointer border-2 border-transparent';
+                card.innerHTML = `
+                    <div class="text-5xl mb-4">${city.icon}</div>
+                    <h3 class="text-2xl font-bold text-gray-800">${city.name}</h3>
+                    <p class="text-gray-500 mt-1">${city.tagline}</p>
+                `;
+                card.onclick = () => showProfile(key);
+                navGrid.appendChild(card);
+            });
+        }
+
+        function showProfile(cityKey) {
+            if (activeCityKey === cityKey) {
+                // If the same city is clicked again, hide the profile
+                profileSection.classList.add('hidden');
+                document.querySelectorAll('.nav-card').forEach(c => c.classList.remove('active'));
+                activeCityKey = '';
+                return;
+            }
+            
+            activeCityKey = cityKey;
+            const city = appData[cityKey];
+
+            // Highlight active nav card
+            document.querySelectorAll('.nav-card').forEach(c => c.classList.remove('active'));
+            document.getElementById(`nav-${cityKey}`).classList.add('active');
+
+            profileContainer.innerHTML = `
+                <div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
+                    <div>
+                        <h2 class="text-4xl font-extrabold text-gray-900">${city.name}</h2>
+                        <p class="text-lg text-gray-500">${city.tagline}</p>
+                    </div>
+                </div>
+
+                <div class="mb-6 border-b border-gray-200">
+                    <nav class="-mb-px flex space-x-2 md:space-x-6 overflow-x-auto" aria-label="Tabs">
+                        <button onclick="switchTab('${cityKey}', 'identity', this)" class="profile-tab active whitespace-nowrap py-3 px-4 font-medium text-sm rounded-t-lg">Identity</button>
+                        <button onclick="switchTab('${cityKey}', 'attractions', this)" class="profile-tab whitespace-nowrap py-3 px-4 font-medium text-sm rounded-t-lg">Attractions</button>
+                        <button onclick="switchTab('${cityKey}', 'culture', this)" class="profile-tab whitespace-nowrap py-3 px-4 font-medium text-sm rounded-t-lg">Culture & Arts</button>
+                    </nav>
+                </div>
+                <div id="profile-content-area" class="text-gray-700 leading-relaxed fade-in">
+                    ${city.content.identity}
+                </div>
+            `;
+            profileSection.classList.remove('hidden');
+            profileContainer.classList.remove('fade-in');
+            void profileContainer.offsetWidth; // Trigger reflow
+            profileContainer.classList.add('fade-in');
+            
+            // Scroll to the profile section smoothly
+            profileSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        function switchTab(cityKey, tabKey, buttonEl) {
+            const city = appData[cityKey];
+            const contentArea = document.getElementById('profile-content-area');
+            
+            document.querySelectorAll('.profile-tab').forEach(b => b.classList.remove('active'));
+            buttonEl.classList.add('active');
+            
+            contentArea.innerHTML = city.content[tabKey];
+            contentArea.classList.remove('fade-in');
+            void contentArea.offsetWidth; // Trigger reflow
+            contentArea.classList.add('fade-in');
+        }
+
+        // Initial Load
+        renderNavCards();
+
+    </script>
+</body>
+</html>

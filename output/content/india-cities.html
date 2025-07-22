@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>India: An Interactive Tourism Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals & Saffron Orange -->
+    <!-- Application Structure Plan: The SPA is designed as an interactive discovery portal for Indian tourism. It begins with a "National Snapshot" to provide macro-level context on the industry's strong recovery and key growth drivers. The core of the app is the "Explore Destinations" section, featuring a filterable grid of cards representing different travel circuits (e.g., Golden Triangle, Spiritual, Nature). Clicking a card dynamically loads a detailed profile of a key city within that circuit, using a tabbed interface (Identity, Attractions, Culinary, Best Time to Visit) to organize information effectively. This structure allows users to explore based on their travel interests rather than a linear report format. The app concludes with a dedicated "Strategic Travel Planner" section, including a comprehensive seasonal guide for major cities. -->
+    <!-- Visualization & Content Choices: 
+    - Tourism Recovery: Report Info -> Foreign Tourist Arrivals & Forex Earnings data 2019-2024. Goal -> Show Change. Viz -> Dual-axis Line & Bar Chart (Chart.js). Interaction -> Hover for details. Justification -> Effectively shows the parallel recovery of visitor volume and economic value.
+    - Top Source Markets: Report Info -> Arrivals by country. Goal -> Compare Composition. Viz -> Donut Chart (Chart.js). Interaction -> Hover for percentages. Justification -> Clearly shows the dominant source markets for international arrivals.
+    - Destination Cards: Report Info -> Key cities and travel circuits. Goal -> Organize/Navigate. Viz -> Interactive Cards (HTML/Tailwind). Interaction -> Click to load profile, filter by circuit type. Justification -> A visually engaging and intuitive hub for exploration based on travel style.
+    - Destination Profiles: Report Info -> Detailed city descriptions. Goal -> Inform/Organize. Viz -> Tabbed Content Area (HTML/JS). Interaction -> Click tabs. Justification -> Best way to present dense, multi-faceted information without overwhelming the user.
+    - Seasonal Guide: Report Info -> Climate data and best travel times. Goal -> Inform/Plan. Viz -> Detailed HTML Table/Matrix. Interaction -> Static reference. Justification -> A clear, scannable format for complex seasonal information across a diverse country.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #FFF8F0; color: #4A4A4A; }
+        .chart-container { position: relative; width: 100%; max-width: 900px; margin-left: auto; margin-right: auto; height: 400px; max-height: 50vh; }
+        .donut-chart-container { position: relative; width: 100%; max-width: 350px; margin: auto; height: 350px; max-height: 350px; }
+        .nav-link { transition: color 0.3s, border-color 0.3s; }
+        .nav-link.active { color: #FF9933; border-bottom-color: #FF9933; }
+        .profile-tab.active { background-color: #D66C00; color: #ffffff; }
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .filter-btn.active { background-color: #FF9933; color: white; border-color: #FF9933;}
+    </style>
+</head>
+<body class="bg-orange-50">
+
+    <header class="bg-[#FFF8F0]/90 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-[#D66C00]">Incredible India: A Guide</h1>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#snapshot" class="nav-link text-gray-600 hover:text-orange-500 border-b-2 border-transparent pb-1" onclick="setActiveLink(this)">Snapshot</a>
+                <a href="#destinations" class="nav-link text-gray-600 hover:text-orange-500 border-b-2 border-transparent pb-1" onclick="setActiveLink(this)">Destinations</a>
+                <a href="#planning" class="nav-link text-gray-600 hover:text-orange-500 border-b-2 border-transparent pb-1" onclick="setActiveLink(this)">Plan Your Trip</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <section id="intro" class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 text-gray-800">An Interactive Guide to India's Tourism</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                This experience transforms a comprehensive tourism report into a dynamic travel planning tool. Discover India's iconic cities, spiritual centers, and natural wonders, and find the perfect time to visit this vibrant and diverse nation.
+            </p>
+        </section>
+
+        <section id="snapshot" class="mb-20">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-800 mb-3">India's Tourism Snapshot</h3>
+                <p class="text-gray-600 max-w-3xl mx-auto">This section provides a high-level overview of India's visitor economy, highlighting its powerful post-pandemic recovery. The data shows a strong rebound in both international arrivals and foreign exchange earnings, signaling a bright future for the sector, further boosted by government initiatives like "Dekho Apna Desh" (See Your Own Country).</p>
+            </div>
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-12">
+                <h4 class="text-2xl font-bold text-center mb-6">Tourism Recovery: Arrivals vs. Earnings</h4>
+                <div class="chart-container">
+                    <canvas id="recoveryChart"></canvas>
+                </div>
+            </div>
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <h4 class="text-2xl font-bold text-center mb-8">Top International Source Markets (2023)</h4>
+                <p class="text-center text-gray-500 mb-6 max-w-2xl mx-auto">The USA and Bangladesh lead in visitor arrivals, highlighting the importance of both long-haul and neighboring markets for India's tourism sector.</p>
+                <div class="donut-chart-container">
+                    <canvas id="marketsChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="destinations" class="mb-20">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-800 mb-3">Explore Destinations by Travel Style</h3>
+                <p class="text-gray-600 max-w-2xl mx-auto">India offers a journey for every traveler. Explore destinations based on what you seek: the iconic history of the Golden Triangle, a spiritual awakening, or an escape into nature.</p>
+                 <div id="filter-container" class="mt-6 inline-flex rounded-md shadow-sm">
+                    <button onclick="filterDestinations('all')" class="filter-btn active px-4 py-2 text-sm font-medium border border-gray-300 rounded-l-lg hover:bg-orange-400 hover:text-white focus:z-10 focus:ring-2 focus:ring-orange-500">All</button>
+                    <button onclick="filterDestinations('historic')" class="filter-btn px-4 py-2 text-sm font-medium border-t border-b border-gray-300 hover:bg-orange-400 hover:text-white focus:z-10 focus:ring-2 focus:ring-orange-500">Golden Triangle</button>
+                    <button onclick="filterDestinations('spiritual')" class="filter-btn px-4 py-2 text-sm font-medium border-gray-300 hover:bg-orange-400 hover:text-white focus:z-10 focus:ring-2 focus:ring-orange-500">Spiritual Journeys</button>
+                    <button onclick="filterDestinations('nature')" class="filter-btn px-4 py-2 text-sm font-medium border-t border-b border-gray-300 rounded-r-lg hover:bg-orange-400 hover:text-white focus:z-10 focus:ring-2 focus:ring-orange-500">Nature & Wellness</button>
+                </div>
+            </div>
+            
+            <div id="destination-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            </div>
+
+            <div id="profile-container" class="mt-16 bg-white rounded-xl shadow-lg p-6 md:p-8 hidden fade-in">
+            </div>
+        </section>
+
+        <section id="planning" class="mb-20">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-800 mb-3">Strategic Travel Planning</h3>
+                 <p class="text-gray-600 max-w-3xl mx-auto">India's climate is incredibly diverse, from the Himalayan north to the tropical south. This guide breaks down the optimal travel times for major regions, helping you avoid monsoon rains and extreme heat to ensure the best possible experience.</p>
+            </div>
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg overflow-x-auto">
+                <h4 class="text-2xl font-bold text-center mb-6">Best Time to Visit - A Seasonal Guide</h4>
+                <table id="seasonal-table" class="w-full text-sm text-left text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-orange-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">Region / City</th>
+                            <th scope="col" class="px-6 py-3">Best Months</th>
+                            <th scope="col" class="px-6 py-3">Weather Profile</th>
+                            <th scope="col" class="px-6 py-3">Key Considerations</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+    <footer class="bg-gray-800 text-white text-center p-6 mt-12">
+        <h4 class="font-bold text-lg mb-4">India's Major Cities: Why People Visit</h4>
+        <div class="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-4 text-xs text-gray-300">
+            <div><strong class="text-white">Delhi:</strong> History & Power</div>
+            <div><strong class="text-white">Mumbai:</strong> Finance & Film</div>
+            <div><strong class="text-white">Kolkata:</strong> Culture & Intellect</div>
+            <div><strong class="text-white">Chennai:</strong> Coast & Tradition</div>
+            <div><strong class="text-white">Bengaluru:</strong> Tech & Gardens</div>
+            <div><strong class="text-white">Hyderabad:</strong> Heritage & Pearls</div>
+            <div><strong class="text-white">Jaipur:</strong> Royalty & Forts</div>
+            <div><strong class="text-white">Agra:</strong> The Taj Mahal</div>
+            <div><strong class="text-white">Varanasi:</strong> Spirituality & Ganges</div>
+            <div><strong class="text-white">Kochi:</strong> Backwaters & Spice</div>
+        </div>
+        <p class="text-xs text-gray-400 mt-6">Data synthesized from "India's Tourism Sector" report. App designed for interactive exploration.</p>
+    </footer>
+
+    <script>
+        const appData = {
+            destinations: {
+                delhi: { name: "Delhi", type: "historic", tagline: "The Heart of the Golden Triangle", content: {
+                    identity: "As the capital of India, Delhi is a sprawling metropolis where ancient history and modern life collide. It serves as the primary gateway for international travelers and the starting point for the famed Golden Triangle circuit. Its identity is a tapestry of empires, from Mughal monuments to the grand colonial architecture of Lutyens' Delhi.",
+                    attractions: `<ul class="list-disc list-inside text-gray-600 space-y-2">
+                            <li><b>Historical Marvels:</b> Explore UNESCO World Heritage sites like Humayun's Tomb, Qutub Minar, and the Red Fort.</li>
+                            <li><b>Old Delhi:</b> Experience the chaotic charm of Chandni Chowk market via a rickshaw ride and visit Jama Masjid, one of India's largest mosques.</li>
+                            <li><b>Spiritual Sites:</b> Visit the serene Lotus Temple (a Baha'i House of Worship) and the vast Akshardham Temple complex.</li>
+                            <li><b>Lutyens' Delhi:</b> Drive past the grand India Gate, Parliament House, and the President's residence (Rashtrapati Bhavan).</li>
+                        </ul>`,
+                    culinary: "Delhi is a paradise for food lovers. It's the undisputed king of North Indian cuisine and street food. Signature dishes include succulent kebabs, rich butter chicken, and chole bhature (spiced chickpeas with fried bread). The street food (chaat) of Chandni Chowk is legendary.",
+                    timing: "The best time to visit is during the cooler, dry months from <strong>October to March</strong>. The weather is pleasant for sightseeing. Avoid the intense heat of summer (Apr-Jun) and the monsoon season (Jul-Sep)."
+                }},
+                agra: { name: "Agra", type: "historic", tagline: "Home of the Taj Mahal", content: {
+                    identity: "Agra's identity is singular and globally renowned: it is the home of the Taj Mahal, the world's most famous monument to love. As a key point on the Golden Triangle, the city is almost entirely geared towards showcasing this UNESCO World Heritage wonder and other remnants of its Mughal past.",
+                    attractions: `<ul class="list-disc list-inside text-gray-600 space-y-2">
+                            <li><b>Taj Mahal:</b> Witness the breathtaking beauty of this white marble mausoleum, especially at sunrise when the light is magical and crowds are smaller.</li>
+                            <li><b>Agra Fort:</b> A massive red sandstone fortress and another UNESCO site, which served as the main residence of Mughal emperors.</li>
+                            <li><b>Itimad-ud-Daulah's Tomb:</b> Often called the 'Baby Taj,' this exquisite tomb is considered a precursor to the Taj Mahal.</li>
+                        </ul>`,
+                    culinary: "Agra is known for its Mughlai cuisine, featuring rich, creamy curries and tandoori dishes. A local specialty is 'Petha,' a translucent soft candy made from ash gourd (winter melon).",
+                    timing: "Like Delhi, the best time to visit is from <strong>October to March</strong>. The clear, cool weather is ideal for viewing the Taj Mahal. A visit during a full moon is particularly special as night viewing is permitted."
+                }},
+                jaipur: { name: "Jaipur", type: "historic", tagline: "The Pink City of Royalty", content: {
+                    identity: "Jaipur, the capital of Rajasthan, is known as the 'Pink City' for the distinctive color of its historic buildings. Its identity is one of royal grandeur, vibrant markets, and magnificent forts and palaces that evoke the splendor of the Rajput maharajas who once ruled the region.",
+                    attractions: `<ul class="list-disc list-inside text-gray-600 space-y-2">
+                            <li><b>Amber Fort (Amer Fort):</b> A stunning hilltop fortress complex blending Hindu and Mughal architecture. An elephant or jeep ride to the top is a popular activity.</li>
+                            <li><b>City Palace:</b> A sprawling complex of courtyards, gardens, and buildings that is still home to the royal family.</li>
+                            <li><b>Hawa Mahal (Palace of Winds):</b> An iconic five-story facade with 953 windows, designed to allow royal women to observe street festivities unseen.</li>
+                            <li><b>Jantar Mantar:</b> A remarkable collection of 19 architectural astronomical instruments and a UNESCO World Heritage site.</li>
+                        </ul>`,
+                    culinary: "Rajasthani cuisine is known for its rich flavors. A must-try is the traditional 'Dal Baati Churma.' Jaipur's street food is also famous, especially its kachoris and sweet ghewar.",
+                    timing: "The ideal time to visit is during the winter months from <strong>October to March</strong>, when the weather is pleasant. The Jaipur Literature Festival in January is a major international event."
+                }},
+                varanasi: { name: "Varanasi", type: "spiritual", tagline: "The Spiritual Capital of India", content: {
+                    identity: "Varanasi, one ofthe world's oldest continuously inhabited cities, is the spiritual heart of Hinduism. Its identity is inextricably linked to the sacred River Ganges. A visit here is an intense, full-sensory experience of life, death, and devotion played out on the city's famous ghats (riverfront steps).",
+                    attractions: `<ul class="list-disc list-inside text-gray-600 space-y-2">
+                            <li><b>Ghats of the Ganges:</b> Take a boat ride at sunrise to witness pilgrims performing morning rituals and prayers.</li>
+                            <li><b>Evening Ganga Aarti:</b> Witness the spectacular, choreographed fire ceremony held every evening at Dashashwamedh Ghat.</li>
+                            <li><b>Manikarnika Ghat:</b> The main cremation ghat, offering a powerful (and for some, confronting) insight into Hindu beliefs about death and rebirth.</li>
+                            <li><b>Sarnath:</b> A short trip from Varanasi, this is the place where the Buddha gave his first sermon. It's a major Buddhist pilgrimage site.</li>
+                        </ul>`,
+                    culinary: "Varanasi offers simple, vegetarian Sattvic food, in line with its spiritual nature. Local specialties include kachori sabzi for breakfast and refreshing lassi served in traditional clay cups (kulhads).",
+                    timing: "The best time to visit is during the cooler, dry winter months from <strong>October to March</strong>. Major festivals like Dev Deepawali (the 'Diwali of the Gods') in November offer a spectacular sight."
+                }},
+                kerala: { name: "Kerala", type: "nature", tagline: "God's Own Country", content: {
+                    identity: "Kerala, a state in Southern India, is known as 'God's Own Country' for its lush, tropical beauty. Its identity is defined by a serene network of palm-fringed backwaters, verdant tea plantations, and a tradition of Ayurvedic wellness, offering a tranquil and rejuvenating escape.",
+                    attractions: `<ul class="list-disc list-inside text-gray-600 space-y-2">
+                            <li><b>Backwaters Cruise:</b> Spend a day or night on a traditional houseboat (kettuvallam), gliding through the tranquil backwaters of Alleppey (Alappuzha).</li>
+                            <li><b>Munnar Tea Gardens:</b> Explore the rolling hills of Munnar, covered in emerald-green tea plantations. Visit a tea factory to learn about the process.</li>
+                            <li><b>Fort Kochi:</b> Discover the historic port city of Kochi, with its iconic Chinese fishing nets and colonial-era architecture.</li>
+                            <li><b>Ayurvedic Retreats:</b> Indulge in traditional Ayurvedic treatments and wellness therapies at one of the many dedicated resorts.</li>
+                        </ul>`,
+                    culinary: "Keralan cuisine is known for its use of coconut, rice, and spices. A traditional 'Sadya' served on a banana leaf is a must-try feast. Fresh seafood is a staple along the coast.",
+                    timing: "The best time to visit is from <strong>September to March</strong>, after the main monsoon season has passed, offering pleasant weather. The monsoon season (Jun-Aug) is the ideal time for Ayurvedic treatments."
+                }},
+            }
+        };
+
+        let recoveryChart, marketsChart;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            initRecoveryChart();
+            initMarketChart();
+            populateDestinations('all');
+            populateSeasonalTable();
+            setActiveLink(document.querySelector('.nav-link'));
+        });
+
+        function setActiveLink(link) {
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+        }
+
+        function initRecoveryChart() {
+            const ctx = document.getElementById('recoveryChart').getContext('2d');
+            recoveryChart = new Chart(ctx, {
+                data: {
+                    labels: ['2019', '2021', '2022', '2023', '2024 (proj)'],
+                    datasets: [{
+                        type: 'bar',
+                        label: 'Forex Earnings (USD $B)',
+                        data: [30.06, 8.79, 16.92, 27.88, 30.0],
+                        backgroundColor: 'rgba(255, 153, 51, 0.6)',
+                        yAxisID: 'y1',
+                    }, {
+                        type: 'line',
+                        label: 'Foreign Arrivals (Millions)',
+                        data: [10.93, 1.52, 6.19, 9.23, 10.0],
+                        borderColor: '#D66C00',
+                        backgroundColor: '#D66C00',
+                        tension: 0.3,
+                        yAxisID: 'y',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { position: 'left', title: { display: true, text: 'Arrivals (Millions)' } },
+                        y1: { position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Earnings (USD $B)' } }
+                    },
+                    plugins: { legend: { position: 'top' } }
+                }
+            });
+        }
+
+        function initMarketChart() {
+            const ctx = document.getElementById('marketsChart').getContext('2d');
+            marketsChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['USA', 'Bangladesh', 'UK', 'Australia', 'Canada'],
+                    datasets: [{ 
+                        label: '% Share of Arrivals',
+                        data: [22.9, 21.4, 9.8, 5.1, 4.5], 
+                        backgroundColor: ['#FF9933', '#FFAA4D', '#FFBB66', '#FFCC80', '#FFDDAA'] 
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+            });
+        }
+
+        function populateDestinations(filter) {
+            const grid = document.getElementById('destination-grid');
+            grid.innerHTML = '';
+            Object.entries(appData.destinations).forEach(([key, dest]) => {
+                if (filter === 'all' || dest.type === filter) {
+                    const card = document.createElement('div');
+                    card.className = `bg-white rounded-lg shadow-md p-6 text-center cursor-pointer transition-transform transform hover:scale-105 fade-in`;
+                    card.setAttribute('onclick', `showProfile('${key}')`);
+                    card.innerHTML = `
+                        <h4 class="text-xl font-bold text-orange-600">${dest.name}</h4>
+                        <p class="text-gray-500 mt-2">${dest.tagline}</p>
+                    `;
+                    grid.appendChild(card);
+                }
+            });
+        }
+
+        function filterDestinations(filter) {
+            populateDestinations(filter);
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.filter-btn[onclick="filterDestinations('${filter}')"]`).classList.add('active');
+        }
+
+        function showProfile(destKey) {
+            const dest = appData.destinations[destKey];
+            if (!dest) return;
+            const container = document.getElementById('profile-container');
+            container.innerHTML = `
+                <h3 class="text-3xl font-bold mb-2 text-gray-800">${dest.name}</h3>
+                <div class="mb-6 border-b border-gray-200">
+                    <nav class="-mb-px flex space-x-2 md:space-x-6 overflow-x-auto" aria-label="Tabs">
+                        <button onclick="switchTab(this, '${destKey}', 'identity')" class="profile-tab active whitespace-nowrap py-3 px-2 md:px-3 border-b-2 font-medium text-sm rounded-t-lg">Identity</button>
+                        <button onclick="switchTab(this, '${destKey}', 'attractions')" class="profile-tab whitespace-nowrap py-3 px-2 md:px-3 border-b-2 font-medium text-sm rounded-t-lg">Attractions</button>
+                        <button onclick="switchTab(this, '${destKey}', 'culinary')" class="profile-tab whitespace-nowrap py-3 px-2 md:px-3 border-b-2 font-medium text-sm rounded-t-lg">Culinary</button>
+                        <button onclick="switchTab(this, '${destKey}', 'timing')" class="profile-tab whitespace-nowrap py-3 px-2 md:px-3 border-b-2 font-medium text-sm rounded-t-lg">Best Time to Visit</button>
+                    </nav>
+                </div>
+                <div id="profile-content" class="text-gray-700 leading-relaxed fade-in">
+                    ${dest.content.identity}
+                </div>
+            `;
+            container.classList.remove('hidden');
+            container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        function switchTab(button, destKey, tabName) {
+            const dest = appData.destinations[destKey];
+            if (!dest.content[tabName]) return;
+            document.querySelectorAll('.profile-tab').forEach(b => b.classList.remove('active'));
+            button.classList.add('active');
+            const contentDiv = document.getElementById('profile-content');
+            contentDiv.innerHTML = dest.content[tabName];
+            contentDiv.classList.remove('fade-in');
+            void contentDiv.offsetWidth;
+            contentDiv.classList.add('fade-in');
+        }
+
+        function populateSeasonalTable() {
+            const tableBody = document.querySelector('#seasonal-table tbody');
+            const seasonalData = [
+                { region: 'North (Delhi, Agra, Jaipur)', months: 'Oct–Mar', weather: 'Cool & Dry', considerations: 'Peak season, pleasant for sightseeing.' },
+                { region: 'Himalayas (Shimla, Leh)', months: 'Mar-Jun (Lower), Jun-Sep (Higher)', weather: 'Pleasant to Cool', considerations: 'Avoid winter snow blockages. Leh is best in summer.' },
+                { region: 'South (Kerala, Chennai)', months: 'Sep–Mar', weather: 'Warm & Less Humid', considerations: 'Avoids the main monsoon (Jun-Aug).' },
+                { region: 'West (Mumbai, Goa)', months: 'Nov–Feb', weather: 'Warm & Dry', considerations: 'Best beach weather, avoids monsoon.' },
+                { region: 'East (Kolkata, Darjeeling)', months: 'Oct–Mar', weather: 'Pleasant & Dry', considerations: 'Ideal for city exploration and clear mountain views.' },
+            ];
+            seasonalData.forEach(item => {
+                const row = `
+                    <tr class="bg-white border-b hover:bg-orange-50">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${item.region}</th>
+                        <td class="px-6 py-4">${item.months}</td>
+                        <td class="px-6 py-4">${item.weather}</td>
+                        <td class="px-6 py-4">${item.considerations}</td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
+    </script>
+</body>
+</html>

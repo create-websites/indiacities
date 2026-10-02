@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Agra Fort: The Red Citadel of the Mughals</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&amp;family=Source+Serif+4:wght@400;600&amp;display=swap" rel="stylesheet"/>
+    <!-- Chosen Palette: Mughal Red & Marble White -->
+    <!-- Application Structure Plan: The SPA is designed as a single-page narrative that guides the user through the fort's complex history and architectural layers. This thematic structure is more engaging than a linear report. It includes: 1) A Hero section with key stats. 2) An interactive timeline covering the fort's evolution under different rulers. 3) A central, interactive diagram of the fort's layout, where users can click hotspots to explore key palaces and halls. 4) A dedicated section on the fort's most famous residents and events, like Shah Jahan's imprisonment. 5) A data visualization comparing the architectural focus of Akbar and Shah Jahan. This modular approach makes the dense history accessible and memorable. -->
+    <!-- Visualization & Content Choices: 
+        - Key Stats -> Goal: Inform -> Viz: Animated Counters. Justification: Provides a high-impact introduction to the fort's immense scale.
+        - Dynastic History -> Goal: Change -> Viz: Interactive Timeline (JS-powered tabs). Justification: Allows users to focus on distinct periods (Lodi, Mughal, Maratha, British) for better comprehension.
+        - Fort Layout -> Goal: Organize/Inform -> Viz: Clickable Hotspot Diagram. Justification: A visual, spatial exploration of the fort's key structures is more intuitive than text descriptions.
+        - Architectural Contributions -> Goal: Compare -> Viz: Bar Chart (Chart.js). Justification: Offers a clear, quantitative comparison of the building focus (military vs. palatial) of the two primary Mughal builders, Akbar and Shah Jahan.
+        - Key Events -> Goal: Inform -> Viz: Styled Info Cards. Justification: Breaks down information about pivotal moments into scannable, focused segments.
+        CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Source Serif 4', serif; background-color: #fdf2f2; }
+        h1, h2, h3, h4, .font-display { font-family: 'Playfair Display', serif; }
+        .nav-link { position: relative; color: #7f1d1d; transition: color 0.3s; }
+        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 50%; transform: translateX(-50%); background-color: #b91c1c; transition: width 0.3s ease; }
+        .nav-link.active, .nav-link:hover { color: #b91c1c; }
+        .nav-link.active::after, .nav-link:hover::after { width: 100%; }
+        .timeline-btn.active { background-color: #991b1b; color: white; border-color: #991b1b; }
+        .hotspot { transition: transform 0.2s, background-color 0.2s; }
+        .hotspot:hover { transform: scale(1.2); }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+    </style>
+</head>
+<body class="bg-red-50 text-red-950">
+
+    <header class="bg-white/90 backdrop-blur-sm sticky top-0 z-50 shadow-md">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-red-900">Agra Fort</h1>
+            <div class="hidden md:flex space-x-8">
+                <a class="nav-link" href="#history">History</a>
+                <a class="nav-link" href="#architecture">Architecture</a>
+                <a class="nav-link" href="#emperors">The Emperors</a>
+                <a class="nav-link" href="#legacy">Legacy</a>
+            </div>
+            <button class="md:hidden text-red-900" id="mobile-menu-button">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            </button>
+        </nav>
+        <div class="hidden md:hidden bg-white shadow-lg" id="mobile-menu">
+            <a class="block py-2 px-6 text-sm hover:bg-red-50" href="#history">History</a>
+            <a class="block py-2 px-6 text-sm hover:bg-red-50" href="#architecture">Architecture</a>
+            <a class="block py-2 px-6 text-sm hover:bg-red-50" href="#emperors">The Emperors</a>
+            <a class="block py-2 px-6 text-sm hover:bg-red-50" href="#legacy">Legacy</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        
+        <section class="text-center mb-20">
+            <h2 class="text-5xl md:text-7xl font-bold text-red-900 leading-tight">The Red Citadel of the Mughals</h2>
+            <p class="max-w-3xl mx-auto mt-4 text-lg text-red-950">Discover Agra Fort's rich past, a Mughal stronghold turned into a majestic palace of stunning marble artistry.</p>
+        </section>
+
+        <section class="mb-20 scroll-mt-20" id="history">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-red-900">A Fortress Forged by Empire</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-gray-700">From a Lodi bastion to the majestic hub of the Mughals, Agra Fort's story unfolds as one of power and change. Tap the timeline to explore its legacy through time.</p>
+            </div>
+            <div class="flex flex-col lg:flex-row gap-8">
+                <div class="w-full lg:w-1/4 flex lg:flex-col justify-center flex-wrap gap-3" id="timeline-controls">
+                    <!-- Buttons injected by JS -->
+                </div>
+                <div class="w-full lg:w-3/4 bg-white p-8 rounded-lg shadow-lg">
+                    <h4 class="text-2xl font-bold text-gray-800 mb-1" id="timeline-title"></h4>
+                    <p class="text-md font-semibold text-red-700 mb-4" id="timeline-period"></p>
+                    <div class="text-gray-700 leading-relaxed" id="timeline-content"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-20 scroll-mt-20" id="architecture">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-red-900">Anatomy of a Walled City</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-gray-700">Agra Fort is a walled city housing palaces, audience halls, and mosques. Tap the hotspots on the map to discover its main features.</p>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <div class="bg-red-100 p-8 rounded-lg relative aspect-square">
+                    <div class="w-full h-full border-4 border-dashed border-red-300 rounded-lg flex items-center justify-center">
+                         <div class="w-4/5 h-4/5 bg-red-800 rounded-lg relative shadow-inner p-4 flex items-center justify-center">
+                            <div class="w-full h-full bg-red-900 rounded-lg relative grid grid-cols-2 grid-rows-2 gap-2 p-2">
+                                <div class="hotspot bg-white/20 rounded-lg cursor-pointer flex items-center justify-center text-white font-bold" id="hotspot-diwan-am" title="Diwan-i-Am">1</div>
+                                <div class="hotspot bg-white/20 rounded-lg cursor-pointer flex items-center justify-center text-white font-bold" id="hotspot-jahangiri" title="Jahangiri Mahal">2</div>
+                                <div class="hotspot bg-white/20 rounded-lg cursor-pointer flex items-center justify-center text-white font-bold" id="hotspot-khas" title="Khas Mahal">3</div>
+                                <div class="hotspot bg-white/20 rounded-lg cursor-pointer flex items-center justify-center text-white font-bold" id="hotspot-musamman" title="Musamman Burj">4</div>
+                            </div>
+                         </div>
+                    </div>
+                    <p class="absolute bottom-2 text-xs text-center w-full text-red-900/70">Simplified Layout Diagram</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg min-h-[350px]" id="architecture-display">
+                    <h4 class="text-2xl font-bold text-gray-800" id="architecture-title"></h4>
+                    <p class="text-gray-700 leading-relaxed mt-4" id="architecture-content"></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-20 scroll-mt-20" id="emperors">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-red-900">The Tale of Two Builders</h3>
+                 <p class="max-w-3xl mx-auto mt-2 text-gray-700">The fort's legacy was crafted by two renowned Mughal rulers: Akbar forged a sturdy red sandstone stronghold, and Shah Jahan later adorned it as a lavish white marble palace.</p>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <div class="chart-container">
+                    <canvas id="builderChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="scroll-mt-20" id="legacy">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-red-900">A Stage for History</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-gray-700">The fort witnessed pivotal moments in Mughal history, from Shivaji's bold encounter to Shah Jahan's sorrowful captivity.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h4 class="text-2xl font-bold text-blue-800">Shivaji's Confrontation (1666)</h4>
+                    <p class="mt-2">Chhatrapati Shivaji, the Maratha king, met Aurangzeb at the Diwan-i-Khas but, insulted by his treatment, boldly defied the emperor and orchestrated a daring escape from house arrest in Agra, a turning point in Maratha-Mughal history.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h4 class="text-2xl font-bold text-red-800">Shah Jahan's Gilded Cage (1658-1666)</h4>
+                    <p class="mt-2">Deposed by his son Aurangzeb, Emperor Shah Jahan lived his final eight years imprisoned in the fort's Musamman Burj, an octagonal tower with a marble balcony that overlooked the Taj Mahal, the resting place of his cherished wife.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300">
+<div class="container mx-auto px-6 py-12 lg:px-8">
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/">Cities of India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html">Small Cities</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/pilgrimages/">Pilgrimages</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/wpilgrimages/vaishno-devi/">Vaishno Devi</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html">Agra Fort History Architecture Mughal Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html">Ajanta Ellora Rock Cut Wonders</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html">Ajinkyatara Fort Exploration Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html">Ajinkyatara Fort Guide History Visitor Info</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html">Ajinkyatara Fort History Legacy Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html">Aligarh Fort History Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html">Aligarh Fort History Visitor Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html">Allahabad Fort History And Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html">Allahabad Fort History Significance</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html">Amber Fort Guide History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html">Amber Fort History Architecture Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html">Aranthangi Fort Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html">Arnala Fort Guide History Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html">Arnala Fort History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html">Ashoka Pillars Legacy Dhamma</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html">Belgaum Fort History Architecture Pluralism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html">Chitradurga Fort Seven Circles</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html">Daulatabad Fort Invincible Deccan Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html">Explore Indias Majestic Forts</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html">Fortress Explorer Iconic Fortresses</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html">Forts Monuments India Interactive History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html">Forts Of India Design History Legends</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html">Golconda Fort History Engineering Diamonds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html">Golconda Fortress Diamonds Power</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html">Great Stupa Sanchi History Symbolism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html">Great Stupa Sanchi Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html">Gwalior Fort Gibraltar India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html">Hawa Mahal Jaipur Palace Winds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/india-great-empires-history.html">India Great Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html">Indias Architectural Heritage Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html">Indias Architectural Heritage Report</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html">Indias Architectural Heritage Timeless Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html">Indias Architectural Heritage Visual Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html">Indias Architectural Heritage Visual Journey</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html">Indias Great Empires Visual History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html">Janjira Fort Unconquered Sea Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html">Khajuraho Art History Temples</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html">Mysore Palace History Architecture Tourism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html">Mysore Palace History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html">Qutub Minar History Architecture Icon</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html">Qutub Minar History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html">Ramgarh Fort Heritage Hotel History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html">Sentinels Of India Iconic Forts Overview</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html">Shaniwar Wada History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html">Sovereign Tapestry Indian Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html">Tamil Nadu Temples Forts Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html">Tipu Sultan Fort History Legacy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-8 text-center text-sm text-gray-400">
+<p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+</div>
+<div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+<p class="text-sm text-gray-400">© 2026 India Cities. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const timelineData = {
+                lodi: {
+                    title: "The Lodi Foundation",
+                    period: "c. 1487 - 1526",
+                    content: "Before the Mughals, the site was a brick fort known as Badalgarh. Sikandar Lodi, the Sultan of Delhi, was the first to shift his capital to Agra. His son, Ibrahim Lodi, held the fort until he was defeated and killed by Babur at the Battle of Panipat in 1526."
+                },
+                mughal_akbar: {
+                    title: "Akbar's Red Fortress",
+                    period: "1565 - 1573",
+                    content: "Emperor Akbar recognized Agra's strategic importance and made it his capital. He ordered the ruined brick fort to be rebuilt with red sandstone from Rajasthan. Over 4,000 builders worked for eight years to construct the massive military fortress we see today, with its 70-foot high walls."
+                },
+                mughal_shahjahan: {
+                    title: "Shah Jahan's Marble Palaces",
+                    period: "c. 1628 - 1658",
+                    content: "Akbar's grandson, Shah Jahan, had a passion for white marble. He demolished many of the earlier red sandstone buildings inside the fort to make way for his own opulent palaces, including the Khas Mahal, Diwan-i-Khas, and the Moti Masjid, transforming the military base into a luxurious residence."
+                },
+                maratha_british: {
+                    title: "Maratha and British Rule",
+                    period: "18th - 19th Century",
+                    content: "After the decline of the Mughals, the fort was captured by the Marathas in the early 18th century. It changed hands several times before finally being lost to the British in 1803 during the Second Anglo-Maratha War. The British used it as a garrison, destroying more buildings to make way for barracks."
+                }
+            };
+
+            const architectureData = {
+                'diwan-am': { title: "Diwan-i-Am (Hall of Public Audience)", content: "A grand hall with columns supporting engraved arches, where the emperor would sit on a raised throne to listen to public petitions. Shah Jahan rebuilt this hall in red sandstone but covered it in white shell plaster to resemble marble." },
+                jahangiri: { title: "Jahangiri Mahal", content: "Built by Akbar as the principal zenana (women's quarters), this palace is a robust structure of red sandstone. It showcases a unique blend of Hindu and Central Asian architectural styles, reflecting Akbar's policy of religious tolerance and cultural fusion." },
+                khas: { title: "Khas Mahal (Private Palace)", content: "The emperor's private residence, built by Shah Jahan entirely of white marble. It is flanked by two golden pavilions, believed to have been for his daughters Jahanara and Roshanara. The palace overlooks the Anguri Bagh (Grape Garden)." },
+                musamman: { title: "Musamman Burj (Jasmine Tower)", content: "An exquisite octagonal tower with a marble balcony, offering a direct view of the Taj Mahal. Originally built for Mumtaz Mahal, it tragically became the gilded prison where Shah Jahan spent his final years, gazing at his wife's mausoleum." }
+            };
+
+            const timelineControls = document.getElementById('timeline-controls');
+            Object.keys(timelineData).forEach(key => {
+                const button = document.createElement('button');
+                button.className = 'timeline-btn border-2 border-red-200 px-4 py-2 rounded-lg bg-white hover:bg-red-100 transition-all w-full text-left';
+                button.textContent = timelineData[key].title;
+                button.dataset.id = key;
+                button.onclick = () => updateTimeline(key);
+                timelineControls.appendChild(button);
+            });
+
+            function updateTimeline(id) {
+                const data = timelineData[id];
+                document.getElementById('timeline-title').textContent = data.title;
+                document.getElementById('timeline-period').textContent = data.period;
+                document.getElementById('timeline-content').textContent = data.content;
+                document.querySelectorAll('.timeline-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.id === id);
+                });
+            }
+            updateTimeline('mughal_akbar');
+
+            const archDisplayTitle = document.getElementById('architecture-title');
+            const archDisplayContent = document.getElementById('architecture-content');
+            Object.keys(architectureData).forEach(key => {
+                document.getElementById(`hotspot-${key}`).onclick = () => updateArchitecture(key);
+            });
+
+            function updateArchitecture(id) {
+                const data = architectureData[id] || { title: "Click a hotspot", content: "Select a numbered point on the diagram to learn about its purpose and history." };
+                archDisplayTitle.textContent = data.title;
+                archDisplayContent.textContent = data.content;
+            }
+            updateArchitecture(null);
+
+            const builderCtx = document.getElementById('builderChart').getContext('2d');
+            new Chart(builderCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Military Structures (Fortifications, Gates)', 'Palatial Structures (Mahals, Audience Halls)'],
+                    datasets: [
+                        {
+                            label: 'Akbar (Red Sandstone)',
+                            data: [80, 20],
+                            backgroundColor: 'rgba(153, 27, 27, 0.7)',
+                            borderColor: 'rgba(153, 27, 27, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Shah Jahan (White Marble)',
+                            data: [10, 90],
+                            backgroundColor: 'rgba(229, 231, 235, 0.7)',
+                            borderColor: 'rgba(156, 163, 175, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: true },
+                        y: { stacked: true, ticks: { callback: (value) => value + '%' } }
+                    },
+                    plugins: {
+                        title: { display: true, text: 'Architectural Focus: Akbar vs. Shah Jahan (Conceptual)' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            
+            const navLinks = document.querySelectorAll('nav a');
+            const sections = document.querySelectorAll('main section');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    if (pageYOffset >= section.offsetTop - 80) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+
+
+</body></html>

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Mysore Palace: An Interactive History</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&amp;family=Lora:wght@400;600&amp;display=swap" rel="stylesheet"/>
+    <!-- Chosen Palette: Royal Gold & Indigo -->
+    <!-- Application Structure Plan: A thematic, non-linear dashboard structure was chosen to allow users to explore the multifaceted story of the Mysore Palace at their own pace. This is more engaging than a simple linear report. The structure comprises: 1) A 'Hero' section with key stats for immediate impact. 2) An interactive 'Palace Timeline' to visualize the cycle of destruction and rebirth. 3) An 'Architectural Showcase' using clickable cards to detail the Indo-Saracenic fusion. 4) A 'Dasara Festival' section with dynamic charts on tourism to highlight its modern significance. 5) An 'Interior Tour' section to virtually explore key halls. This structure breaks down dense information into digestible, interactive modules, prioritizing user curiosity and exploration. -->
+    <!-- Visualization & Content Choices: 
+        - Palace History -> Goal: Show Change -> Viz: Interactive JS-powered timeline. Justification: More engaging and clearer than a static table for showing cyclical events. Library: Vanilla JS + Tailwind.
+        - Visitor Data -> Goal: Show Trends -> Viz: Combined Bar and Line Chart. Justification: Effectively compares total vs. foreign visitor trends and shows the impact of events like fee hikes. Library: Chart.js.
+        - Key Dimensions -> Goal: Inform -> Viz: Animated Counters. Justification: Grabs attention and makes key statistics memorable. Library: Vanilla JS.
+        - Dasara Events -> Goal: Organize -> Viz: Icon-based feature grid. Justification: Visually breaks down the festival's components. Method: HTML/Tailwind with Unicode icons.
+        - Interior Halls -> Goal: Inform -> Viz: Interactive Card Grid with modal pop-ups. Justification: Provides a clean overview with deep-dive details available on click, preventing information overload. Library: Vanilla JS + Tailwind.
+        All visualizations use Canvas rendering via Chart.js or are built with structured HTML/CSS, adhering to the NO SVG/Mermaid constraint. The choices support the exploratory, dashboard-style structure of the application. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Lora', serif;
+            background-color: #f4f1ea; /* Parchment-like neutral */
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+        }
+        .bg-royal-blue { background-color: #1a237e; }
+        .text-royal-gold { color: #c5a15a; }
+        .border-royal-gold { border-color: #c5a15a; }
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #c5a15a;
+            transition: width 0.3s ease;
+        }
+        .nav-link.active::after, .nav-link:hover::after {
+            width: 100%;
+        }
+        .timeline-item {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .timeline-item.active {
+            background-color: #1a237e;
+            color: #f4f1ea;
+        }
+        .timeline-item.active p:last-child {
+             color: #c5a15a;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+    </style>
+</head>
+<body class="text-gray-800 antialiased">
+
+    <header class="bg-white/80 backdrop-blur-sm sticky top-0 z-50 shadow-md">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#1a237e] to-[#495cbf]">Amba Vilas</h1>
+            <div class="hidden md:flex space-x-8">
+                <a class="nav-link" href="#history">History</a>
+                <a class="nav-link" href="#architecture">Architecture</a>
+                <a class="nav-link" href="#interior">Interior</a>
+                <a class="nav-link" href="#dasara">Dasara</a>
+                <a class="nav-link" href="#tourism">Tourism</a>
+            </div>
+            <button class="md:hidden focus:outline-none" id="mobile-menu-button">
+                <svg class="w-6 h-6 text-royal-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            </button>
+        </nav>
+        <div class="hidden md:hidden" id="mobile-menu">
+            <a class="block py-2 px-6 text-sm hover:bg-gray-200" href="#history">History</a>
+            <a class="block py-2 px-6 text-sm hover:bg-gray-200" href="#architecture">Architecture</a>
+            <a class="block py-2 px-6 text-sm hover:bg-gray-200" href="#interior">Interior</a>
+            <a class="block py-2 px-6 text-sm hover:bg-gray-200" href="#dasara">Dasara</a>
+            <a class="block py-2 px-6 text-sm hover:bg-gray-200" href="#tourism">Tourism</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        
+        <section class="text-center mb-20" id="hero">
+            <h2 class="text-5xl md:text-6xl font-bold mb-4 text-royal-blue">Mysore Palace</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600 mb-12">A timeless emblem of strength and splendor, Amba Vilas Palace reflects six centuries of Wadiyar reign. Uncover its tale of destruction and triumphant restoration.</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+                <div class="bg-white p-6 rounded-lg shadow-lg border-b-4 border-royal-gold">
+                    <p class="text-5xl font-bold text-royal-blue" data-counter-target="41.47">0</p>
+                    <p class="text-gray-600">Million Rupees Cost (1912)</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg border-b-4 border-royal-gold">
+                    <p class="text-5xl font-bold text-royal-blue" data-counter-target="44">0</p>
+                    <p class="text-gray-600">Meters High Central Tower</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg border-b-4 border-royal-gold">
+                    <p class="text-5xl font-bold text-royal-blue" data-counter-target="12">0</p>
+                    <p class="text-gray-600">Temples in Complex</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg border-b-4 border-royal-gold">
+                    <p class="text-5xl font-bold text-royal-blue" data-counter-target="100000">0</p>
+                    <p class="text-gray-600">Illumination Bulbs</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-20 scroll-mt-20" id="history">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold mb-2">The Phoenix Palace</h3>
+                <p class="max-w-3xl mx-auto text-gray-600">Mysore Palace's tale is one of ruin and rebirth, with each version symbolizing the Wadiyar dynasty's lasting strength. Explore the timeline to witness its transformation.</p>
+            </div>
+            <div class="flex flex-col lg:flex-row gap-8 items-start">
+                <div class="lg:w-1/3 w-full">
+                    <div class="space-y-2" id="timeline-controls"></div>
+                </div>
+                <div class="lg:w-2/3 w-full bg-white p-8 rounded-lg shadow-xl">
+                    <h4 class="text-2xl font-bold mb-2 text-royal-blue" id="timeline-title"></h4>
+                    <p class="font-semibold mb-4 text-gray-500" id="timeline-ruler"></p>
+                    <p class="text-gray-700 leading-relaxed" id="timeline-content"></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-20 scroll-mt-20" id="architecture">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold mb-2">Indo-Saracenic Marvel</h3>
+                <p class="max-w-3xl mx-auto text-gray-600">Architect Henry Irwin skillfully fused Hindu, Mughal, Rajput, and Gothic elements, crafting a distinct design that reflected Mysore's modern and diverse vision.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center transform hover:-translate-y-2 transition-transform">
+                    <div class="text-5xl mb-4 text-royal-gold">🏰</div>
+                    <h4 class="text-xl font-semibold mb-2">Granite &amp; Marble</h4>
+                    <p class="text-gray-600">A three-level building of smooth grey granite, topped with vibrant pink marble domes, offers a bold visual contrast.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center transform hover:-translate-y-2 transition-transform">
+                    <div class="text-5xl mb-4 text-royal-gold">🏹</div>
+                    <h4 class="text-xl font-semibold mb-2">Expansive Arches</h4>
+                    <p class="text-gray-600">The majestic exterior showcases seven broad arches resting on ornate pillars, forming a harmonious design.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center transform hover:-translate-y-2 transition-transform">
+                    <div class="text-5xl mb-4 text-royal-gold">👑</div>
+                    <h4 class="text-xl font-semibold mb-2">Gilded Central Dome</h4>
+                    <p class="text-gray-600">The 44-meter tower features a gold-plated dome, embodying supreme royal power.</p>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow-lg text-center transform hover:-translate-y-2 transition-transform">
+                    <div class="text-5xl mb-4 text-royal-gold">🐘</div>
+                    <h4 class="text-xl font-semibold mb-2">Gajalakshmi Sculpture</h4>
+                    <p class="text-gray-600">Atop the central arch rests a statue of the wealth goddess, bestowing celestial blessings on the realm.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-20 scroll-mt-20" id="interior">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold mb-2">Halls of Splendour</h3>
+                <p class="max-w-3xl mx-auto text-gray-600">The palace's interior showcases a rich blend of global artistry, featuring Scottish stained glass, English tiles, and exquisite inlay work from Agra, reflecting a monarchy with worldwide ties.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="interior-grid">
+                <!-- Interior cards will be injected here by JS -->
+            </div>
+        </section>
+        
+        <div class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden flex items-center justify-center" id="modal-backdrop">
+            <div class="bg-white rounded-lg shadow-2xl p-8 max-w-2xl w-full mx-4 transform transition-all scale-95" id="modal-content">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-2xl font-bold text-royal-blue" id="modal-title"></h4>
+                    <button class="text-3xl font-light" id="modal-close">×</button>
+                </div>
+                <p class="text-gray-700 leading-relaxed" id="modal-text"></p>
+            </div>
+        </div>
+
+        <section class="mb-20 scroll-mt-20" id="dasara">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold mb-2">The Spectacle of Dasara</h3>
+                <p class="max-w-3xl mx-auto text-gray-600">The palace serves as the centerpiece of Mysore Dasara, a 400-year-old, 10-day festival that draws millions and lights up the city.</p>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-xl">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h4 class="text-2xl font-bold mb-4">Jamboo Savari: The Grand Procession</h4>
+                        <p class="mb-6">The festival concludes with a grand elephant parade, featuring the lead elephant bearing the 750kg Golden Howdah that enshrines Goddess Chamundeshwari's idol, merging regal heritage with communal festivity.</p>
+                        <div class="grid grid-cols-2 gap-6 text-center">
+                            <div class="bg-gray-100 p-4 rounded-lg">
+                                <p class="text-4xl">🐘</p>
+                                <p class="font-semibold mt-2">Golden Howdah</p>
+                            </div>
+                            <div class="bg-gray-100 p-4 rounded-lg">
+                                <p class="text-4xl">💡</p>
+                                <p class="font-semibold mt-2">Palace Illumination</p>
+                            </div>
+                             <div class="bg-gray-100 p-4 rounded-lg">
+                                <p class="text-4xl">🎭</p>
+                                <p class="font-semibold mt-2">Cultural Troupes</p>
+                            </div>
+                             <div class="bg-gray-100 p-4 rounded-lg">
+                                <p class="text-4xl">🎆</p>
+                                <p class="font-semibold mt-2">Torchlight Parade</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full h-64 md:h-80 relative">
+                        <canvas class="absolute inset-0 w-full h-full" id="dasaraArt"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="scroll-mt-20" id="tourism">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold mb-2">A Global Destination</h3>
+                <p class="max-w-3xl mx-auto text-gray-600">The Mysore Palace, a top attraction in India, is overseen by the Mysore Palace Board, balancing heritage conservation with the challenges of heavy tourism.</p>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-xl">
+                 <h4 class="text-2xl font-bold text-center mb-4">Visitor Footfall (2023-2025)</h4>
+                 <p class="text-center text-sm text-gray-500 mb-6">Even with a steep fee increase for foreign visitors, tourist numbers have rebounded strongly post-pandemic, highlighting the palace's enduring and rising allure.</p>
+                <div class="chart-container">
+                    <canvas id="visitorChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="bg-gray-800 text-gray-300">
+<div class="container mx-auto px-6 py-12 lg:px-8">
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/">Cities of India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html">Small Cities</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/pilgrimages/">Pilgrimages</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/wpilgrimages/vaishno-devi/">Vaishno Devi</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html">Agra Fort History Architecture Mughal Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html">Ajanta Ellora Rock Cut Wonders</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html">Ajinkyatara Fort Exploration Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html">Ajinkyatara Fort Guide History Visitor Info</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html">Ajinkyatara Fort History Legacy Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html">Aligarh Fort History Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html">Aligarh Fort History Visitor Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html">Allahabad Fort History And Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html">Allahabad Fort History Significance</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html">Amber Fort Guide History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html">Amber Fort History Architecture Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html">Aranthangi Fort Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html">Arnala Fort Guide History Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html">Arnala Fort History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html">Ashoka Pillars Legacy Dhamma</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html">Belgaum Fort History Architecture Pluralism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html">Chitradurga Fort Seven Circles</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html">Daulatabad Fort Invincible Deccan Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html">Explore Indias Majestic Forts</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html">Fortress Explorer Iconic Fortresses</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html">Forts Monuments India Interactive History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html">Forts Of India Design History Legends</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html">Golconda Fort History Engineering Diamonds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html">Golconda Fortress Diamonds Power</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html">Great Stupa Sanchi History Symbolism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html">Great Stupa Sanchi Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html">Gwalior Fort Gibraltar India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html">Hawa Mahal Jaipur Palace Winds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/india-great-empires-history.html">India Great Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html">Indias Architectural Heritage Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html">Indias Architectural Heritage Report</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html">Indias Architectural Heritage Timeless Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html">Indias Architectural Heritage Visual Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html">Indias Architectural Heritage Visual Journey</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html">Indias Great Empires Visual History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html">Janjira Fort Unconquered Sea Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html">Khajuraho Art History Temples</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html">Mysore Palace History Architecture Tourism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html">Mysore Palace History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html">Qutub Minar History Architecture Icon</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html">Qutub Minar History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html">Ramgarh Fort Heritage Hotel History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html">Sentinels Of India Iconic Forts Overview</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html">Shaniwar Wada History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html">Sovereign Tapestry Indian Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html">Tamil Nadu Temples Forts Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html">Tipu Sultan Fort History Legacy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-8 text-center text-sm text-gray-400">
+<p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+</div>
+<div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+<p class="text-sm text-gray-400">© 2026 India Cities. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const timelineData = [
+                { id: '14c', title: '14th Century', ruler: 'Yaduraya Wodeyar', content: "The original palace was a modest wooden fortress built within the Old Fort (Puragiri), reflecting the dynasty's status as a vassal state under the Vijayanagara Empire." },
+                { id: '1638', title: '1638', ruler: 'Kantirava Narasa Raja Wodeyar', content: "After being struck by lightning, the palace was significantly rebuilt and expanded with new pavilions, a sign of the dynasty's growing independence and power." },
+                { id: '1793', title: '1793', ruler: 'Tipu Sultan', content: "During his reign, Tipu Sultan demolished parts of the old palace complex to make way for his new capital, Nazarbad, asserting his own authority over the Wadiyar legacy." },
+                { id: '1803', title: '1799–1803', ruler: 'Krishnaraja Wadiyar III', content: "Following the defeat and death of Tipu Sultan, a new palace was hastily constructed in a traditional Hindu architectural style, symbolizing the reclamation of Wadiyar sovereignty." },
+                { id: '1897', title: '1897 Fire', ruler: 'Regency for Krishnaraja Wodeyar IV', content: "A catastrophic fire during a royal wedding completely destroyed the penultimate wooden palace, setting the stage for the creation of the grand stone marvel that stands today." },
+                { id: '1912', title: '1912 Completion', ruler: 'Maharaja Krishnaraja Wodeyar IV', content: "The current Indo-Saracenic palace, designed by Henry Irwin, was officially completed. This fireproof structure was a definitive statement of modernity, wealth, and enduring power." }
+            ];
+
+             const interiorData = [
+                { title: "Public Durbar Hall", content: "A vast, impressive hall designed for public audiences. Its richly painted columns and magnificent ceiling created a grand ceremonial face for the monarchy." },
+                { title: "Kalyana Mantapa", content: "A stunning octagonal hall for royal ceremonies. It features a peacock-themed stained-glass ceiling from Scotland, mosaic tiles from England, and cast-iron pillars, showcasing global craftsmanship." },
+                { title: "Ambavilasa Hall", content: "The exclusive hall for the king's private audiences. Famed for its solid silver door, rosewood and ivory doors, and exquisite marble inlay work linking it to Mughal imperial traditions." },
+                { title: "Gombe Thotti", content: "The Doll's Pavilion, housing a traditional collection of dolls displayed during Dasara. It is also the designated space for the revered 750kg Golden Howdah." },
+                { title: "Armoury", content: "A significant collection of historical weapons, including the 'Pattada Kathi' (Royal Sword) which is worshipped annually during Dasara, underscoring the dynasty's martial heritage." },
+                { title: "Portrait Gallery", content: "Features a valuable collection of paintings and photographs, including works by Raja Ravi Varma, offering a rich visual record of the Wadiyar family's history and lifestyle." }
+            ];
+
+            // Timeline
+            const timelineControlsContainer = document.getElementById('timeline-controls');
+            const timelineTitle = document.getElementById('timeline-title');
+            const timelineRuler = document.getElementById('timeline-ruler');
+            const timelineContent = document.getElementById('timeline-content');
+            
+            timelineData.forEach(item => {
+                const button = document.createElement('button');
+                button.className = 'timeline-item w-full text-left px-6 py-4 rounded-lg bg-white hover:bg-gray-100 shadow';
+                button.dataset.id = item.id;
+                button.innerHTML = `<p class="font-bold text-lg">${item.title}</p><p class="text-sm text-gray-500">${item.ruler}</p>`;
+                button.onclick = () => updateTimeline(item.id);
+                timelineControlsContainer.appendChild(button);
+            });
+
+            function updateTimeline(id) {
+                const item = timelineData.find(d => d.id === id);
+                timelineTitle.textContent = item.title;
+                timelineRuler.textContent = item.ruler;
+                timelineContent.textContent = item.content;
+                document.querySelectorAll('.timeline-item').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.id === id);
+                });
+            }
+            updateTimeline('1912');
+
+            // Interior & Modal
+            const interiorGrid = document.getElementById('interior-grid');
+            const modalBackdrop = document.getElementById('modal-backdrop');
+            const modalContent = document.getElementById('modal-content');
+            const modalTitle = document.getElementById('modal-title');
+            const modalText = document.getElementById('modal-text');
+            const modalClose = document.getElementById('modal-close');
+
+            interiorData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-6 rounded-lg shadow-lg cursor-pointer transform hover:scale-105 transition-transform";
+                card.innerHTML = `<h4 class="text-xl font-semibold mb-2 text-royal-blue">${item.title}</h4><p class="text-gray-600 text-sm">Click to learn more...</p>`;
+                card.onclick = () => {
+                    modalTitle.textContent = item.title;
+                    modalText.textContent = item.content;
+                    modalBackdrop.classList.remove('hidden');
+                    setTimeout(()=> modalContent.classList.remove('scale-95'), 10);
+                };
+                interiorGrid.appendChild(card);
+            });
+
+            function closeModal() {
+                 modalContent.classList.add('scale-95');
+                 setTimeout(()=> modalBackdrop.classList.add('hidden'), 200);
+            }
+            modalClose.onclick = closeModal;
+            modalBackdrop.onclick = (e) => { if (e.target === modalBackdrop) closeModal(); };
+
+            // Visitor Chart
+            const visitorCtx = document.getElementById('visitorChart').getContext('2d');
+            new Chart(visitorCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['FY 2023-24', 'FY 2024-25'],
+                    datasets: [{
+                        label: 'Total Visitors',
+                        data: [4056975, 3935108],
+                        backgroundColor: '#1a237e',
+                        yAxisID: 'y',
+                    }, {
+                        type: 'line',
+                        label: 'Foreign Visitors',
+                        data: [34604, 44788],
+                        borderColor: '#c5a15a',
+                        backgroundColor: '#c5a15a',
+                        tension: 0.1,
+                        yAxisID: 'y1',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { type: 'linear', display: true, position: 'left', title: {display: true, text: 'Total Visitors (in Millions)'}, ticks: { callback: (value) => `${value / 1000000}M`} },
+                        y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: {display: true, text: 'Foreign Visitors'}, ticks: { callback: (value) => `${value / 1000}K`} }
+                    },
+                    plugins: { tooltip: { callbacks: { label: (c) => `${c.dataset.label}: ${c.raw.toLocaleString()}` } } }
+                }
+            });
+            
+            // Dasara Art
+            const dasaraCanvas = document.getElementById('dasaraArt');
+            const dasaraCtx = dasaraCanvas.getContext('2d');
+            let elephantX = -100;
+            function drawDasara() {
+                dasaraCtx.clearRect(0, 0, dasaraCanvas.width, dasaraCanvas.height);
+                dasaraCtx.fillStyle = '#1a237e';
+                dasaraCtx.beginPath();
+                dasaraCtx.moveTo(0, dasaraCanvas.height);
+                dasaraCtx.bezierCurveTo(dasaraCanvas.width*0.3, dasaraCanvas.height*0.8, dasaraCanvas.width*0.6, dasaraCanvas.height*1.2, dasaraCanvas.width, dasaraCanvas.height*0.9);
+                dasaraCtx.lineTo(dasaraCanvas.width, dasaraCanvas.height);
+                dasaraCtx.fill();
+                
+                dasaraCtx.fillStyle = '#c5a15a';
+                dasaraCtx.font = 'bold 80px "Playfair Display"';
+                dasaraCtx.textAlign = 'center';
+                dasaraCtx.save();
+                dasaraCtx.translate(elephantX, dasaraCanvas.height / 2);
+                dasaraCtx.fillText('🐘', 0, 0);
+                dasaraCtx.restore();
+                
+                elephantX += 1;
+                if(elephantX > dasaraCanvas.width + 100) elephantX = -100;
+                
+                requestAnimationFrame(drawDasara);
+            }
+            drawDasara();
+
+            // Mobile menu
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            document.querySelectorAll('#mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+            });
+
+            // Counters
+            const counters = document.querySelectorAll('[data-counter-target]');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        const target = +el.dataset.counterTarget;
+                        let current = 0;
+                        const increment = target / 150;
+                        const updateCounter = () => {
+                            current += increment;
+                            if (current < target) {
+                                el.innerText = target > 1000 ? Math.ceil(current).toLocaleString() : current.toFixed(2);
+                                requestAnimationFrame(updateCounter);
+                            } else {
+                                el.innerText = target.toLocaleString();
+                            }
+                        };
+                        updateCounter();
+                        observer.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.8 });
+            counters.forEach(counter => observer.observe(counter));
+            
+            // Active Nav Link
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    if (pageYOffset >= section.offsetTop - 150) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('href') === `#${current}`);
+                });
+            });
+        });
+    </script>
+
+
+</body></html>

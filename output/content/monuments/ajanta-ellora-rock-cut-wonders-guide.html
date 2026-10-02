@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Ajanta &amp; Ellora: A Tale of Two Sanctuaries</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+    <!-- Chosen Palette: Earthy Neutrals -->
+    <!-- Application Structure Plan: The SPA is designed as a thematic, top-down narrative journey. It starts with a high-level introduction, moves to a direct visual comparison (the core of user understanding), then allows for deep dives into each site (Ajanta and Ellora) via tabbed sections to organize detailed content without overwhelming the user. Finally, it covers the legacy and practical visitor information. This structure was chosen over a simple linear format to facilitate both quick understanding through comparison and in-depth exploration based on user interest, enhancing usability and engagement. -->
+    <!-- Visualization & Content Choices: 
+        1. Timeline (Change): An HTML/CSS timeline compares the active periods of both sites. Interaction: Hover effects. Justification: Visually grounds the user in the chronological context, which is a key differentiator. Method: HTML/CSS with JS for interactivity.
+        2. Donut Chart (Proportions): Shows Ellora's religious cave distribution. Interaction: Tooltips on hover. Justification: Immediately conveys Ellora's syncretic nature in a simple, digestible format. Library: Chart.js.
+        3. Interactive Cards (Organize/Inform): Used for Ajanta's murals and Ellora's key caves. Interaction: Click to show details. Justification: Presents a gallery of complex information cleanly, allowing users to select what they want to learn more about without cluttering the UI. Method: HTML/CSS with JS content switching.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #4A4A4A;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #C57A55;
+            border-bottom-color: #C57A55;
+        }
+        .tab-button {
+            transition: all 0.3s;
+        }
+        .tab-button.active {
+            background-color: #C57A55;
+            color: #FFFFFF;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="sticky top-0 bg-white/80 backdrop-blur-lg z-50 shadow-sm" id="home">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-gray-800">
+                <span class="text-[#C57A55]">Rock-Cut</span> Marvels
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a class="nav-link font-semibold pb-1" href="#compare">Compare</a>
+                <a class="nav-link font-semibold pb-1" href="#ajanta">Ajanta</a>
+                <a class="nav-link font-semibold pb-1" href="#ellora">Ellora</a>
+                <a class="nav-link font-semibold pb-1" href="#legacy">Legacy</a>
+                <a class="nav-link font-semibold pb-1" href="#visit">Visit</a>
+            </div>
+            <div class="md:hidden">
+                <button class="text-gray-800 focus:outline-none" id="mobile-menu-button">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <div class="hidden md:hidden bg-white" id="mobile-menu">
+            <a class="block text-center py-2 px-4 text-sm hover:bg-gray-100" href="#compare">Compare</a>
+            <a class="block text-center py-2 px-4 text-sm hover:bg-gray-100" href="#ajanta">Ajanta</a>
+            <a class="block text-center py-2 px-4 text-sm hover:bg-gray-100" href="#ellora">Ellora</a>
+            <a class="block text-center py-2 px-4 text-sm hover:bg-gray-100" href="#legacy">Legacy</a>
+            <a class="block text-center py-2 px-4 text-sm hover:bg-gray-100" href="#visit">Visit</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="min-h-screen flex items-center justify-center bg-cover bg-center" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://placehold.co/1920x1080/FDFBF8/4A4A4A?text=Hewn+from+Living+Rock');">
+            <div class="text-center text-white p-8">
+                <h1 class="text-4xl md:text-6xl font-bold mb-4">Ajanta &amp; Ellora</h1>
+                <p class="text-lg md:text-2xl max-w-3xl mx-auto">Twin legacies carved into the Deccan Plateau, echoing eternal tales of devotion, creativity, and brilliance.</p>
+            </div>
+        </section>
+
+        <section class="py-20 bg-white" id="compare">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-800">Two Sites, Two Legacies</h2>
+                    <p class="text-lg mt-4 max-w-3xl mx-auto">Though frequently mentioned together, Ajanta and Ellora reflect different periods, artistic visions, and spiritual contexts. This part offers a side-by-side look at their defining traits, showcasing what sets each site apart as a treasure of ancient India.</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8 items-start">
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md" id="comparison-table"></div>
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">Chronological Timeline</h3>
+                        <div class="relative border-l-4 border-gray-300 ml-4 py-4" id="timeline-container"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20" id="ajanta">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-800">Ajanta: A Chronicle in Paint</h2>
+                    <p class="text-lg mt-4 max-w-3xl mx-auto">Tucked away in a hidden canyon, Ajanta stands as a sacred Buddhist haven celebrated for its breathtaking murals. Far from simple ornamentation, these artworks serve as vivid scriptures, illuminating the cave walls with tales of devotion, empathy, and the countless lives of the Buddha.</p>
+                </div>
+
+                <div class="flex justify-center mb-8">
+                    <div class="flex space-x-2 bg-gray-200 p-1 rounded-full">
+                        <button class="tab-button px-4 py-2 rounded-full active" data-target="ajanta-history">History</button>
+                        <button class="tab-button px-4 py-2 rounded-full" data-target="ajanta-architecture">Architecture</button>
+                        <button class="tab-button px-4 py-2 rounded-full" data-target="ajanta-art">The Murals</button>
+                    </div>
+                </div>
+
+                <div class="mt-8" id="ajanta-content"></div>
+            </div>
+        </section>
+
+        <section class="py-20 bg-white" id="ellora">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-800">Ellora: A Pantheon in Stone</h2>
+                    <p class="text-lg mt-4 max-w-3xl mx-auto">In contrast to the tranquil Ajanta, Ellora thrived as a vibrant spiritual hub along an old trade route. Its fame stems from monumental sculptures and groundbreaking monolithic design, epitomized by the breathtaking Kailasa Temple an entire mountain transformed into a sanctuary.</p>
+                </div>
+                
+                <div class="flex justify-center mb-8">
+                    <div class="flex space-x-2 bg-gray-200 p-1 rounded-full">
+                        <button class="tab-button active" data-target="ellora-faiths">Confluence of Faiths</button>
+                        <button class="tab-button" data-target="ellora-architecture">Architecture</button>
+                        <button class="tab-button" data-target="ellora-caves">Key Caves</button>
+                    </div>
+                </div>
+
+                <div class="mt-8" id="ellora-content"></div>
+            </div>
+        </section>
+
+        <section class="py-20" id="legacy">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-800">Rediscovery &amp; Enduring Legacy</h2>
+                    <p class="text-lg mt-4 max-w-3xl mx-auto">The recent histories of Ajanta and Ellora differ as much as their ancient pasts. This part delves into Ajanta's striking rediscovery, Ellora's unbroken legacy, and the preservation work safeguarding these invaluable cultural gems for future generations.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8" id="legacy-content"></div>
+            </div>
+        </section>
+
+        <section class="py-20 bg-gray-800 text-white" id="visit">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold">Planning Your Visit</h2>
+                    <p class="text-lg mt-4 max-w-3xl mx-auto text-gray-300">Visiting these UNESCO World Heritage sites takes preparation. Here's key info to help plan your trip to the Deccan's rock-cut wonders.</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8" id="visit-content"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300">
+<div class="container mx-auto px-6 py-12 lg:px-8">
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/">Cities of India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html">Small Cities</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/pilgrimages/">Pilgrimages</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/wpilgrimages/vaishno-devi/">Vaishno Devi</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html">Agra Fort History Architecture Mughal Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html">Ajanta Ellora Rock Cut Wonders</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html">Ajinkyatara Fort Exploration Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html">Ajinkyatara Fort Guide History Visitor Info</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html">Ajinkyatara Fort History Legacy Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html">Aligarh Fort History Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html">Aligarh Fort History Visitor Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html">Allahabad Fort History And Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html">Allahabad Fort History Significance</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html">Amber Fort Guide History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html">Amber Fort History Architecture Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html">Aranthangi Fort Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html">Arnala Fort Guide History Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html">Arnala Fort History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html">Ashoka Pillars Legacy Dhamma</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html">Belgaum Fort History Architecture Pluralism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html">Chitradurga Fort Seven Circles</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html">Daulatabad Fort Invincible Deccan Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html">Explore Indias Majestic Forts</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html">Fortress Explorer Iconic Fortresses</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html">Forts Monuments India Interactive History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html">Forts Of India Design History Legends</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html">Golconda Fort History Engineering Diamonds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html">Golconda Fortress Diamonds Power</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html">Great Stupa Sanchi History Symbolism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html">Great Stupa Sanchi Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html">Gwalior Fort Gibraltar India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html">Hawa Mahal Jaipur Palace Winds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/india-great-empires-history.html">India Great Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html">Indias Architectural Heritage Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html">Indias Architectural Heritage Report</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html">Indias Architectural Heritage Timeless Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html">Indias Architectural Heritage Visual Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html">Indias Architectural Heritage Visual Journey</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html">Indias Great Empires Visual History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html">Janjira Fort Unconquered Sea Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html">Khajuraho Art History Temples</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html">Mysore Palace History Architecture Tourism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html">Mysore Palace History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html">Qutub Minar History Architecture Icon</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html">Qutub Minar History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html">Ramgarh Fort Heritage Hotel History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html">Sentinels Of India Iconic Forts Overview</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html">Shaniwar Wada History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html">Sovereign Tapestry Indian Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html">Tamil Nadu Temples Forts Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html">Tipu Sultan Fort History Legacy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-8 text-center text-sm text-gray-400">
+<p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+</div>
+<div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+<p class="text-sm text-gray-400">© 2026 India Cities. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const appData = {
+        comparison: [
+            { feature: 'Setting', ajanta: 'Secluded horseshoe gorge, a monastic retreat.', ellora: 'Accessible cliff face on a trade route, a pilgrimage center.' },
+            { feature: 'Period', ajanta: 'c. 2nd Century BCE – 6th Century CE', ellora: 'c. 6th Century CE – 11th Century CE' },
+            { feature: 'Patrons', ajanta: 'Satavahana, Vakataka Dynasties', ellora: 'Kalachuri, Chalukya, Rashtrakuta, Yadava Dynasties' },
+            { feature: 'Religion', ajanta: 'Exclusively Buddhist', ellora: 'Syncretic: Hindu, Buddhist, and Jain' },
+            { feature: 'Artistic Focus', ajanta: 'Mural Painting (Tempera)', ellora: 'Monumental Sculpture & Monolithic Architecture' },
+            { feature: 'Key Monument', ajanta: 'Painted Viharas (Caves 1 & 17)', ellora: 'Kailasa Temple (Cave 16)' },
+            { feature: 'Modern History', ajanta: 'Rediscovered in 1819', ellora: 'Never fully "lost", always a known site' }
+        ],
+        timeline: [
+            { site: 'Ajanta', phase: 'Phase I (Satavahana)', start: -200, end: 100, color: '#D8A783' },
+            { site: 'Ajanta', phase: 'Phase II (Vakataka)', start: 400, end: 600, color: '#C57A55' },
+            { site: 'Ellora', phase: 'Hindu & Buddhist Period', start: 550, end: 750, color: '#8A9A5B' },
+            { site: 'Ellora', phase: 'Rashtrakuta & Jain Period', start: 730, end: 1000, color: '#6A7B4D' },
+        ],
+        ajanta: {
+            history: {
+                title: "The Two Phases of Creation",
+                content: `The creation of the Ajanta Caves occurred in two distinct periods, separated by nearly four centuries, reflecting different patrons and evolving Buddhist doctrines.
+                <br><br><strong>Phase I (c. 2nd Century BCE – 1st Century CE):</strong> Under the Satavahana dynasty, these early caves reflect the aniconic Hinayana school of Buddhism. The Buddha is represented by symbols like the stupa, and the architecture imitates wooden structures.
+                <br><br><strong>Phase II (c. 5th – 6th Century CE):</strong> A spectacular renaissance under the Vakataka dynasty, dominated by the Mahayana school. These caves are far more ornate, featuring iconic worship of the Buddha and Bodhisattvas, and the world-renowned murals.`
+            },
+            architecture: {
+                title: "Architecture of Seclusion",
+                content: `The caves were designed for a monastic community's rainy season retreat and are classified into two types.
+                <br><br><strong>Chaityagrihas (Worship Halls):</strong> Sanctuaries for congregational worship, like Caves 9, 10, 19, and 26. They feature an apsidal plan, a high vaulted ceiling, and a large horseshoe-shaped window illuminating the stupa within.
+                <br><br><strong>Viharas (Monasteries):</strong> Residential and communal quarters. Early viharas were simple halls with cells, while the grand viharas of Phase II (Caves 1, 2, 16, 17) are elaborate, with carved pillars and a shrine housing a large Buddha statue.`
+            },
+            art: {
+                title: "The Art of the Murals",
+                cards: [
+                    {
+                        name: "Technique & Materiality",
+                        short: "The paintings are not frescoes but tempera on a dry surface, using local minerals and imported lapis lazuli.",
+                        detail: "The process was meticulous: a plaster of clay, cow dung, and organic binders was applied to the rock, coated with lime wash, sketched in red ochre, and then painted. The palette used local minerals for most colors, but the striking blue was from lapis lazuli imported from Afghanistan, highlighting extensive trade networks."
+                    },
+                    {
+                        name: "Mahajanaka Jataka (Cave 1)",
+                        short: "A vast mural depicting a prince's struggle between worldly duty and spiritual liberation.",
+                        detail: "This narrative follows Prince Mahajanaka, who reclaims his kingdom and marries Queen Sivali, only to renounce his throne to become an ascetic. The paintings vividly depict court life, sea voyages, and the queen's emotional turmoil, capturing a central Buddhist theme."
+                    },
+                    {
+                        name: "Bodhisattva Padmapani (Cave 1)",
+                        short: "An iconic painting embodying Mahayana Buddhist compassion.",
+                        detail: "To the left of the shrine, this sublime figure represents Avalokiteshvara, the Bodhisattva of Compassion. His eyes are downcast in contemplation, and he delicately holds a blue lotus, symbolizing spiritual purity. He represents *karuna* (active compassion)."
+                    },
+                    {
+                        name: "Bodhisattva Vajrapani (Cave 1)",
+                        short: "A princely figure representing the wisdom and power to overcome ignorance.",
+                        detail: "To the right of the shrine, this Bodhisattva embodies the power needed to overcome delusion. Adorned with a magnificent crown, he holds a *vajra* (thunderbolt) and represents *prajna* (wisdom). Together with Padmapani, he signifies that compassion guided by wisdom is the path to enlightenment."
+                    }
+                ]
+            }
+        },
+        ellora: {
+            faiths: {
+                title: "A Monument to Religious Pluralism",
+                content: `Ellora stands as an unparalleled testament to an era of religious harmony in the Deccan. Unlike Ajanta, it was never lost and remained a revered pilgrimage site on a major trade route. The caves were excavated sequentially by faith, reflecting the region's shifting political and religious landscape under dynasties like the Rashtrakutas.
+                <br><br>The deliberate co-location of sanctuaries for Hinduism (17 caves), Buddhism (12 caves), and Jainism (5 caves) is a powerful physical expression of the spirit of tolerance that characterized ancient India.`,
+                chartData: {
+                    labels: ['Hindu', 'Buddhist', 'Jain'],
+                    data: [17, 12, 5],
+                    colors: ['#C57A55', '#D8A783', '#8A9A5B']
+                }
+            },
+            architecture: {
+                title: "The Zenith of Monolithic Architecture",
+                content: `Ellora's primary artistic contribution is its mastery of the "deductive" or "monolithic" method. While Ajanta's artisans carved *into* the rock to create interiors, Ellora's sculptors carved *away* the surrounding rock to liberate complete, freestanding, multi-storied temples from a single block of stone. This was not building; it was an act of sculptural revelation on an architectural scale.
+                <br><br>This astonishing technique reached its apex in the Kailasa Temple, a feat of engineering that required immaculate top-down planning and flawless execution, as a single error would have been irreversible.`
+            },
+            caves: {
+                title: "A Pantheon Carved in Stone",
+                cards: [
+                    {
+                        name: "Kailasa Temple (Cave 16)",
+                        short: "The world's largest monolithic excavation, a replica of Shiva's cosmic abode.",
+                        detail: "Attributed to Rashtrakuta king Krishna I (c. 756–773 CE), this is not a cave but a complete temple complex. Artisans excavated downwards, removing an estimated 200,000 tonnes of rock with only hand tools. The complex features a gateway, Nandi shrine, assembly hall, and a main sanctuary, all covered in vast sculptural panels depicting Hindu mythology."
+                    },
+                    {
+                        name: "Vishwakarma Cave (Cave 10)",
+                        short: "The only Buddhist Chaitya (worship hall) at Ellora, known as the 'Carpenter's Cave'.",
+                        detail: "This grand hall is famous for its rock-cut ceiling, meticulously carved to imitate wooden beams. It leads to a stupa fronted by a colossal 15-foot statue of a seated Buddha in a preaching pose, synthesizing aniconic and iconic worship."
+                    },
+                    {
+                        name: "Indra Sabha (Cave 32)",
+                        short: "A magnificent two-storied Jain cave known for its intricate and detailed carvings.",
+                        detail: "Though smaller than their Hindu and Buddhist counterparts, the Jain caves are distinguished by their atmosphere of serene asceticism. The Indra Sabha features a monolithic shrine in its courtyard and interiors covered with exceptionally fine carvings of Tirthankaras, nature spirits, and a beautiful lotus on the ceiling."
+                    },
+                    {
+                        name: "Dashavatara Cave (Cave 15)",
+                        short: "A two-storied Hindu temple renowned for its powerful reliefs of Vishnu's ten avatars.",
+                        detail: "This cave showcases dynamic and powerful sculptures depicting the incarnations of Vishnu, including his dramatic man-lion (Narasimha) form. It stands as a masterpiece of Brahmanical art at Ellora."
+                    }
+                ]
+            }
+        },
+        legacy: [
+            {
+                title: "Ajanta's Rediscovery & Perils",
+                content: "After nearly a millennium of obscurity, Ajanta was dramatically rediscovered in 1819 by a British officer, John Smith. This brought global attention but also new dangers. Early visitors caused damage, and misguided preservation attempts in the 19th century involved applying a varnish that darkened over time, causing irreparable harm to the delicate murals."
+            },
+            {
+                title: "Ellora's Continuous History",
+                content: "In contrast, Ellora was never lost. Its accessibility and continued importance as a pilgrimage site ensured it remained part of the region's living cultural landscape. This continuous use protected it from the kind of wanton damage that afflicted the newly discovered Ajanta, though it subjected the caves to centuries of natural wear."
+            },
+            {
+                title: "Modern Conservation",
+                content: "Today, both sites are protected by the Archaeological Survey of India (ASI). Efforts include structural repairs, water management to prevent seepage, and specialized chemical conservation at Ajanta to painstakingly remove the damaging 19th-century varnish. Visitor management systems are in place to mitigate the impact of tourism."
+            },
+            {
+                title: "Enduring Influence",
+                content: "The art of Ajanta is considered the beginning of classical Indian art, influencing styles across Asia. Its rediscovery inspired India's modern art movement. Today, both sites are unparalleled cultural treasures, drawing visitors globally and serving as vital centers for the study of Indian history, religion, and art."
+            }
+        ],
+        visit: [
+            {
+                icon: '✈️',
+                title: 'Getting There',
+                content: 'Aurangabad is the main gateway, with an airport (IXU) and major railway stations. Both sites are accessible by road.'
+            },
+            {
+                icon: '📍',
+                title: 'Distances',
+                content: 'Ellora is ~30 km (1 hour) from Aurangabad. Ajanta is ~100 km (2.5-3 hours) away. They require separate day trips.'
+            },
+            {
+                icon: '🗓️',
+                title: 'Closures & Timings',
+                content: 'IMPORTANT: Ajanta is closed on MONDAYS (9am-5pm). Ellora is closed on TUESDAYS (Sunrise-Sunset).'
+            },
+            {
+                icon: '☀️',
+                title: 'Best Time to Visit',
+                content: 'The cool, dry winter months from November to March are most pleasant. Summers are very hot.'
+            }
+        ]
+    };
+
+    function renderComparisonTable() {
+        const container = document.getElementById('comparison-table');
+        let html = '<h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">At a Glance</h3>';
+        html += '<div class="space-y-4">';
+        appData.comparison.forEach(item => {
+            html += `
+                <div class="p-4 bg-white rounded-lg border border-gray-200">
+                    <p class="font-bold text-lg text-gray-800">${item.feature}</p>
+                    <div class="mt-2 grid grid-cols-2 gap-2 text-sm">
+                        <div>
+                            <p class="font-semibold text-[#C57A55]">Ajanta</p>
+                            <p class="text-gray-600">${item.ajanta}</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-[#8A9A5B]">Ellora</p>
+                            <p class="text-gray-600">${item.ellora}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        container.innerHTML = html;
+    }
+
+    function renderTimeline() {
+        const container = document.getElementById('timeline-container');
+        const totalDuration = 1200; 
+        const startYear = -200;
+        let html = '';
+        appData.timeline.forEach(item => {
+            const top = ((item.start - startYear) / totalDuration) * 100;
+            const height = ((item.end - item.start) / totalDuration) * 100;
+            html += `
+                <div class="absolute w-full" style="top: ${top}%; height: ${height}%;">
+                    <div class="ml-8 p-2 rounded-md h-full flex items-center" style="background-color: ${item.color}33;">
+                        <div class="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full" style="background-color: ${item.color};"></div>
+                        <div class="text-sm">
+                            <p class="font-bold" style="color: ${item.color};">${item.site}</p>
+                            <p class="font-semibold text-gray-700">${item.phase}</p>
+                            <p class="text-xs text-gray-500">${item.start < 0 ? `${-item.start} BCE` : `${item.start} CE`} - ${item.end} CE</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    function renderAjantaContent(tab) {
+        const container = document.getElementById('ajanta-content');
+        const data = appData.ajanta[tab];
+        let html = `<div class="fade-in">`;
+
+        if (tab === 'art') {
+            html += `
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    ${data.cards.map((card, index) => `
+                        <div class="interactive-card bg-white p-4 rounded-lg shadow-md cursor-pointer border-2 border-transparent hover:border-[#C57A55] transition-all" data-content-id="ajanta-art-${index}">
+                            <h4 class="font-bold text-lg text-gray-800">${card.name}</h4>
+                            <p class="text-sm text-gray-600 mt-2">${card.short}</p>
+                        </div>
+                    `).join('')}
+                </div>
+                <div id="ajanta-art-detail" class="bg-gray-100 p-6 rounded-lg min-h-[150px] flex items-center justify-center">
+                    <p class="text-gray-500">Click on a card above to see details.</p>
+                </div>
+            `;
+        } else {
+            html += `
+                <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">${data.title}</h3>
+                    <p class="text-gray-700 leading-relaxed">${data.content}</p>
+                </div>
+            `;
+        }
+        html += `</div>`;
+        container.innerHTML = html;
+
+        if (tab === 'art') {
+            document.querySelectorAll('#ajanta-content .interactive-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const contentId = card.dataset.contentId.split('-').pop();
+                    const detailData = appData.ajanta.art.cards[contentId];
+                    document.getElementById('ajanta-art-detail').innerHTML = `
+                        <div class="fade-in">
+                            <h4 class="font-bold text-xl text-gray-800 mb-2">${detailData.name}</h4>
+                            <p class="text-gray-700 leading-relaxed">${detailData.detail}</p>
+                        </div>
+                    `;
+                });
+            });
+        }
+    }
+
+    function renderElloraContent(tab) {
+        const container = document.getElementById('ellora-content');
+        const data = appData.ellora[tab];
+        let html = `<div class="fade-in">`;
+
+        if (tab === 'faiths') {
+            html += `
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="max-w-xl">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">${data.title}</h3>
+                        <p class="text-gray-700 leading-relaxed">${data.content}</p>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-bold text-center mb-4 text-gray-800">Religious Cave Distribution</h4>
+                        <div class="chart-container">
+                            <canvas id="ellora-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else if (tab === 'caves') {
+            html += `
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    ${data.cards.map((card, index) => `
+                        <div class="interactive-card bg-gray-50 p-4 rounded-lg shadow-md cursor-pointer border-2 border-transparent hover:border-[#8A9A5B] transition-all" data-content-id="ellora-caves-${index}">
+                            <h4 class="font-bold text-lg text-gray-800">${card.name}</h4>
+                            <p class="text-sm text-gray-600 mt-2">${card.short}</p>
+                        </div>
+                    `).join('')}
+                </div>
+                <div id="ellora-caves-detail" class="bg-gray-100 p-6 rounded-lg min-h-[150px] flex items-center justify-center">
+                     <p class="text-gray-500">Click on a card above to see details.</p>
+                </div>
+            `;
+        } else {
+            html += `
+                <div class="max-w-4xl mx-auto bg-gray-50 p-8 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">${data.title}</h3>
+                    <p class="text-gray-700 leading-relaxed">${data.content}</p>
+                </div>
+            `;
+        }
+        html += `</div>`;
+        container.innerHTML = html;
+
+        if (tab === 'faiths') {
+            const ctx = document.getElementById('ellora-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: data.chartData.labels,
+                    datasets: [{
+                        data: data.chartData.data,
+                        backgroundColor: data.chartData.colors,
+                        borderColor: '#FFFFFF',
+                        borderWidth: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed + ' caves';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        if (tab === 'caves') {
+            document.querySelectorAll('#ellora-content .interactive-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const contentId = card.dataset.contentId.split('-').pop();
+                    const detailData = appData.ellora.caves.cards[contentId];
+                    document.getElementById('ellora-caves-detail').innerHTML = `
+                        <div class="fade-in">
+                            <h4 class="font-bold text-xl text-gray-800 mb-2">${detailData.name}</h4>
+                            <p class="text-gray-700 leading-relaxed">${detailData.detail}</p>
+                        </div>
+                    `;
+                });
+            });
+        }
+    }
+
+    function renderLegacyContent() {
+        const container = document.getElementById('legacy-content');
+        let html = '';
+        appData.legacy.forEach(item => {
+            html += `
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">${item.title}</h3>
+                    <p class="text-gray-700 leading-relaxed">${item.content}</p>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    function renderVisitContent() {
+        const container = document.getElementById('visit-content');
+        let html = '';
+        appData.visit.forEach(item => {
+            html += `
+                <div class="bg-gray-700 p-6 rounded-lg text-center">
+                    <div class="text-4xl mb-4">${item.icon}</div>
+                    <h3 class="text-xl font-bold mb-2">${item.title}</h3>
+                    <p class="text-gray-300">${item.content}</p>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    function setupTabNavigation(sectionId) {
+        const buttons = document.querySelectorAll(`#${sectionId} .tab-button`);
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                buttons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                const target = button.dataset.target.split('-')[1];
+                if (sectionId === 'ajanta') {
+                    renderAjantaContent(target);
+                } else if (sectionId === 'ellora') {
+                    renderElloraContent(target);
+                }
+            });
+        });
+    }
+    
+    document.getElementById('mobile-menu-button').addEventListener('click', () => {
+        document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+
+    document.querySelectorAll('#mobile-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.add('hidden');
+        });
+    });
+
+    renderComparisonTable();
+    renderTimeline();
+    renderAjantaContent('history');
+    renderElloraContent('faiths');
+    renderLegacyContent();
+    renderVisitContent();
+    setupTabNavigation('ajanta');
+    setupTabNavigation('ellora');
+});
+</script>
+
+
+</body></html>

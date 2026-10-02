@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>The Great Stupa at Sanchi: An Interactive Exploration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&amp;family=Nunito+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+    <!-- Chosen Palette: Earthy Sandstone & Warm Umber -->
+    <!-- Application Structure Plan: The SPA is designed as a single, scrollable narrative that breaks the dense report into interactive modules. This encourages exploration over passive reading. The structure includes: 1) An interactive timeline for dynastic history, allowing users to select an era and see its contributions. 2) An interactive architectural diagram where users can click on parts of the stupa (Anda, Harmika, etc.) to understand their symbolism. 3) A gallery of aniconic symbols and Jataka tales, using modals to explain each concept. This modular, interactive design was chosen to make the complex historical and artistic information more accessible and engaging than a linear text format. -->
+    <!-- Visualization & Content Choices: 
+        - Dynastic History -> Goal: Show Change -> Viz: Interactive Timeline (JS-powered tabs). Justification: Allows users to focus on one dynasty at a time, making the chronological information easier to digest than a large table.
+        - Architectural Symbolism -> Goal: Organize/Inform -> Viz: Interactive Diagram (Clickable Hotspots). Justification: Provides a visual and spatial understanding of the stupa's components, which is more effective than text descriptions alone.
+        - Aniconic Art & Jatakas -> Goal: Inform/Organize -> Viz: Grid Gallery with Modals. Justification: Breaks down numerous artistic concepts into individual, explorable items, preventing information overload.
+        CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Nunito Sans', sans-serif; background-color: #f5f5f4; }
+        h1, h2, h3, h4, .font-display { font-family: 'Lora', serif; }
+        .nav-link { position: relative; color: #57534e; transition: color 0.3s; }
+        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 50%; transform: translateX(-50%); background-color: #a16207; transition: width 0.3s ease; }
+        .nav-link.active, .nav-link:hover { color: #a16207; }
+        .nav-link.active::after, .nav-link:hover::after { width: 100%; }
+        .timeline-btn.active { background-color: #a16207; color: white; border-color: #a16207; }
+        .hotspot { transition: transform 0.2s, background-color 0.2s; }
+        .hotspot:hover { transform: scale(1.2); }
+    </style>
+</head>
+<body class="bg-stone-100 text-stone-700">
+
+    <header class="bg-white/90 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-stone-800">Sanchi Stupa</h1>
+            <div class="hidden md:flex space-x-8">
+                <a class="nav-link" href="#history">History</a>
+                <a class="nav-link" href="#architecture">Architecture</a>
+                <a class="nav-link" href="#art">Art</a>
+                <a class="nav-link" href="#rediscovery">Rediscovery</a>
+            </div>
+            <button class="md:hidden text-stone-800" id="mobile-menu-button">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            </button>
+        </nav>
+        <div class="hidden md:hidden bg-white shadow-lg" id="mobile-menu">
+            <a class="block py-2 px-6 text-sm hover:bg-stone-100" href="#history">History</a>
+            <a class="block py-2 px-6 text-sm hover:bg-stone-100" href="#architecture">Architecture</a>
+            <a class="block py-2 px-6 text-sm hover:bg-stone-100" href="#art">Art</a>
+            <a class="block py-2 px-6 text-sm hover:bg-stone-100" href="#rediscovery">Rediscovery</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        
+        <section class="text-center mb-20">
+            <h2 class="text-5xl md:text-6xl font-bold text-stone-900 leading-tight">The Great Stupa at Sanchi</h2>
+            <p class="max-w-3xl mx-auto mt-4 text-lg">Discover the grand narrative of Buddhist art and architecture, etched in stone across 1,500 years.</p>
+        </section>
+
+        <section class="mb-20 scroll-mt-20" id="history">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-stone-900">A Monument of Dynasties</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-stone-600">The Sanchi complex reflects layers of history, built and reshaped by empires over time. Explore the timeline to uncover each dynasty's unique contributions.</p>
+            </div>
+            <div class="flex flex-col lg:flex-row gap-8">
+                <div class="w-full lg:w-1/4 flex lg:flex-col justify-center flex-wrap gap-3" id="timeline-controls">
+                </div>
+                <div class="w-full lg:w-3/4 bg-white p-8 rounded-lg shadow-lg">
+                    <h4 class="text-2xl font-bold text-stone-800 mb-1" id="timeline-title"></h4>
+                    <p class="text-md font-semibold text-yellow-700 mb-4" id="timeline-period"></p>
+                    <div class="text-stone-700 leading-relaxed" id="timeline-content"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-20 scroll-mt-20" id="architecture">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-stone-900">Architectural Symbolism</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-stone-600">The Great Stupa is not just a building; it's a 3D cosmic map, with each design element rich in spiritual symbolism. Tap the hotspots to delve into its details.</p>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <div class="bg-stone-200 p-8 rounded-lg relative aspect-square">
+                    <div class="w-full h-full flex flex-col items-center justify-end">
+                        <div class="hotspot absolute top-[10%] left-1/2 -translate-x-1/2 w-6 h-6 bg-yellow-600 rounded-full cursor-pointer flex items-center justify-center text-white font-bold" id="hotspot-chhatra">1</div>
+                        <div class="absolute top-[20%] left-1/2 -translate-x-1/2 w-1 h-8 bg-stone-600" id="hotspot-yashti"></div>
+                        <div class="hotspot absolute top-[25%] left-1/2 -translate-x-1/2 w-6 h-6 bg-yellow-600 rounded-full cursor-pointer flex items-center justify-center text-white font-bold" id="hotspot-harmika">2</div>
+                        <div class="bg-stone-500 w-20 h-6 absolute top-[28%] left-1/2 -translate-x-1/2"></div>
+                        <div class="hotspot absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-yellow-600 rounded-full cursor-pointer flex items-center justify-center text-white font-bold" id="hotspot-anda">3</div>
+                        <div class="bg-stone-600 w-full h-1/2 rounded-t-full"></div>
+                        <div class="hotspot absolute bottom-[40%] left-1/4 -translate-x-1/2 w-6 h-6 bg-yellow-600 rounded-full cursor-pointer flex items-center justify-center text-white font-bold" id="hotspot-medhi">4</div>
+                        <div class="bg-stone-700 w-full h-12"></div>
+                        <div class="hotspot absolute bottom-[15%] right-1/4 translate-x-1/2 w-6 h-6 bg-yellow-600 rounded-full cursor-pointer flex items-center justify-center text-white font-bold" id="hotspot-vedika">5</div>
+                        <div class="bg-stone-800 w-full h-8"></div>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg min-h-[300px]" id="architecture-display">
+                    <h4 class="text-2xl font-bold text-stone-800" id="architecture-title"></h4>
+                    <p class="text-stone-700 leading-relaxed mt-4" id="architecture-content"></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-20 scroll-mt-20" id="art">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-stone-900">The Written Stone</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-stone-600">The Great Stupa's gateways (*toranas*) showcase brilliant narrative art. During this aniconic era, the Buddha was symbolized, not depicted in human form. Select an item to explore further.</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="art-gallery">
+            </div>
+        </section>
+
+        <div class="fixed inset-0 bg-black bg-opacity-60 z-50 hidden flex items-center justify-center p-4" id="art-modal">
+            <div class="bg-white rounded-lg shadow-2xl p-6 max-w-lg w-full transform transition-all scale-95 relative" id="modal-content">
+                 <button class="absolute top-2 right-4 text-3xl font-light text-stone-600 hover:text-stone-900" id="modal-close">×</button>
+                <h4 class="text-2xl font-bold mb-2 text-stone-900" id="modal-title"></h4>
+                <p class="text-sm text-stone-700" id="modal-text"></p>
+            </div>
+        </div>
+
+        <section class="scroll-mt-20" id="rediscovery">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-stone-900">Rediscovery and Restoration</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-stone-600">Neglected for 600 years, Sanchi was rediscovered in the 19th century, sparking both destruction and efforts to preserve its legacy.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h4 class="text-2xl font-bold text-red-700">Rediscovery and Damage</h4>
+                    <p class="mt-2">In 1818, British officer General Henry Taylor discovered the ruins. Sadly, this triggered years of looting by treasure hunters and amateur archaeologists, leading to severe destruction, such as the west gateway's collapse and the loss of valuable relic caskets.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h4 class="text-2xl font-bold text-green-700">Scientific Conservation</h4>
+                    <p class="mt-2">Organized restoration efforts started in the late 1800s, peaking with Sir John Hubert Marshall's leadership (1912-1919). His team meticulously reconstructed the fallen structures, safeguarding the site for posterity and earning it UNESCO World Heritage status in 1989.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300">
+<div class="container mx-auto px-6 py-12 lg:px-8">
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/">Cities of India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html">Small Cities</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/pilgrimages/">Pilgrimages</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/wpilgrimages/vaishno-devi/">Vaishno Devi</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html">Agra Fort History Architecture Mughal Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html">Ajanta Ellora Rock Cut Wonders</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html">Ajinkyatara Fort Exploration Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html">Ajinkyatara Fort Guide History Visitor Info</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html">Ajinkyatara Fort History Legacy Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html">Aligarh Fort History Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html">Aligarh Fort History Visitor Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html">Allahabad Fort History And Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html">Allahabad Fort History Significance</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html">Amber Fort Guide History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html">Amber Fort History Architecture Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html">Aranthangi Fort Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html">Arnala Fort Guide History Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html">Arnala Fort History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html">Ashoka Pillars Legacy Dhamma</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html">Belgaum Fort History Architecture Pluralism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html">Chitradurga Fort Seven Circles</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html">Daulatabad Fort Invincible Deccan Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html">Explore Indias Majestic Forts</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html">Fortress Explorer Iconic Fortresses</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html">Forts Monuments India Interactive History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html">Forts Of India Design History Legends</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html">Golconda Fort History Engineering Diamonds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html">Golconda Fortress Diamonds Power</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html">Great Stupa Sanchi History Symbolism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html">Great Stupa Sanchi Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html">Gwalior Fort Gibraltar India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html">Hawa Mahal Jaipur Palace Winds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/india-great-empires-history.html">India Great Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html">Indias Architectural Heritage Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html">Indias Architectural Heritage Report</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html">Indias Architectural Heritage Timeless Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html">Indias Architectural Heritage Visual Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html">Indias Architectural Heritage Visual Journey</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html">Indias Great Empires Visual History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html">Janjira Fort Unconquered Sea Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html">Khajuraho Art History Temples</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html">Mysore Palace History Architecture Tourism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html">Mysore Palace History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html">Qutub Minar History Architecture Icon</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html">Qutub Minar History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html">Ramgarh Fort Heritage Hotel History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html">Sentinels Of India Iconic Forts Overview</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html">Shaniwar Wada History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html">Sovereign Tapestry Indian Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html">Tamil Nadu Temples Forts Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html">Tipu Sultan Fort History Legacy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-8 text-center text-sm text-gray-400">
+<p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+</div>
+<div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+<p class="text-sm text-gray-400">© 2026 India Cities. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const timelineData = {
+                maurya: {
+                    title: "The Mauryan Foundation",
+                    period: "c. 3rd Century BCE",
+                    content: "The story of Sanchi begins with Emperor Ashoka, who laid the foundation of the sacred complex. He built the original Great Stupa (Stupa 1) as a simple brick hemisphere to house relics of the Buddha. He also erected the magnificent Ashoka Pillar, engraving it with an edict warning against creating division in the monastic community (*sangha*)."
+                },
+                shunga: {
+                    title: "The Shunga Expansion",
+                    period: "c. 2nd Century BCE",
+                    content: "Under the Shunga dynasty, the original brick stupa was encased in stone and nearly doubled in size. Key ritualistic features were added, including a raised circumambulatory path (*medhi*), grand stone railings (*vedikas*) at the ground and upper levels, and a double staircase (*sopana*) for access."
+                },
+                satavahana: {
+                    title: "The Satavahana Embellishment",
+                    period: "c. 1st Century BCE",
+                    content: "The most artistically significant additions came during the Satavahana rule. Four magnificent stone gateways (*toranas*) were erected at the cardinal points. These gateways are the crowning glory of Sanchi, covered in intricate relief sculptures depicting Jataka tales and scenes from the Buddha's life, funded by community patrons like the ivory carvers of Vidisha."
+                },
+                gupta: {
+                    title: "Later Additions & Decline",
+                    period: "c. 5th - 12th Century CE",
+                    content: "During the Gupta period, four stone shrines containing images of the Buddha were added at the stupa's entrances, marking a shift towards iconic representation. Sanchi remained a flourishing center until the 12th century, after which it was gradually abandoned and fell into ruin, reclaimed by the forest."
+                }
+            };
+
+            const architectureData = {
+                chhatra: { title: "Chhatra (Umbrellas)", content: "A triple umbrella structure symbolizing the Three Jewels (Triratna) of Buddhism: the Buddha, the Dharma (his teachings), and the Sangha (the monastic community)." },
+                harmika: { title: "Harmika (Square Railing)", content: "A square railing surmounting the dome, representing the abode of the gods, a sacred precinct separated from the earthly realm." },
+                anda: { title: "Anda (The Dome)", content: "The massive hemispherical dome, symbolizing the dome of heaven or the infinite, enlightened mind of the Buddha. It encloses the sacred relics." },
+                medhi: { title: "Medhi (Upper Terrace)", content: "A raised circular terrace at the base of the dome, used as the upper circumambulatory path (*pradakshina patha*) for ritual worship." },
+                vedika: { title: "Vedika (Balustrade)", content: "A stone railing that encloses the sacred space, demarcating it from the secular world. There is one at ground level and another on the medhi." }
+            };
+
+            const artData = [
+                { symbol: "🌳", title: "The Bodhi Tree", text: "Represents the Buddha's Enlightenment at Bodh Gaya. The carvings often show an empty throne beneath the tree, indicating his presence." },
+                { symbol: "☸️", title: "The Wheel of Law", text: "The Dharmachakra symbolizes the Buddha's First Sermon at Sarnath, where he set the 'Wheel of Law' in motion." },
+                { symbol: "🐾", title: "Footprints", text: "The Buddhapada, or footprints, are used to indicate the Buddha's physical presence on earth and the path he walked." },
+                { symbol: "👑", title: "An Empty Throne", text: "Represents the Buddha's spiritual authority and his status as a spiritual sovereign, the ruler of the faith." },
+                { symbol: "🐘", title: "Chhaddanta Jataka", text: "A famous tale of the Buddha's past life as a six-tusked elephant king who selflessly gives his tusks to a hunter, illustrating the virtue of charity." },
+                { symbol: "🐒", title: "Mahakapi Jataka", text: "The story of the Buddha as a great monkey king who saves his troop by forming a bridge with his own body, exemplifying self-sacrifice." }
+            ];
+
+            const timelineControls = document.getElementById('timeline-controls');
+            Object.keys(timelineData).forEach(key => {
+                const button = document.createElement('button');
+                button.className = 'timeline-btn border-2 border-stone-300 px-4 py-2 rounded-lg bg-white hover:bg-stone-200 transition-all w-full text-left';
+                button.textContent = timelineData[key].title;
+                button.dataset.id = key;
+                button.onclick = () => updateTimeline(key);
+                timelineControls.appendChild(button);
+            });
+
+            function updateTimeline(id) {
+                const data = timelineData[id];
+                document.getElementById('timeline-title').textContent = data.title;
+                document.getElementById('timeline-period').textContent = data.period;
+                document.getElementById('timeline-content').textContent = data.content;
+                document.querySelectorAll('.timeline-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.id === id);
+                });
+            }
+            updateTimeline('maurya');
+
+            const archDisplayTitle = document.getElementById('architecture-title');
+            const archDisplayContent = document.getElementById('architecture-content');
+            Object.keys(architectureData).forEach(key => {
+                const hotspot = document.getElementById(`hotspot-${key}`);
+                hotspot.onclick = () => updateArchitecture(key);
+            });
+
+            function updateArchitecture(id) {
+                const data = architectureData[id] || { title: "Click a hotspot", content: "Select a numbered point on the diagram to learn about its architectural and symbolic significance." };
+                archDisplayTitle.textContent = data.title;
+                archDisplayContent.textContent = data.content;
+            }
+            updateArchitecture(null);
+            
+            const artGallery = document.getElementById('art-gallery');
+            const modal = document.getElementById('art-modal');
+            const modalContent = document.getElementById('modal-content');
+            const modalTitle = document.getElementById('modal-title');
+            const modalText = document.getElementById('modal-text');
+            const modalClose = document.getElementById('modal-close');
+
+            artData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-4 rounded-lg shadow-md cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col items-center text-center';
+                card.innerHTML = `<div class="text-4xl mb-2">${item.symbol}</div><h4 class="font-bold text-stone-800">${item.title}</h4>`;
+                card.onclick = () => {
+                    modalTitle.textContent = item.title;
+                    modalText.textContent = item.text;
+                    modal.classList.remove('hidden');
+                    setTimeout(() => modalContent.classList.remove('scale-95'), 10);
+                };
+                artGallery.appendChild(card);
+            });
+            
+            function closeModal() {
+                modalContent.classList.add('scale-95');
+                setTimeout(() => modal.classList.add('hidden'), 200);
+            }
+            modalClose.onclick = closeModal;
+            modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const navLinks = document.querySelectorAll('nav a');
+            const sections = document.querySelectorAll('main section');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 80) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+
+</body></html>

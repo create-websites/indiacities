@@ -1,0 +1,57 @@
+<footer class="bg-gray-800 text-gray-300">
+  <div class="container mx-auto px-6 py-12 lg:px-8">
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/" class="hover:text-white hover:underline transition-colors duration-200">Cities of India</a></li>
+          <li><a href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Small Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+          <li><a href="https://www.indiacities.net/wpilgrimages/vaishno-devi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishno Devi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Folders</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/states/Kerala/" class="hover:text-white hover:underline transition-colors duration-200">Kerala</a></li>
+          <li><a href="https://www.indiacities.net/states/Madhya-Pradesh/" class="hover:text-white hover:underline transition-colors duration-200">Madhya Pradesh</a></li>
+          <li><a href="https://www.indiacities.net/states/Maharashtra/" class="hover:text-white hover:underline transition-colors duration-200">Maharashtra</a></li>
+          <li><a href="https://www.indiacities.net/states/Manipur/" class="hover:text-white hover:underline transition-colors duration-200">Manipur</a></li>
+          <li><a href="https://www.indiacities.net/states/Meghalaya/" class="hover:text-white hover:underline transition-colors duration-200">Meghalaya</a></li>
+          <li><a href="https://www.indiacities.net/states/Mizoram/" class="hover:text-white hover:underline transition-colors duration-200">Mizoram</a></li>
+          <li><a href="https://www.indiacities.net/states/Nagaland/" class="hover:text-white hover:underline transition-colors duration-200">Nagaland</a></li>
+          <li><a href="https://www.indiacities.net/states/Odisha/" class="hover:text-white hover:underline transition-colors duration-200">Odisha</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/" class="hover:text-white hover:underline transition-colors duration-200">Photos And Comments</a></li>
+          <li><a href="https://www.indiacities.net/states/Punjab/" class="hover:text-white hover:underline transition-colors duration-200">Punjab</a></li>
+          <li><a href="https://www.indiacities.net/states/Rajasthan/" class="hover:text-white hover:underline transition-colors duration-200">Rajasthan</a></li>
+          <li><a href="https://www.indiacities.net/states/Sikkim/" class="hover:text-white hover:underline transition-colors duration-200">Sikkim</a></li>
+          <li><a href="https://www.indiacities.net/states/Tamil Nadu/" class="hover:text-white hover:underline transition-colors duration-200">Tamil Nadu</a></li>
+          <li><a href="https://www.indiacities.net/states/Telangana/" class="hover:text-white hover:underline transition-colors duration-200">Telangana</a></li>
+          <li><a href="https://www.indiacities.net/states/Tripura/" class="hover:text-white hover:underline transition-colors duration-200">Tripura</a></li>
+          <li><a href="https://www.indiacities.net/states/Uttar-Pradesh/" class="hover:text-white hover:underline transition-colors duration-200">Uttar Pradesh</a></li>
+          <li><a href="https://www.indiacities.net/states/Uttarakhand/" class="hover:text-white hover:underline transition-colors duration-200">Uttarakhand</a></li>
+          <li><a href="https://www.indiacities.net/states/West-Bengal/" class="hover:text-white hover:underline transition-colors duration-200">West Bengal</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+      <p class="text-sm text-gray-400">&copy; 2026 India Cities. All rights reserved.</p>
+      
+    </div>
+
+  </div>
+</footer>

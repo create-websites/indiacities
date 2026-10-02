@@ -1,0 +1,59 @@
+<footer class="bg-gray-800 text-gray-300">
+  <div class="container mx-auto px-6 py-12 lg:px-8">
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/" class="hover:text-white hover:underline transition-colors duration-200">Cities of India</a></li>
+          <li><a href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Small Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+          <li><a href="https://www.indiacities.net/wpilgrimages/vaishno-devi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishno Devi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/dussehra-in-california-community-celebrations-and-ramlila.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In California Community Celebrations And Ramlila</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/dussehra-in-dubai-and-the-uae.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Dubai And The Uae</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/dussehra-in-london-ramlila-and-community-celebrations.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In London Ramlila And Community Celebrations</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/dussehra-in-new-jersey-temples-ramlila-and-community-events.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In New Jersey Temples Ramlila And Community Events</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/dussehra-in-seattle-and-the-pacific-northwest.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Seattle And The Pacific Northwest</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/dussehra-in-singapore-indian-community-celebrations.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Singapore Indian Community Celebrations</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/dussehra-in-texas-dallas-houston-and-austin-celebrations.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Texas Dallas Houston And Austin Celebrations</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/dussehra-in-toronto-and-the-gta.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Toronto And The Gta</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/dussehra-in-vancouver-and-surrey.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Vancouver And Surrey</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/dussehra-vs-diwali-meaning-stories-and-traditions-compared.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Vs Diwali Meaning Stories And Traditions Compared</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/dussehra-vs-durga-puja-regional-traditions-compared.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Vs Durga Puja Regional Traditions Compared</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/dussehra-vs-navratri-what-is-the-difference.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Vs Navratri What Is The Difference</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/dussehra-vs-onam-two-different-indian-cultural-traditions.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Vs Onam Two Different Indian Cultural Traditions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/how-dussehra-helps-diaspora-families-teach-children-about-indian-traditions.html" class="hover:text-white hover:underline transition-colors duration-200">How Dussehra Helps Diaspora Families Teach Children About Indian Traditions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/how-dussehra-is-celebrated-in-australia.html" class="hover:text-white hover:underline transition-colors duration-200">How Dussehra Is Celebrated In Australia</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/how-dussehra-is-celebrated-in-canada.html" class="hover:text-white hover:underline transition-colors duration-200">How Dussehra Is Celebrated In Canada</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/how-dussehra-is-celebrated-in-the-united-kingdom.html" class="hover:text-white hover:underline transition-colors duration-200">How Dussehra Is Celebrated In The United Kingdom</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/how-dussehra-is-celebrated-in-the-united-states.html" class="hover:text-white hover:underline transition-colors duration-200">How Dussehra Is Celebrated In The United States</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/how-indian-families-celebrate-dussehra-abroad.html" class="hover:text-white hover:underline transition-colors duration-200">How Indian Families Celebrate Dussehra Abroad</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/vijayadashami-vs-dasara-vs-dussehra-names-and-regional-usage.html" class="hover:text-white hover:underline transition-colors duration-200">Vijayadashami Vs Dasara Vs Dussehra Names And Regional Usage</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+      <p class="text-sm text-gray-400">&copy; 2026 India Cities. All rights reserved.</p>
+      
+    </div>
+
+  </div>
+</footer>

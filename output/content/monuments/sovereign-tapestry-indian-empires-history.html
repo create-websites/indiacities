@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>The Sovereign Tapestry: An Interactive History of Indian Empires</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+    <!-- Chosen Palette: Earthy Harmony -->
+    <!-- Application Structure Plan: The SPA is designed around a central, interactive timeline, acting as the primary navigation hub. This non-linear, "hub-and-spoke" model encourages exploration and comparison, which is more engaging than a simple linear reading of the report. Users can select an empire from the timeline to view its detailed information, which is organized into logical tabs (Overview, Governance, Culture, Conflicts). This structure breaks down dense information into manageable chunks. Additionally, a "Comparative View" section allows users to directly contrast empires based on key metrics like longevity and administrative models, fulfilling the goal of synthesizing information. This design was chosen to transform the passive reading experience of the report into an active, exploratory journey, making the complex history more accessible and understandable. -->
+    <!-- Visualization & Content Choices: Report Info: Dynasty reign periods -> Goal: Compare longevity & historical overlap -> Viz/Presentation: Interactive horizontal bar chart (Timeline) & vertical bar chart (Duration) -> Interaction: Click on timeline to select an empire; hover on charts for tooltips -> Justification: Visualizing timelines makes complex chronological data intuitive. Bar charts are excellent for direct comparison. -> Library/Method: Chart.js (Canvas). Report Info: Administrative structures (Mansabdari, Nayankara) -> Goal: Explain complex hierarchies -> Viz/Presentation: HTML/CSS diagrams using flexbox -> Interaction: Clickable elements reveal detailed text -> Justification: Simple, clean diagrams are more effective than text-only descriptions for structural concepts. -> Library/Method: HTML/CSS. Report Info: Inter-kingdom conflicts -> Goal: Show relationships -> Viz/Presentation: Interactive HTML table -> Interaction: Click rows for details -> Justification: Tables are ideal for structured, multi-faceted data. -> Library/Method: HTML/JS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF6;
+            color: #403D39;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        .comparison-chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 45vh;
+        }
+        .nav-button.active {
+            background-color: #A87E6F;
+            color: #FDFBF6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        .tab-button.active {
+            border-color: #A87E6F;
+            background-color: #A87E6F;
+            color: #FDFBF6;
+        }
+        .content-card {
+            background-color: #fff;
+            border: 1px solid #EAE0D5;
+            transition: all 0.3s ease;
+        }
+        .content-card h3 {
+            color: #A87E6F;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center mb-8 md:mb-12">
+            <h1 class="text-3xl md:text-5xl font-bold text-[#A87E6F] mb-2">The Sovereign Tapestry</h1>
+            <p class="text-lg md:text-xl text-gray-600">An Interactive Journey Through India's Empires</p>
+        </header>
+
+        <main>
+            <section class="mb-12" id="timeline-view">
+                <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-lg border border-gray-200">
+                    <h2 class="text-2xl font-bold text-center mb-1 text-[#A87E6F]">Imperial Timeline</h2>
+                    <p class="text-center text-gray-600 mb-4 max-w-3xl mx-auto">This chart maps the rise and decline of key Indian empires. Tap any bar to dive into its history, culture, and lasting impact.</p>
+                    <div class="chart-container">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-12 min-h-[500px]" id="content-display">
+                <div class="text-center p-8 bg-white rounded-2xl shadow-lg border border-gray-200" id="welcome-content">
+                    <h2 class="text-2xl font-bold text-[#A87E6F] mb-4">Select an Empire to Begin</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto">Explore the interactive timeline to uncover a dynasty's history, or switch to 'Comparative View' to examine these great powers together.</p>
+                </div>
+            </section>
+
+            <nav class="flex justify-center mb-8">
+                <button class="nav-button active text-lg font-semibold py-3 px-6 rounded-full shadow-md transition-all duration-300 mx-2 bg-white hover:bg-gray-100" id="nav-empires">Empire Details</button>
+                <button class="nav-button text-lg font-semibold py-3 px-6 rounded-full shadow-md transition-all duration-300 mx-2 bg-white hover:bg-gray-100" id="nav-comparison">Comparative View</button>
+            </nav>
+
+            <section class="hidden" id="comparison-view">
+                 <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-lg border border-gray-200">
+                    <h2 class="text-2xl font-bold text-center mb-1 text-[#A87E6F]">Comparative Analysis</h2>
+                    <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">This part offers a side-by-side look at the empires, examining their reign lengths, governance styles, and military tactics.</p>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="content-card rounded-xl p-6 shadow-md">
+                            <h3 class="text-xl font-bold mb-4 text-center">Reign Duration Comparison (Years)</h3>
+                            <div class="comparison-chart-container">
+                                <canvas id="durationChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="content-card rounded-xl p-6 shadow-md">
+                            <h3 class="text-xl font-bold mb-4 text-center">Models of the State</h3>
+                            <p class="text-gray-600 mb-6 text-center">Every empire crafted distinct governance systems to oversee its lands. Here's a brief overview of their main administrative frameworks.</p>
+                            <div class="space-y-4" id="admin-comparison-content">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        <footer class="bg-gray-800 text-gray-300">
+<div class="container mx-auto px-6 py-12 lg:px-8">
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/">Cities of India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html">Small Cities</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/pilgrimages/">Pilgrimages</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/wpilgrimages/vaishno-devi/">Vaishno Devi</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html">Agra Fort History Architecture Mughal Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html">Ajanta Ellora Rock Cut Wonders</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html">Ajinkyatara Fort Exploration Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html">Ajinkyatara Fort Guide History Visitor Info</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html">Ajinkyatara Fort History Legacy Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html">Aligarh Fort History Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html">Aligarh Fort History Visitor Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html">Allahabad Fort History And Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html">Allahabad Fort History Significance</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html">Amber Fort Guide History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html">Amber Fort History Architecture Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html">Aranthangi Fort Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html">Arnala Fort Guide History Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html">Arnala Fort History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html">Ashoka Pillars Legacy Dhamma</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html">Belgaum Fort History Architecture Pluralism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html">Chitradurga Fort Seven Circles</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html">Daulatabad Fort Invincible Deccan Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html">Explore Indias Majestic Forts</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html">Fortress Explorer Iconic Fortresses</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html">Forts Monuments India Interactive History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html">Forts Of India Design History Legends</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html">Golconda Fort History Engineering Diamonds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html">Golconda Fortress Diamonds Power</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html">Great Stupa Sanchi History Symbolism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html">Great Stupa Sanchi Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html">Gwalior Fort Gibraltar India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html">Hawa Mahal Jaipur Palace Winds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/india-great-empires-history.html">India Great Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html">Indias Architectural Heritage Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html">Indias Architectural Heritage Report</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html">Indias Architectural Heritage Timeless Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html">Indias Architectural Heritage Visual Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html">Indias Architectural Heritage Visual Journey</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html">Indias Great Empires Visual History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html">Janjira Fort Unconquered Sea Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html">Khajuraho Art History Temples</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html">Mysore Palace History Architecture Tourism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html">Mysore Palace History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html">Qutub Minar History Architecture Icon</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html">Qutub Minar History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html">Ramgarh Fort Heritage Hotel History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html">Sentinels Of India Iconic Forts Overview</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html">Shaniwar Wada History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html">Sovereign Tapestry Indian Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html">Tamil Nadu Temples Forts Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html">Tipu Sultan Fort History Legacy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-8 text-center text-sm text-gray-400">
+<p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+</div>
+<div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+<p class="text-sm text-gray-400">© 2026 India Cities. All rights reserved.</p>
+</div>
+</div>
+</footer></main>
+    </div>
+
+    <script>
+        const empireData = {
+            pallavas: { name: "Pallavas", period: "c. 275–897 CE", start: 275, end: 897, color: '#E9C46A',
+                summary: "The Pallavas emerged as a formidable power in the southern Deccan, pioneering the grand tradition of Dravidian stone architecture from their capital at Kanchipuram. Their reign was marked by a fierce rivalry with the Chalukyas, which paradoxically fueled immense artistic innovation.",
+                rulers: [
+                    { name: "Simhavishnu", period: "c. 575–600 CE", note: "Founder of the imperial line, defeated the Kalabhras." },
+                    { name: "Mahendravarman I", period: "c. 600–630 CE", note: "Pioneered rock-cut temple architecture." },
+                    { name: "Narasimhavarman I 'Mamalla'", period: "c. 630–668 CE", note: "Captured the Chalukyan capital, earning the title 'Vatapikonda'." },
+                    { name: "Narasimhavarman II 'Rajasimha'", period: "c. 695–722 CE", note: "Shifted to building large structural temples like the Shore Temple." },
+                ],
+                governance: "The Pallavas ran a monarchy with divine kingship, using titles like *Maharajadhiraja*. The administration was centralized but allowed for significant local autonomy through village assemblies (*Sabha* and *Ur*), which managed local affairs like irrigation and justice.",
+                economy: "The economy was agrarian, with rice and cotton as major products. Land grants to Brahmins (*Brahmadeya*) and temples (*Devadana*) were crucial for expanding cultivation. They had robust maritime trade with Southeast Asia and China through ports like Mamallapuram.",
+                culture: "Their greatest legacy is Dravidian architecture, evolving from Mahendra-style rock-cut halls to Mamalla-style monolithic *rathas*, and finally to Rajasimha-style structural temples. Kanchipuram became a major center of Sanskrit learning.",
+                conflicts: "The defining conflict was the centuries-long Pallava-Chalukya rivalry over the Krishna-Tungabhadra doab, which spurred competitive temple construction and military innovation."
+            },
+            chalukyas: { name: "Chalukyas", period: "c. 543–1189 CE", start: 543, end: 1189, color: '#F4A261',
+                summary: "For over six centuries, the Chalukyas dominated the Deccan plateau, creating a golden age in Karnataka's history. Ruling as three distinct dynasties, they acted as a cultural bridge between north and south, creating the unique Vesara architectural style.",
+                rulers: [
+                    { name: "Pulakeshin II", period: "c. 610–642 CE", note: "Defeated Emperor Harsha, expanding the empire to its peak." },
+                    { name: "Vikramaditya II", period: "c. 733–744 CE", note: "Avenged earlier defeats by overrunning the Pallava capital, Kanchi." },
+                    { name: "Tailapa II", period: "c. 973–997 CE", note: "Revived Chalukya power, establishing the Western Chalukya dynasty." },
+                    { name: "Vikramaditya VI", period: "c. 1076–1126 CE", note: "Greatest Western Chalukya king; started his own 'Chalukya Vikrama Era'." },
+                ],
+                governance: "Their administration was modeled on Magadhan and Satavahana systems, dividing the empire into provinces (*Maharashtrakas*) and districts (*Vishaya*). They maintained a powerful, well-organized army and navy, known as the *Karnatakabala*.",
+                economy: "Based on agriculture and trade. They minted high-quality gold coins (*gadyana*) and silver coins. Merchant guilds and local assemblies managed local economic affairs.",
+                culture: "Their most enduring legacy is the Vesara architectural style, a synthesis of northern Nagara and southern Dravida styles. Key sites include Aihole, Badami, and the UNESCO site of Pattadakal. They also patronized Kannada and Telugu literature.",
+                conflicts: "Engaged in constant warfare with the Pallavas to the south and later the Rashtrakutas. The Western Chalukyas fought a century-long, devastating war with the Cholas for control of the Deccan."
+            },
+            rashtrakutas: { name: "Rashtrakutas", period: "c. 753–982 CE", start: 753, end: 982, color: '#E76F51',
+                summary: "Rising from feudatory status, the Rashtrakutas established a formidable empire from their capital at Manyakheta. Their ambitions were pan-Indian, leading them into the 'Tripartite Struggle' for Kannauj in the north while simultaneously battling for supremacy in the south.",
+                rulers: [
+                    { name: "Dantidurga", period: "c. 735–756 CE", note: "Founder of the empire, overthrew his Chalukya overlords." },
+                    { name: "Govinda III", period: "c. 793–814 CE", note: "The dynasty's greatest military commander, his influence stretched across India." },
+                    { name: "Amoghavarsha I", period: "c. 814–878 CE", note: "A great patron of literature, co-authored the Kannada classic *Kavirajamarga*." },
+                    { name: "Krishna III", period: "c. 939–967 CE", note: "Defeated the Cholas at the Battle of Takkolam, expanding the empire southwards." },
+                ],
+                governance: "A hierarchical administration with provinces (*Rashtra*) and districts (*Vishaya*). Their military was strong enough to fight on two fronts simultaneously, a testament to their power but also a source of strategic overstretch.",
+                economy: "Land revenue was the primary source of income. They were patrons of Kannada literature and language.",
+                culture: "The zenith of Indian rock-cut architecture was achieved under their patronage with the creation of the magnificent Kailasa temple at Ellora, a monolithic marvel carved from a single rock cliff.",
+                conflicts: "Their history is defined by the three-way 'Tripartite Struggle' against the Pratiharas and Palas for control of North India. In the south, they fought the Pallavas, Eastern Chalukyas, and the rising Cholas."
+            },
+            cholas: { name: "Cholas", period: "c. 848–1279 CE", start: 848, end: 1279, color: '#2A9D8F',
+                summary: "One of the longest-ruling dynasties in world history, the Imperial Cholas created a powerful thalassocracy (a sea-based empire). From the Kaveri delta, they dominated the Indian Ocean trade, projecting their military and cultural power across Southeast Asia.",
+                rulers: [
+                    { name: "Rajaraja I", period: "c. 985–1014 CE", note: "A military genius who built the Brihadishvara Temple and conducted a massive land survey." },
+                    { name: "Rajendra I", period: "c. 1012–1044 CE", note: "Led an expedition to the Ganga, conquered Sri Lanka, and launched naval campaigns against the Srivijaya empire." }
+                ],
+                governance: "A highly sophisticated system of 'decentralized centralism'. The emperor held supreme power, but villages had remarkable autonomy through local self-governing assemblies (*Sabha* and *Ur*), a system detailed in the Uttaramerur inscriptions.",
+                economy: "A dual-engine economy based on highly productive agriculture (supported by advanced irrigation) and domination of maritime trade routes. Temples were central economic institutions, acting as landowners, employers, and banks.",
+                culture: "Perfected the Dravidian style of temple architecture with massive temples at Thanjavur and Gangaikonda Cholapuram. They are globally renowned for their exquisite lost-wax bronze sculptures, especially the iconic Shiva as Nataraja.",
+                conflicts: "Fought extensive wars with the Western Chalukyas for control of the Deccan. Their powerful navy was unique among Indian empires, enabling overseas conquests and control of trade."
+            },
+            ahom: { name: "Ahom", period: "1228–1826 CE", start: 1228, end: 1826, color: '#264653',
+                summary: "For nearly 600 years, the Ahom kingdom thrived in the Brahmaputra Valley, creating one of India's longest and most resilient dynasties. They famously repelled repeated invasions by the mighty Mughal Empire through brilliant guerrilla and naval warfare.",
+                rulers: [
+                    { name: "Sukaphaa", period: "1228–1268 CE", note: "Tai prince who founded the kingdom, emphasizing assimilation over conquest." },
+                    { name: "Lachit Borphukan", period: "General, d. 1672", note: "Legendary general who led the Ahoms to a decisive victory against the Mughals at the Battle of Saraighat (1671)." }
+                ],
+                governance: "The state was built on the *Paik system*, a non-cash corvee labor system where every adult male (*paik*) rendered service to the state. This system organized the population into a massive militia and labor force, making the kingdom self-reliant and militarily strong.",
+                economy: "A non-monetized economy based on the *Paik* system and advanced wet-rice cultivation. The state mobilized labor, not cash, for public works and defense.",
+                culture: "The Ahoms had a unique tradition of writing detailed historical chronicles called *Buranjis*. They gradually adopted Hinduism and the Assamese language, but left a legacy of unique secular architecture like the Rang Ghar amphitheater.",
+                conflicts: "Their most celebrated conflict was the long and successful resistance against Mughal expansionism, culminating in the Battles of Saraighat (1671) and Itakhuli (1682), which secured Assam's independence."
+            },
+            vijayanagara: { name: "Vijayanagara", period: "1336–1646 CE", start: 1336, end: 1646, color: '#F4A261',
+                summary: "Founded in response to the invasions of the Delhi Sultanate, the Vijayanagara Empire rose as a formidable Hindu bulwark in South India. For over two centuries, it fostered a period of cultural reconstruction from its magnificent capital, a cosmopolitan hub of global trade.",
+                rulers: [
+                    { name: "Harihara I & Bukka Raya I", period: "1336–1377 CE", note: "The two brothers who founded the empire." },
+                    { name: "Krishna Deva Raya", period: "1509–1529 CE", note: "The empire's greatest ruler, a brilliant military strategist and a great patron of art and literature." }
+                ],
+                governance: "The state was a 'war state' built on the *Nayankara system*, a military-feudal framework where commanders (*nayakas*) held land in exchange for maintaining troops for the emperor. This was effective for mobilization but created powerful, semi-independent lords.",
+                economy: "Exceptionally prosperous, with a thriving trade in diamonds, spices, and textiles. They controlled over 300 ports and imported Arabian horses, crucial for their military. The capital city was renowned for its immense wealth.",
+                culture: "Vijayanagara architecture is a grand fusion of South Indian styles, seen in the magnificent ruins of Hampi (a UNESCO site). The era was a golden age for Telugu, Kannada, and Tamil literature, especially under Krishna Deva Raya.",
+                conflicts: "Engaged in constant conflict with the Bahmani Sultanate and its successors. The empire was shattered after a catastrophic defeat by an alliance of Deccan Sultanates at the Battle of Talikota in 1565, leading to the sacking of the capital."
+            },
+            mughals: { name: "Mughals", period: "1526–1857 CE", start: 1526, end: 1857, color: '#E76F51',
+                summary: "The Mughal Empire was one of the most brilliant and powerful epochs in Indian history. At its zenith, it controlled almost the entire subcontinent, governed by a sophisticated, centralized bureaucracy and leaving an unparalleled legacy of Indo-Persian art and architecture.",
+                rulers: [
+                    { name: "Babur", period: "1526–1530 CE", note: "Founder of the empire; won the First Battle of Panipat using gunpowder firearms." },
+                    { name: "Akbar", period: "1556–1605 CE", note: "The greatest Mughal emperor, known for his administrative genius and policy of religious tolerance." },
+                    { name: "Shah Jahan", period: "1628–1658 CE", note: "His reign was the golden age of Mughal architecture; commissioned the Taj Mahal." },
+                    { name: "Aurangzeb", period: "1658–1707 CE", note: "Expanded the empire to its greatest extent but his orthodox policies and ruinous Deccan wars initiated its decline." },
+                ],
+                governance: "A highly centralized bureaucracy based on the *Mansabdari* and *Jagirdari* systems. Officials (*mansabdars*) were given ranks and paid with temporary land revenue assignments (*jagirs*), preventing the rise of a hereditary nobility and ensuring loyalty to the emperor.",
+                economy: "Immense wealth came from a standardized land revenue system (*Zabt* system). Political unification fostered a vast common market and thriving commerce. At its peak, it was one of the wealthiest empires in the world.",
+                culture: "Created a magnificent cultural synthesis of Persian and Indian traditions. Mughal architecture (Taj Mahal, Red Fort) and miniature painting are world-renowned, used as instruments of imperial ideology and prestige.",
+                conflicts: "After Aurangzeb's death, the empire declined due to weak rulers, internal rebellions (especially by the Marathas), and external invasions (Nader Shah's sack of Delhi in 1739)."
+            },
+            british: { name: "British Raj", period: "1757–1947", start: 1757, end: 1947, color: '#2A9D8F',
+                summary: "The British presence evolved from a trading company into a vast colonial empire. The British Raj introduced a modern, bureaucratic state but reoriented the economy for extraction, profoundly reshaping the subcontinent and inadvertently sparking a powerful independence movement.",
+                rulers: [
+                    { name: "Robert Clive", period: "Battle of Plassey, 1757", note: "His victory established East India Company's territorial control." },
+                    { name: "Queen Victoria", period: "Proclaimed Empress, 1877", note: "Symbolized the shift from Company rule to the direct rule of the British Crown after 1858." },
+                    { name: "Mahatma Gandhi", period: "Leader, 20th Century", note: "Led the mass movement for independence through nonviolent civil disobedience." }
+                ],
+                governance: "A modern, colonial bureaucracy governed by a Viceroy and the Indian Civil Service (ICS). It combined direct rule over 'British India' with paramountcy over 500+ 'Princely States'.",
+                economy: "A contested legacy. The British built extensive railways, telegraphs, and canals, but these primarily served to export raw materials and import British goods. Critics argue this led to the 'de-industrialization' of India and devastating famines.",
+                culture: "The British introduced English education and Western political ideas of democracy and liberty, which ironically helped foster a pan-Indian nationalist identity among a new educated class.",
+                conflicts: "The 'Sepoy Mutiny' of 1857 was a massive uprising against Company rule, leading to its dissolution and the start of the direct British Raj. The 20th century was defined by the nonviolent struggle for independence led by the Indian National Congress."
+            }
+        };
+
+        const adminSystems = [
+            { name: "Chola Decentralized Centralism", detail: "A strong central monarchy that delegated significant power to autonomous local village assemblies (*Sabhas*), creating a balance of central control and local investment." },
+            { name: "Vijayanagara Military Feudalism", detail: "The *Nayankara* system granted land to military chiefs (*nayakas*) in exchange for troops. Effective for war but created powerful lords who could challenge the king." },
+            { name: "Mughal Centralized Bureaucracy", detail: "The *Mansabdari/Jagirdari* system created a loyal, non-hereditary bureaucracy paid with temporary land grants, ensuring immense central control under a strong emperor." },
+            { name: "Ahom Corporate State", detail: "The *Paik* system organized all adult males into a state service corps for both military and labor needs, creating a self-sufficient, non-monetized state." },
+            { name: "British Colonial Bureaucracy", detail: "An impersonal, rule-based system (the 'Steel Frame' of the ICS) designed for efficient administration and economic extraction for the benefit of Britain." }
+        ];
+
+        let timelineChart, durationChart;
+        let activeEmpire = null;
+
+        const renderEmpireContent = (empireId) => {
+            const empire = empireData[empireId];
+            if (!empire) return;
+
+            const content = `
+                <div id="${empireId}-content" class="bg-white p-4 sm:p-8 rounded-2xl shadow-lg border border-gray-200 animate-fade-in">
+                    <div class="text-center mb-6">
+                        <h2 class="text-3xl font-bold text-[${empire.color}]">${empire.name}</h2>
+                        <p class="text-lg text-gray-500 font-semibold">${empire.period}</p>
+                        <p class="mt-2 max-w-3xl mx-auto text-gray-700">${empire.summary}</p>
+                    </div>
+
+                    <div class="mb-6 border-b border-gray-200">
+                        <nav class="flex flex-wrap -mb-px justify-center" aria-label="Tabs">
+                            <button class="tab-button active w-1/2 md:w-auto text-center border-b-2 font-medium px-4 py-3 transition-colors duration-200" data-tab="overview">Overview & Rulers</button>
+                            <button class="tab-button w-1/2 md:w-auto text-center border-b-2 font-medium px-4 py-3 transition-colors duration-200" data-tab="governance">Governance & Economy</button>
+                            <button class="tab-button w-1/2 md:w-auto text-center border-b-2 font-medium px-4 py-3 transition-colors duration-200" data-tab="culture">Culture & Legacy</button>
+                            <button class="tab-button w-1/2 md:w-auto text-center border-b-2 font-medium px-4 py-3 transition-colors duration-200" data-tab="conflicts">Key Conflicts</button>
+                        </nav>
+                    </div>
+
+                    <div id="tab-content">
+                        <div id="overview-tab" class="tab-panel">
+                            <h3 class="text-xl font-bold mb-4 text-[#A87E6F]">Key Rulers</h3>
+                            <ul class="space-y-3">
+                                ${empire.rulers.map(r => `
+                                    <li class="p-3 bg-gray-50 rounded-lg">
+                                        <p class="font-semibold text-gray-800">${r.name} <span class="font-normal text-gray-500">(${r.period})</span></p>
+                                        <p class="text-gray-600">${r.note}</p>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                        <div id="governance-tab" class="tab-panel hidden">
+                             <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h3 class="text-xl font-bold mb-2 text-[#A87E6F]">Governance</h3>
+                                    <p class="text-gray-700 leading-relaxed">${empire.governance}</p>
+                                </div>
+                                 <div>
+                                    <h3 class="text-xl font-bold mb-2 text-[#A87E6F]">Economy</h3>
+                                    <p class="text-gray-700 leading-relaxed">${empire.economy}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="culture-tab" class="tab-panel hidden">
+                            <h3 class="text-xl font-bold mb-2 text-[#A87E6F]">Culture & Legacy</h3>
+                            <p class="text-gray-700 leading-relaxed">${empire.culture}</p>
+                        </div>
+                        <div id="conflicts-tab" class="tab-panel hidden">
+                            <h3 class="text-xl font-bold mb-2 text-[#A87E6F]">Key Conflicts</h3>
+                            <p class="text-gray-700 leading-relaxed">${empire.conflicts}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('content-display').innerHTML = content;
+
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.dataset.tab;
+                    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.add('hidden'));
+                    document.getElementById(`${tabId}-tab`).classList.remove('hidden');
+                });
+            });
+        };
+        
+        const renderAdminComparison = () => {
+            const container = document.getElementById('admin-comparison-content');
+            const content = adminSystems.map(system => `
+                <div class="p-4 bg-gray-50 rounded-lg">
+                    <p class="font-semibold text-gray-800">${system.name}</p>
+                    <p class="text-gray-600">${system.detail}</p>
+                </div>
+            `).join('');
+            container.innerHTML = content;
+        };
+
+        const createTimelineChart = () => {
+            const ctx = document.getElementById('timelineChart').getContext('2d');
+            const data = {
+                labels: Object.values(empireData).map(e => e.name),
+                datasets: [{
+                    label: 'Reign Period',
+                    data: Object.values(empireData).map(e => [e.start, e.end]),
+                    backgroundColor: Object.values(empireData).map(e => e.color),
+                    borderColor: Object.values(empireData).map(e => e.color),
+                    borderWidth: 1,
+                    borderSkipped: false,
+                }]
+            };
+            timelineChart = new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            min: 200,
+                            max: 2000,
+                            title: { display: true, text: 'Year (CE)' }
+                        },
+                        y: {
+                            ticks: { autoSkip: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const empire = Object.values(empireData)[context.dataIndex];
+                                    return `${empire.name}: ${empire.period}`;
+                                }
+                            }
+                        }
+                    },
+                    onClick: (e) => {
+                        const points = timelineChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
+                        if (points.length) {
+                            const firstPoint = points[0];
+                            const empireId = Object.keys(empireData)[firstPoint.index];
+                            activeEmpire = empireId;
+                            renderEmpireContent(empireId);
+                            document.getElementById('timeline-view').scrollIntoView({ behavior: 'smooth' });
+
+                            timelineChart.data.datasets[0].borderWidth = timelineChart.data.datasets[0].backgroundColor.map((_, i) => i === firstPoint.index ? 3 : 1);
+                            timelineChart.data.datasets[0].borderColor = timelineChart.data.datasets[0].backgroundColor.map((c, i) => i === firstPoint.index ? '#403D39' : c);
+                            timelineChart.update();
+                            
+                            document.getElementById('nav-empires').click();
+                        }
+                    }
+                }
+            });
+        };
+
+        const createDurationChart = () => {
+            const ctx = document.getElementById('durationChart').getContext('2d');
+            const sortedEmpires = Object.values(empireData).sort((a, b) => (b.end - b.start) - (a.end - a.start));
+            
+            const data = {
+                labels: sortedEmpires.map(e => e.name),
+                datasets: [{
+                    label: 'Duration (Years)',
+                    data: sortedEmpires.map(e => e.end - e.start),
+                    backgroundColor: sortedEmpires.map(e => e.color),
+                    borderColor: sortedEmpires.map(e => e.color),
+                    borderWidth: 1
+                }]
+            };
+            durationChart = new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Years of Rule' }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        };
+
+        window.onload = () => {
+            createTimelineChart();
+            createDurationChart();
+            renderAdminComparison();
+
+            const navEmpires = document.getElementById('nav-empires');
+            const navComparison = document.getElementById('nav-comparison');
+            const timelineView = document.getElementById('timeline-view');
+            const contentDisplay = document.getElementById('content-display');
+            const comparisonView = document.getElementById('comparison-view');
+            
+            navEmpires.addEventListener('click', () => {
+                navEmpires.classList.add('active');
+                navComparison.classList.remove('active');
+                timelineView.classList.remove('hidden');
+                contentDisplay.classList.remove('hidden');
+                comparisonView.classList.add('hidden');
+                if (activeEmpire) {
+                    renderEmpireContent(activeEmpire);
+                } else {
+                    contentDisplay.innerHTML = `
+                    <div id="welcome-content" class="text-center p-8 bg-white rounded-2xl shadow-lg border border-gray-200">
+                        <h2 class="text-2xl font-bold text-[#A87E6F] mb-4">Select an Empire to Begin</h2>
+                        <p class="text-gray-600 max-w-2xl mx-auto">Use the interactive timeline above to dive into the history of a specific dynasty.</p>
+                    </div>`;
+                }
+            });
+
+            navComparison.addEventListener('click', () => {
+                navComparison.classList.add('active');
+                navEmpires.classList.remove('active');
+                timelineView.classList.add('hidden');
+                contentDisplay.classList.add('hidden');
+                comparisonView.classList.remove('hidden');
+            });
+        };
+    </script>
+
+
+</body></html>

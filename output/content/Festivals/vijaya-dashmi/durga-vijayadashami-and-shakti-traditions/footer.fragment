@@ -1,0 +1,59 @@
+<footer class="bg-gray-800 text-gray-300">
+  <div class="container mx-auto px-6 py-12 lg:px-8">
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/" class="hover:text-white hover:underline transition-colors duration-200">Cities of India</a></li>
+          <li><a href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Small Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+          <li><a href="https://www.indiacities.net/wpilgrimages/vaishno-devi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishno Devi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/bijoya-dashami-bengali-traditions-greetings-and-customs.html" class="hover:text-white hover:underline transition-colors duration-200">Bijoya Dashami Bengali Traditions Greetings And Customs</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/durga-puja-pandals-to-visarjan-the-journey-to-vijayadashami.html" class="hover:text-white hover:underline transition-colors duration-200">Durga Puja Pandals To Visarjan The Journey To Vijayadashami</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/durga-puja-visarjan-and-vijayadashami-what-happens-on-the-final-day.html" class="hover:text-white hover:underline transition-colors duration-200">Durga Puja Visarjan And Vijayadashami What Happens On The Final Day</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/dussehra-and-durga-puja-similarities-and-differences.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra And Durga Puja Similarities And Differences</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/how-families-celebrate-bijoya-dashami-at-home.html" class="hover:text-white hover:underline transition-colors duration-200">How Families Celebrate Bijoya Dashami At Home</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/mahishasura-mardini-the-story-behind-durgas-victory.html" class="hover:text-white hover:underline transition-colors duration-200">Mahishasura Mardini The Story Behind Durgas Victory</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/navratri-to-vijayadashami-how-the-ten-day-festival-cycle-works.html" class="hover:text-white hover:underline transition-colors duration-200">Navratri To Vijayadashami How The Ten Day Festival Cycle Works</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/sindoor-khela-on-vijayadashami-meaning-and-tradition.html" class="hover:text-white hover:underline transition-colors duration-200">Sindoor Khela On Vijayadashami Meaning And Tradition</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/the-spiritual-meaning-of-durgas-return-on-vijayadashami.html" class="hover:text-white hover:underline transition-colors duration-200">The Spiritual Meaning Of Durgas Return On Vijayadashami</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/traditional-foods-served-on-bijoya-dashami.html" class="hover:text-white hover:underline transition-colors duration-200">Traditional Foods Served On Bijoya Dashami</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/vijayadashami-and-goddess-durga-story-meaning-and-traditions.html" class="hover:text-white hover:underline transition-colors duration-200">Vijayadashami And Goddess Durga Story Meaning And Traditions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/vijayadashami-blessings-and-respect-for-elders.html" class="hover:text-white hover:underline transition-colors duration-200">Vijayadashami Blessings And Respect For Elders</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/vijayadashami-for-beginners-a-guide-to-bengali-and-shakti-traditions.html" class="hover:text-white hover:underline transition-colors duration-200">Vijayadashami For Beginners A Guide To Bengali And Shakti Traditions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/vijayadashami-traditions-in-assam.html" class="hover:text-white hover:underline transition-colors duration-200">Vijayadashami Traditions In Assam</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/vijayadashami-traditions-in-odisha.html" class="hover:text-white hover:underline transition-colors duration-200">Vijayadashami Traditions In Odisha</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/vijayadashami-traditions-in-tripura.html" class="hover:text-white hover:underline transition-colors duration-200">Vijayadashami Traditions In Tripura</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/vijayadashami-traditions-in-west-bengal.html" class="hover:text-white hover:underline transition-colors duration-200">Vijayadashami Traditions In West Bengal</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/why-durga-is-seen-as-a-symbol-of-shakti-on-vijayadashami.html" class="hover:text-white hover:underline transition-colors duration-200">Why Durga Is Seen As A Symbol Of Shakti On Vijayadashami</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/why-people-visit-friends-and-family-on-bijoya-dashami.html" class="hover:text-white hover:underline transition-colors duration-200">Why People Visit Friends And Family On Bijoya Dashami</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/why-vijayadashami-marks-the-end-of-durga-puja.html" class="hover:text-white hover:underline transition-colors duration-200">Why Vijayadashami Marks The End Of Durga Puja</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+      <p class="text-sm text-gray-400">&copy; 2026 India Cities. All rights reserved.</p>
+      
+    </div>
+
+  </div>
+</footer>

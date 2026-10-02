@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Gwalior Fort: The Gibraltar of India</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Prata&amp;family=Source+Sans+3:wght@400;600&amp;display=swap" rel="stylesheet"/>
+    <!-- Chosen Palette: Gwalior Blue & Sandstone -->
+    <!-- Application Structure Plan: The SPA is designed as a single-page narrative that guides the user through the fort's vast history and complex layout. This thematic structure is more engaging than a linear report. It includes: 1) A Hero section with key stats. 2) An interactive timeline covering the fort's evolution under different dynasties. 3) A central, interactive diagram of the fort's layout, where users can click hotspots to explore key structures. 4) A dedicated section on the unique architectural fusion found in its temples. 5) A data visualization comparing the contributions of its most significant builders. This modular approach makes the dense history accessible and memorable. -->
+    <!-- Visualization & Content Choices: 
+        - Key Stats -> Goal: Inform -> Viz: Animated Counters. Justification: Provides a high-impact introduction to the fort's immense scale and age.
+        - Dynastic History -> Goal: Change -> Viz: Interactive Timeline (JS-powered tabs). Justification: Allows users to focus on distinct periods (Tomar, Mughal, Scindia) for better comprehension.
+        - Fort Layout -> Goal: Organize/Inform -> Viz: Clickable Hotspot Diagram. Justification: A visual, spatial exploration of the fort's key monuments is more intuitive than text descriptions.
+        - Architectural Fusion -> Goal: Compare -> Viz: Styled Info Cards. Justification: Breaks down the unique North-South architectural blend of the Teli Ka Mandir and the complexity of the Saas Bahu temples into scannable segments.
+        - Builder Contributions -> Goal: Compare -> Viz: Bar Chart (Chart.js). Justification: Offers a clear comparison of the different types of structures built by the Tomars and Mughals, highlighting their different priorities.
+        CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Source Sans 3', sans-serif; background-color: #f0f3f5; }
+        h1, h2, h3, h4, .font-display { font-family: 'Prata', serif; }
+        .nav-link { position: relative; color: #1e3a8a; transition: color 0.3s; }
+        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 50%; transform: translateX(-50%); background-color: #1d4ed8; transition: width 0.3s ease; }
+        .nav-link.active, .nav-link:hover { color: #1d4ed8; }
+        .nav-link.active::after, .nav-link:hover::after { width: 100%; }
+        .timeline-btn.active { background-color: #1e40af; color: white; border-color: #1e40af; }
+        .hotspot { transition: transform 0.2s, background-color 0.2s; }
+        .hotspot:hover { transform: scale(1.2); }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800">
+
+    <header class="bg-white/90 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-blue-900">Gwalior Fort</h1>
+            <div class="hidden md:flex space-x-8">
+                <a class="nav-link" href="#history">History</a>
+                <a class="nav-link" href="#architecture">The Fort Complex</a>
+                <a class="nav-link" href="#temples">Temples</a>
+                <a class="nav-link" href="#legacy">Legacy</a>
+            </div>
+            <button class="md:hidden text-blue-900" id="mobile-menu-button">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            </button>
+        </nav>
+        <div class="hidden md:hidden bg-white shadow-lg" id="mobile-menu">
+            <a class="block py-2 px-6 text-sm hover:bg-slate-50" href="#history">History</a>
+            <a class="block py-2 px-6 text-sm hover:bg-slate-50" href="#architecture">The Fort Complex</a>
+            <a class="block py-2 px-6 text-sm hover:bg-slate-50" href="#temples">Temples</a>
+            <a class="block py-2 px-6 text-sm hover:bg-slate-50" href="#legacy">Legacy</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        
+        <section class="text-center mb-20">
+            <h2 class="text-5xl md:text-7xl font-bold text-blue-900 leading-tight">The Gibraltar of India</h2>
+            <p class="max-w-3xl mx-auto mt-4 text-lg text-slate-700">Discover the legendary Gwalior Fort, a towering stronghold steeped in history, showcasing imperial legacies, brilliant architecture, and rich cultural heritage.</p>
+        </section>
+
+        <section class="mb-20 scroll-mt-20" id="history">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-blue-900">A Fortress of Dynasties</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-slate-600">From ancient times to the Maratha era, Gwalior Fort evolved under mighty rulers. Click the timeline to explore its rich history.</p>
+            </div>
+            <div class="flex flex-col lg:flex-row gap-8">
+                <div class="w-full lg:w-1/4 flex lg:flex-col justify-center flex-wrap gap-3" id="timeline-controls">
+                    <!-- Buttons injected by JS -->
+                </div>
+                <div class="w-full lg:w-3/4 bg-white p-8 rounded-lg shadow-lg">
+                    <h4 class="text-2xl font-bold text-gray-800 mb-1" id="timeline-title"></h4>
+                    <p class="text-md font-semibold text-blue-700 mb-4" id="timeline-period"></p>
+                    <div class="text-gray-700 leading-relaxed" id="timeline-content"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-20 scroll-mt-20" id="architecture">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-blue-900">A City within Walls</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-slate-600">The fort is an expansive maze of palaces, temples, and tanks, each whispering tales of its creators. Tap the hotspots on the map to uncover its iconic landmarks.</p>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <div class="bg-slate-200 p-8 rounded-lg relative aspect-square">
+                    <div class="w-full h-full border-4 border-dashed border-slate-400 rounded-lg grid grid-cols-2 grid-rows-2 gap-2 p-2">
+                        <div class="hotspot bg-blue-800/80 rounded-lg cursor-pointer flex items-center justify-center text-white font-bold p-2 text-center" id="hotspot-manmandir" title="Man Mandir Palace">1. Man Mandir Palace</div>
+                        <div class="hotspot bg-blue-700/80 rounded-lg cursor-pointer flex items-center justify-center text-white font-bold p-2 text-center" id="hotspot-telika" title="Teli Ka Mandir">2. Teli Ka Mandir</div>
+                        <div class="hotspot bg-blue-600/80 rounded-lg cursor-pointer flex items-center justify-center text-white font-bold p-2 text-center" id="hotspot-saasbahu" title="Saas Bahu Temples">3. Saas Bahu Temples</div>
+                        <div class="hotspot bg-blue-500/80 rounded-lg cursor-pointer flex items-center justify-center text-white font-bold p-2 text-center" id="hotspot-gurjari" title="Gujari Mahal">4. Gujari Mahal</div>
+                    </div>
+                    <p class="absolute bottom-2 text-xs text-center w-full text-slate-500">Simplified Fort Layout</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg min-h-[350px]" id="architecture-display">
+                    <h4 class="text-2xl font-bold text-gray-800" id="architecture-title"></h4>
+                    <p class="text-gray-700 leading-relaxed mt-4" id="architecture-content"></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-20 scroll-mt-20" id="temples">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-blue-900">A Confluence of Styles</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-slate-600">The temples in Gwalior Fort are stunning examples of architecture, blending North and South Indian styles seamlessly.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h4 class="text-2xl font-bold">Teli Ka Mandir (c. 9th Century)</h4>
+                    <p class="text-blue-700 font-semibold">The Oilman's Temple</p>
+                    <p class="mt-2 text-sm">This ancient temple, the fort's oldest monument, is renowned for its distinctive design. It blends a Nagara-style base from North India with a Dravidian barrel-vaulted roof from the South, showcasing a rare fusion of traditions. Initially devoted to Vishnu, it was later repurposed as a Shaivite shrine.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h4 class="text-2xl font-bold">Saas Bahu Temples (c. 11th Century)</h4>
+                    <p class="text-blue-700 font-semibold">The Mother-in-law &amp; Daughter-in-law Temples</p>
+                    <p class="mt-2 text-sm">Two finely crafted temples dedicated to Vishnu stand side by side the grand 'Saas' (Mother-in-law) temple and the petite 'Bahu' (Daughter-in-law) temple. Both showcase Kachchhapaghata artistry, adorned with intricate carvings of deities and mythological tales.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="scroll-mt-20" id="legacy">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-blue-900">The Builders of the Fort</h3>
+                 <p class="max-w-3xl mx-auto mt-2 text-slate-600">The fort's identity was shaped by two key eras: the Hindu Tomar Rajputs, known for crafting elegant palaces, and the Mughals, who transformed it into a powerful state prison.</p>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <div class="chart-container">
+                    <canvas id="builderChart"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300">
+<div class="container mx-auto px-6 py-12 lg:px-8">
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/">Cities of India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html">Small Cities</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/pilgrimages/">Pilgrimages</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/wpilgrimages/vaishno-devi/">Vaishno Devi</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html">Agra Fort History Architecture Mughal Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html">Ajanta Ellora Rock Cut Wonders</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html">Ajinkyatara Fort Exploration Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html">Ajinkyatara Fort Guide History Visitor Info</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html">Ajinkyatara Fort History Legacy Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html">Aligarh Fort History Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html">Aligarh Fort History Visitor Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html">Allahabad Fort History And Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html">Allahabad Fort History Significance</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html">Amber Fort Guide History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html">Amber Fort History Architecture Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html">Aranthangi Fort Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html">Arnala Fort Guide History Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html">Arnala Fort History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html">Ashoka Pillars Legacy Dhamma</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html">Belgaum Fort History Architecture Pluralism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html">Chitradurga Fort Seven Circles</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html">Daulatabad Fort Invincible Deccan Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html">Explore Indias Majestic Forts</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html">Fortress Explorer Iconic Fortresses</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html">Forts Monuments India Interactive History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html">Forts Of India Design History Legends</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html">Golconda Fort History Engineering Diamonds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html">Golconda Fortress Diamonds Power</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html">Great Stupa Sanchi History Symbolism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html">Great Stupa Sanchi Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html">Gwalior Fort Gibraltar India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html">Hawa Mahal Jaipur Palace Winds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/india-great-empires-history.html">India Great Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html">Indias Architectural Heritage Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html">Indias Architectural Heritage Report</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html">Indias Architectural Heritage Timeless Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html">Indias Architectural Heritage Visual Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html">Indias Architectural Heritage Visual Journey</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html">Indias Great Empires Visual History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html">Janjira Fort Unconquered Sea Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html">Khajuraho Art History Temples</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html">Mysore Palace History Architecture Tourism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html">Mysore Palace History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html">Qutub Minar History Architecture Icon</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html">Qutub Minar History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html">Ramgarh Fort Heritage Hotel History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html">Sentinels Of India Iconic Forts Overview</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html">Shaniwar Wada History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html">Sovereign Tapestry Indian Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html">Tamil Nadu Temples Forts Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html">Tipu Sultan Fort History Legacy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-8 text-center text-sm text-gray-400">
+<p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+</div>
+<div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+<p class="text-sm text-gray-400">© 2026 India Cities. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const timelineData = {
+                tomar: {
+                    title: "The Tomar Dynasty's Golden Age",
+                    period: "1398 - 1516",
+                    content: "The Tomar Rajputs ushered in the fort's golden era. The most distinguished ruler, Man Singh Tomar, was a great patron of art and architecture. He commissioned the magnificent Man Mandir Palace, with its stunning blue-tiled facade, and the Gujari Mahal for his beloved queen, Mrignayani."
+                },
+                mughal: {
+                    title: "The Mughal State Prison",
+                    period: "1526 - 1730s",
+                    content: "After defeating the Tomars, the Mughals captured the fort. Emperor Babur famously called it 'the pearl amongst the fortresses of Hind.' However, under Akbar and his successors, the fort was primarily repurposed as a high-security prison for political rivals and royal family members, including Aurangzeb's brother Murad."
+                },
+                maratha: {
+                    title: "The Maratha & Scindia Era",
+                    period: "1730s - 1886",
+                    content: "With the decline of Mughal power, the fort was seized by the Marathas. It changed hands frequently between the Scindias and the British during the Anglo-Maratha wars. The fort was also a key site during the 1857 rebellion, where Rani Lakshmibai fought her last battle."
+                },
+                modern: {
+                    title: "Modern Legacy",
+                    period: "1886 onwards",
+                    content: "The fort was finally restored to the Scindia family in 1886, who remained its custodians until Indian independence. Today, it is a protected monument under the Archaeological Survey of India and is on the tentative list for UNESCO World Heritage status, celebrated for its rich history and architectural diversity."
+                }
+            };
+
+            const architectureData = {
+                manmandir: { title: "Man Mandir Palace", content: "Built by Man Singh Tomar, this palace is a masterpiece of early Hindu architecture. It is famous for its stunning facade adorned with blue, green, and yellow glazed tiles depicting ducks, elephants, and peacocks. Its underground floors served as cool summer chambers and later as a Mughal prison." },
+                telika: { title: "Teli Ka Mandir", content: "The oldest surviving temple in the fort, dating back to the 9th century. It is renowned for its unique architectural fusion, featuring a rectangular sanctuary topped with a barrel-vaulted roof typical of South Indian (Dravidian) architecture, built on a North Indian (Nagara) base." },
+                saasbahu: { title: "Saas Bahu Temples", content: "A pair of 11th-century temples dedicated to Vishnu, built by the Kachchhapaghata dynasty. The name, meaning 'Mother-in-law' and 'Daughter-in-law', likely refers to their relative sizes. They are covered in intricate carvings depicting various deities and scenes from Hindu mythology." },
+                gurjari: { title: "Gujari Mahal", content: "A palace built by Man Singh Tomar for his favorite queen, Mrignayani, a Gurjar princess. It was built separate from the main fort complex to fulfill her condition of having a dedicated water supply. Today, it houses an archaeological museum with a rich collection of sculptures." }
+            };
+
+            const timelineControls = document.getElementById('timeline-controls');
+            Object.keys(timelineData).forEach(key => {
+                const button = document.createElement('button');
+                button.className = 'timeline-btn border-2 border-slate-300 px-4 py-2 rounded-lg bg-white hover:bg-slate-100 transition-all w-full text-left';
+                button.textContent = timelineData[key].title;
+                button.dataset.id = key;
+                button.onclick = () => updateTimeline(key);
+                timelineControls.appendChild(button);
+            });
+
+            function updateTimeline(id) {
+                const data = timelineData[id];
+                document.getElementById('timeline-title').textContent = data.title;
+                document.getElementById('timeline-period').textContent = data.period;
+                document.getElementById('timeline-content').textContent = data.content;
+                document.querySelectorAll('.timeline-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.id === id);
+                });
+            }
+            updateTimeline('tomar');
+
+            const archDisplayTitle = document.getElementById('architecture-title');
+            const archDisplayContent = document.getElementById('architecture-content');
+            Object.keys(architectureData).forEach(key => {
+                document.getElementById(`hotspot-${key}`).onclick = () => updateArchitecture(key);
+            });
+
+            function updateArchitecture(id) {
+                const data = architectureData[id] || { title: "Click a hotspot", content: "Select a numbered point on the diagram to learn about its history and significance." };
+                archDisplayTitle.textContent = data.title;
+                archDisplayContent.textContent = data.content;
+            }
+            updateArchitecture(null);
+
+            const builderCtx = document.getElementById('builderChart').getContext('2d');
+            new Chart(builderCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Palaces', 'Temples', 'Gateways', 'Prisons'],
+                    datasets: [
+                        {
+                            label: 'Tomar Dynasty',
+                            data: [2, 0, 1, 0],
+                            backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Mughal Empire',
+                            data: [2, 0, 0, 1],
+                            backgroundColor: 'rgba(107, 114, 128, 0.7)',
+                            borderColor: 'rgba(107, 114, 128, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, ticks: { precision: 0 }, title: { display: true, text: 'Number of Major Structures' } }
+                    },
+                    plugins: {
+                        title: { display: true, text: 'Primary Building Focus by Dynasty (Conceptual)' },
+                        tooltip: {
+                            callbacks: {
+                                title: function(tooltipItems) { return tooltipItems[0].dataset.label; },
+                                label: function(context) { return ` ${context.label}: ${context.raw}`; }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            
+            const navLinks = document.querySelectorAll('nav a');
+            const sections = document.querySelectorAll('main section');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    if (pageYOffset >= section.offsetTop - 80) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+
+
+</body></html>

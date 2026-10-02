@@ -1,0 +1,67 @@
+<footer class="bg-gray-800 text-gray-300">
+  <div class="container mx-auto px-6 py-12 lg:px-8">
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/" class="hover:text-white hover:underline transition-colors duration-200">Cities of India</a></li>
+          <li><a href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Small Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+          <li><a href="https://www.indiacities.net/wpilgrimages/vaishno-devi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishno Devi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Folders</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Andaman and Nicobar Islands/" class="hover:text-white hover:underline transition-colors duration-200">Andaman And Nicobar Islands</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Andhra Pradesh/" class="hover:text-white hover:underline transition-colors duration-200">Andhra Pradesh</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/ArunachalPradesh/" class="hover:text-white hover:underline transition-colors duration-200">Arunachalpradesh</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Assam/" class="hover:text-white hover:underline transition-colors duration-200">Assam</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Bihar/" class="hover:text-white hover:underline transition-colors duration-200">Bihar</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/chandigarh/" class="hover:text-white hover:underline transition-colors duration-200">Chandigarh</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Chhattisgarh/" class="hover:text-white hover:underline transition-colors duration-200">Chhattisgarh</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/delhi/" class="hover:text-white hover:underline transition-colors duration-200">Delhi</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Goa/" class="hover:text-white hover:underline transition-colors duration-200">Goa</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Gujarat/" class="hover:text-white hover:underline transition-colors duration-200">Gujarat</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Haryana/" class="hover:text-white hover:underline transition-colors duration-200">Haryana</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Himachal Pradesh/" class="hover:text-white hover:underline transition-colors duration-200">Himachal Pradesh</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Jammu and Kashmir/" class="hover:text-white hover:underline transition-colors duration-200">Jammu And Kashmir</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Jharkhand/" class="hover:text-white hover:underline transition-colors duration-200">Jharkhand</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Karnataka/" class="hover:text-white hover:underline transition-colors duration-200">Karnataka</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Kerala/" class="hover:text-white hover:underline transition-colors duration-200">Kerala</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Madhya Pradesh/" class="hover:text-white hover:underline transition-colors duration-200">Madhya Pradesh</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Maharashtra/" class="hover:text-white hover:underline transition-colors duration-200">Maharashtra</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Manipur/" class="hover:text-white hover:underline transition-colors duration-200">Manipur</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Meghalya/" class="hover:text-white hover:underline transition-colors duration-200">Meghalya</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/pondicherry/" class="hover:text-white hover:underline transition-colors duration-200">Pondicherry</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Rajasthan/" class="hover:text-white hover:underline transition-colors duration-200">Rajasthan</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Sikkim/" class="hover:text-white hover:underline transition-colors duration-200">Sikkim</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Tripura/" class="hover:text-white hover:underline transition-colors duration-200">Tripura</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Union/" class="hover:text-white hover:underline transition-colors duration-200">Union</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Uttar Pradesh/" class="hover:text-white hover:underline transition-colors duration-200">Uttar Pradesh</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/Uttarakhand/" class="hover:text-white hover:underline transition-colors duration-200">Uttarakhand</a></li>
+          <li><a href="https://www.indiacities.net/states/photos-and-comments/West Bengal/" class="hover:text-white hover:underline transition-colors duration-200">West Bengal</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+      <p class="text-sm text-gray-400">&copy; 2026 India Cities. All rights reserved.</p>
+      
+    </div>
+
+  </div>
+</footer>

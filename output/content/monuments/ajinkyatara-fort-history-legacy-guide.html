@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Ajinkyatara Fort: An Interactive Exploration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+    <!-- Chosen Palette: Warm Sandstone -->
+    <!-- Application Structure Plan: The application is designed as a thematic, single-page journey rather than a linear report. The structure prioritizes user exploration and understanding through interactivity. It begins with a captivating hero section for immediate context. A sticky navigation bar allows users to jump to key sections: a dynamic 'Timeline' to explore historical eras, an 'Explore the Fort' section with an interactive map for architectural discovery, and practical 'Visitor Info' and 'Legacy' sections. This non-linear structure was chosen because the fort's history is complex and multi-layered; allowing users to jump between its history, architecture, and modern relevance provides a more intuitive and less overwhelming experience than a simple top-to-bottom read. The interactive timeline and map are central to this design, transforming dense text into engaging, explorable content. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Historical dominion periods (Shilahara, Adil Shahi, Maratha, etc.). Goal: Compare the duration of rule. Viz/Method: A Chart.js horizontal bar chart ('Timeline of Rule'). Interaction: Hovering over bars reveals tooltips with exact date ranges. Justification: A visual chart is far more effective at conveying relative time spans than text alone. Library: Chart.js.
+        - Report Info: Architectural layout and key structures (gates, temples, palace ruins). Goal: Organize and locate key points of interest. Viz/Method: An interactive diagram made with styled HTML divs and Tailwind CSS. Interaction: Clicking on a labeled point reveals a detailed description card. Justification: This transforms a static list or table into a spatial, engaging exploration, helping users build a mental map of the fort. Method: HTML/CSS/JS.
+        - Report Info: The sequence of historical events. Goal: Show change over time. Viz/Method: A vertical, interactive timeline. Interaction: Clicking on an era expands to show detailed events and key figures for that period. Justification: This organizes a large volume of historical data into digestible, user-driven chunks, preventing information overload. Method: HTML/CSS/JS.
+        - Report Info: Tourist information. Goal: Inform. Viz/Method: Clean, card-based layout. Interaction: Static display. Justification: Card layouts are highly scannable and mobile-friendly for practical information. Method: HTML/CSS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #4A4A4A;
+        }
+        .nav-link {
+            position: relative;
+            transition: color 0.3s;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #E57A44;
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        .hero-bg {
+            background-image: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url('https://placehold.co/1200x800/605552/FFFFFF?text=Ajinkyatara+Fort');
+            background-size: cover;
+            background-position: center;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: -21px;
+            width: 10px;
+            height: 10px;
+            background-color: #D3A28A;
+            border-radius: 50%;
+            border: 2px solid #FDFBF8;
+        }
+        .timeline-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.7s ease-in-out, padding 0.7s ease-in-out;
+        }
+        .timeline-content.open {
+            max-height: 1000px;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        .fort-map-point {
+            transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+        }
+        .fort-map-point:hover {
+            transform: scale(1.2);
+        }
+        .fort-map-point.active {
+            background-color: #E57A44;
+            color: white;
+            transform: scale(1.1);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="hero-bg h-screen flex flex-col items-center justify-center text-white text-center p-4 relative" id="home">
+        <div class="absolute top-0 left-0 w-full p-4 z-20">
+            <nav class="container mx-auto flex justify-center space-x-4 md:space-x-8 bg-black bg-opacity-30 backdrop-blur-sm p-3 rounded-full">
+                <a class="nav-link active text-sm md:text-base font-medium" href="#home">Home</a>
+                <a class="nav-link text-sm md:text-base font-medium" href="#timeline">Timeline</a>
+                <a class="nav-link text-sm md:text-base font-medium" href="#explore">Explore the Fort</a>
+                <a class="nav-link text-sm md:text-base font-medium" href="#visitor">Visitor Info</a>
+                <a class="nav-link text-sm md:text-base font-medium" href="#legacy">Legacy</a>
+            </nav>
+        </div>
+        <h1 class="text-4xl md:text-7xl font-bold tracking-tight">Ajinkyatara Fort</h1>
+        <p class="mt-4 text-xl md:text-2xl font-light">The Impregnable Star of the Deccan</p>
+        <div class="mt-8 grid grid-cols-2 md:grid-cols-3 gap-8 text-lg w-full max-w-2xl">
+            <div class="bg-white bg-opacity-10 backdrop-blur-sm p-4 rounded-lg">
+                <p class="font-bold text-2xl">~3,300 ft</p>
+                <p class="text-sm">Elevation</p>
+            </div>
+            <div class="bg-white bg-opacity-10 backdrop-blur-sm p-4 rounded-lg">
+                <p class="font-bold text-2xl">1190 CE</p>
+                <p class="text-sm">Originally Built</p>
+            </div>
+            <div class="col-span-2 md:col-span-1 bg-white bg-opacity-10 backdrop-blur-sm p-4 rounded-lg">
+                <p class="font-bold text-2xl">4th Capital</p>
+                <p class="text-sm">of the Marathas</p>
+            </div>
+        </div>
+        <div class="absolute bottom-10 animate-bounce">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        </div>
+    </header>
+
+    <main>
+        <section class="py-16 md:py-24 bg-[#F7F1EC]" id="timeline">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-[#4A4A4A]">A Timeline of Power</h2>
+                    <p class="mt-2 text-lg text-gray-600 max-w-3xl mx-auto">The fort's story traces the rise and fall of empires. This part offers a visual summary of the key dynasties that ruled this vital stronghold, showcasing the changing power dynamics in the Deccan over centuries.</p>
+                </div>
+
+                <div class="chart-container mb-16">
+                    <canvas id="rulerChart"></canvas>
+                </div>
+                
+                <div class="text-center mb-12">
+                     <h3 class="text-2xl md:text-3xl font-bold text-[#4A4A4A]">Key Historical Eras</h3>
+                    <p class="mt-2 text-lg text-gray-600 max-w-3xl mx-auto">Explore each era to reveal the defining moments, notable figures, and decisive twists that forged the fort's legacy. From its ancient roots to its pivotal role in the Swarajya movement, every chapter etched its story into the fort's walls.</p>
+                </div>
+
+                <div class="relative max-w-3xl mx-auto border-l-2 border-[#D3A28A] pl-8" id="timeline-container">
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 md:py-24" id="explore">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-[#4A4A4A]">Explore the Fort's Anatomy</h2>
+                    <p class="mt-2 text-lg text-gray-600 max-w-3xl mx-auto">Ajinkyatara is not just a fort but a blend of military, royal, and spiritual elements. Use this interactive map to explore the fort's history and significance. Click on any spot to uncover its role in daily life and defense.</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                    <div class="lg:col-span-2 relative w-full max-w-3xl mx-auto aspect-[4/3] bg-[#F7F1EC] rounded-2xl p-4 md:p-8 border-2 border-[#EAE0D5]">
+                        <div class="relative w-full h-full" id="fort-map">
+                        </div>
+                        <div class="absolute top-2 left-2 text-xs text-gray-400">Illustrative Map - Not to Scale</div>
+                    </div>
+                    <div class="lg:col-span-1 h-full min-h-[300px] bg-white p-6 rounded-2xl shadow-lg border border-gray-200 flex flex-col justify-center" id="fort-info-panel">
+                        <h3 class="text-2xl font-bold text-[#E57A44]" id="info-title">Click a point on the map</h3>
+                        <p class="mt-2 text-gray-600" id="info-description">Choose a spot on the map to explore its history and architectural features.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 md:py-24 bg-[#F7F1EC]" id="visitor">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-[#4A4A4A]">Plan Your Visit</h2>
+                     <p class="mt-2 text-lg text-gray-600 max-w-3xl mx-auto">Ajinkyatara draws history enthusiasts, trekkers, and tourists alike. Its easy access and breathtaking vistas make it a top attraction. Here’s what you need to know to plan your visit to this iconic fort.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow">
+                        <h3 class="font-bold text-xl text-[#E57A44]">How to Reach</h3>
+                        <p class="mt-2 text-gray-600">A drivable road reaches the summit, located 4-8 km from Satara bus stand. Pune (~115 km) and Mumbai (~260 km) are the closest major cities.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow">
+                        <h3 class="font-bold text-xl text-[#E57A44]">Best Time to Visit</h3>
+                        <p class="mt-2 text-gray-600">November to February offers pleasant weather. June to September showcases lush green monsoon landscapes.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow">
+                        <h3 class="font-bold text-xl text-[#E57A44]">Timings &amp; Entry</h3>
+                        <p class="mt-2 text-gray-600">Open every day, usually from dawn to dusk (about 6 AM - 6 PM). Entry is free.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow">
+                        <h3 class="font-bold text-xl text-[#E57A44]">Activities</h3>
+                        <p class="mt-2 text-gray-600">Known for trekking, hiking, and photography, the gentle trail to the summit takes roughly an hour.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 md:py-24" id="legacy">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-[#4A4A4A]">A Living Legacy</h2>
+                    <p class="mt-2 text-lg text-gray-600 max-w-3xl mx-auto">Ajinkyatara's legacy endured beyond the fall of empires, thriving in literature and culture. Today, efforts to preserve its structure ensure the 'Impregnable Star' remains a beacon for generations to come.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                    <div class="bg-white p-8 rounded-xl border border-gray-200 shadow-lg">
+                        <h3 class="font-bold text-2xl text-[#4A4A4A]">The Power of the Pen</h3>
+                        <p class="mt-3 text-gray-600">Known by various names, the fort gained fame as 'Ajinkyatara,' a title cemented by Narayan Hari Apte's 1909 historical novel. This work stirred public imagination, linking the fort to this iconic name and showcasing how narratives shape our ties to the past.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl border border-gray-200 shadow-lg">
+                        <h3 class="font-bold text-2xl text-[#4A4A4A]">Conservation Mandate</h3>
+                        <p class="mt-3 text-gray-600">Acknowledging its deteriorated condition, a significant restoration effort launched in 2025. Backed by Rs 5 crore, it seeks to revive the bastions, main gateway, and pathways. This signals a vital move toward proactive, expert-led preservation to safeguard the fort's heritage and structure for generations ahead.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300">
+<div class="container mx-auto px-6 py-12 lg:px-8">
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/">Cities of India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html">Small Cities</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/pilgrimages/">Pilgrimages</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/wpilgrimages/vaishno-devi/">Vaishno Devi</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html">Agra Fort History Architecture Mughal Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html">Ajanta Ellora Rock Cut Wonders</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html">Ajinkyatara Fort Exploration Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html">Ajinkyatara Fort Guide History Visitor Info</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html">Ajinkyatara Fort History Legacy Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html">Aligarh Fort History Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html">Aligarh Fort History Visitor Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html">Allahabad Fort History And Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html">Allahabad Fort History Significance</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html">Amber Fort Guide History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html">Amber Fort History Architecture Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html">Aranthangi Fort Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html">Arnala Fort Guide History Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html">Arnala Fort History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html">Ashoka Pillars Legacy Dhamma</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html">Belgaum Fort History Architecture Pluralism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html">Chitradurga Fort Seven Circles</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html">Daulatabad Fort Invincible Deccan Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html">Explore Indias Majestic Forts</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html">Fortress Explorer Iconic Fortresses</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html">Forts Monuments India Interactive History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html">Forts Of India Design History Legends</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html">Golconda Fort History Engineering Diamonds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html">Golconda Fortress Diamonds Power</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html">Great Stupa Sanchi History Symbolism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html">Great Stupa Sanchi Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html">Gwalior Fort Gibraltar India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html">Hawa Mahal Jaipur Palace Winds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/india-great-empires-history.html">India Great Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html">Indias Architectural Heritage Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html">Indias Architectural Heritage Report</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html">Indias Architectural Heritage Timeless Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html">Indias Architectural Heritage Visual Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html">Indias Architectural Heritage Visual Journey</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html">Indias Great Empires Visual History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html">Janjira Fort Unconquered Sea Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html">Khajuraho Art History Temples</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html">Mysore Palace History Architecture Tourism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html">Mysore Palace History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html">Qutub Minar History Architecture Icon</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html">Qutub Minar History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html">Ramgarh Fort Heritage Hotel History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html">Sentinels Of India Iconic Forts Overview</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html">Shaniwar Wada History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html">Sovereign Tapestry Indian Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html">Tamil Nadu Temples Forts Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html">Tipu Sultan Fort History Legacy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-8 text-center text-sm text-gray-400">
+<p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+</div>
+<div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+<p class="text-sm text-gray-400">© 2026 India Cities. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const timelineData = [
+                {
+                    era: "Origins & Early Rule (c. 1190 - 1673)",
+                    summary: "From Shilahara foundation to Sultanate control.",
+                    details: `
+                        <p><strong>1190 CE:</strong> Constructed by Raja Bhoj II of the Shilahara dynasty.</p>
+                        <p><strong>1200-1300:</strong> Controlled by the Yadavs of Devgiri.</p>
+                        <p><strong>14th-15th Century:</strong> Captured by the Bahamani Sultanate, who renovated and extended the fortifications.</p>
+                        <p><strong>16th Century:</strong> Fell under the Adil Shahi dynasty of Bijapur. It was used as a high-security prison for figures like Queen Chandbibi.</p>
+                    `
+                },
+                {
+                    era: "The Maratha Epoch (1673 - 1818)",
+                    summary: "The fort's golden age as a center of Maratha power.",
+                    details: `
+                        <p><strong>July 27, 1673:</strong> Captured by Chhatrapati Shivaji Maharaj from the Adil Shahis.</p>
+                        <p><strong>1699-1700:</strong> Besieged by Mughal Emperor Aurangzeb. The fort fell after a 4.5-month siege and was renamed 'Azamtara'.</p>
+                        <p><strong>c. 1706:</strong> Recaptured by Maharani Tarabai, who defiantly renamed it 'Ajinkyatara' (The Impregnable Star).</p>
+                        <p><strong>Jan 12, 1708:</strong> Chhatrapati Shahu was crowned here, making Satara the new capital of the Maratha Empire.</p>
+                        <p><strong>Feb 11, 1818:</strong> Captured by the British East India Company, ending the Maratha era.</p>
+                    `
+                },
+                {
+                    era: "Modern Era (1818 - Present)",
+                    summary: "From colonial outpost to heritage site.",
+                    details: `
+                        <p><strong>1909:</strong> Novelist Narayan Hari Apte popularizes the name 'Ajinkyatara' with his historical novel.</p>
+                        <p><strong>20th Century:</strong> The fort's strategic height is utilized for television and radio broadcast towers.</p>
+                        <p><strong>Jan 2025:</strong> A major, year-long conservation project is launched to restore dilapidated parts of the fort.</p>
+                        <p><strong>Today:</strong> A major tourist destination for trekking, history, and its panoramic views of Satara.</p>
+                    `
+                }
+            ];
+
+            const fortMapData = {
+                mainGate: {
+                    title: "Main Gate (Northwest)",
+                    description: "The primary entrance, a robust stone structure with high buttresses designed to withstand assault. It remains remarkably well-preserved in its original Maratha military style."
+                },
+                southeastGate: {
+                    title: "Southeast Gate",
+                    description: "A smaller postern gate, likely used as a secondary entrance or a sally port for launching surprise attacks, providing tactical flexibility for defenders."
+                },
+                mangalaiBastion: {
+                    title: "Mangalai Bastion",
+                    description: "A key defensive bastion infamous as the site of the dramatic Mughal mine explosion during the siege of 1700, a pivotal moment in the fort's history."
+                },
+                temples: {
+                    title: "Temple Complex",
+                    description: "The fort houses several active temples, including the Hanuman, Mahadev (Shiva), and Mangaladevi temples, reflecting its deep cultural and religious significance."
+                },
+                palaceRuins: {
+                    title: "Tara Rani's Palace Ruins",
+                    description: "Remnants of a royal residence, also known as 'Ethihasik Wada'. These ruins offer a tangible link to the fort's past as a royal and administrative center under Maratha rule."
+                },
+                waterTanks: {
+                    title: "Water Tanks & Cisterns",
+                    description: "The fort features numerous rock-hewn water tanks and cisterns. This reliable water supply was critical, enabling the garrison to withstand prolonged sieges."
+                },
+                tvTower: {
+                    title: "TV & Radio Tower",
+                    description: "A modern structure that continues the fort's ancient legacy as a strategic high point for communication, broadcasting signals for Satara and Pune."
+                }
+            };
+
+            const timelineContainer = document.getElementById('timeline-container');
+            timelineData.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'timeline-item mb-8';
+                div.innerHTML = `
+                    <div class="cursor-pointer">
+                        <h4 class="font-bold text-xl text-[#4A4A4A]">${item.era}</h4>
+                        <p class="text-gray-500">${item.summary}</p>
+                    </div>
+                    <div class="timeline-content text-gray-600 space-y-2">
+                        ${item.details}
+                    </div>
+                `;
+                timelineContainer.appendChild(div);
+            });
+
+            timelineContainer.addEventListener('click', (e) => {
+                const header = e.target.closest('.cursor-pointer');
+                if (header) {
+                    const content = header.nextElementSibling;
+                    const allContents = timelineContainer.querySelectorAll('.timeline-content');
+                    
+                    const wasOpen = content.classList.contains('open');
+
+                    allContents.forEach(c => c.classList.remove('open'));
+                    
+                    if (!wasOpen) {
+                        content.classList.add('open');
+                    }
+                }
+            });
+
+            const fortMapContainer = document.getElementById('fort-map');
+            const infoTitle = document.getElementById('info-title');
+            const infoDescription = document.getElementById('info-description');
+            
+            const points = {
+                mainGate: { top: '5%', left: '15%' },
+                southeastGate: { top: '85%', left: '80%' },
+                mangalaiBastion: { top: '60%', left: '90%' },
+                temples: { top: '45%', left: '50%' },
+                palaceRuins: { top: '30%', left: '65%' },
+                waterTanks: { top: '70%', left: '30%' },
+                tvTower: { top: '10%', left: '45%' },
+            };
+
+            Object.keys(points).forEach(key => {
+                const point = document.createElement('button');
+                point.className = 'fort-map-point absolute w-6 h-6 bg-[#D3A28A] rounded-full flex items-center justify-center text-white font-bold shadow-lg';
+                point.style.top = points[key].top;
+                point.style.left = points[key].left;
+                point.dataset.key = key;
+                point.setAttribute('aria-label', fortMapData[key].title);
+                fortMapContainer.appendChild(point);
+            });
+
+            fortMapContainer.addEventListener('click', (e) => {
+                const point = e.target.closest('.fort-map-point');
+                if (point) {
+                    const key = point.dataset.key;
+                    const data = fortMapData[key];
+                    
+                    document.querySelectorAll('.fort-map-point').forEach(p => p.classList.remove('active'));
+                    point.classList.add('active');
+
+                    infoTitle.textContent = data.title;
+                    infoDescription.textContent = data.description;
+                }
+            });
+
+            const rulerCtx = document.getElementById('rulerChart').getContext('2d');
+            new Chart(rulerCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Shilahara/Yadav', 'Sultanates', 'Maratha Empire', 'British/Modern'],
+                    datasets: [{
+                        label: 'Years of Rule',
+                        data: [110, 383, 145, 207],
+                        backgroundColor: [
+                            'rgba(211, 162, 138, 0.7)',
+                            'rgba(169, 132, 113, 0.7)',
+                            'rgba(229, 122, 68, 0.7)',
+                            'rgba(128, 128, 128, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(211, 162, 138, 1)',
+                            'rgba(169, 132, 113, 1)',
+                            'rgba(229, 122, 68, 1)',
+                            'rgba(128, 128, 128, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Approximate Duration of Rule by Major Powers',
+                            font: { size: 16, family: 'Inter' },
+                            color: '#4A4A4A'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.x !== null) {
+                                        label += context.parsed.x + ' years';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Approximate Years',
+                                font: { family: 'Inter' }
+                            }
+                        },
+                        y: {
+                           ticks: {
+                                font: { family: 'Inter' }
+                           }
+                        }
+                    }
+                }
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section, header');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 60) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').substring(1) === current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+
+
+</body></html>

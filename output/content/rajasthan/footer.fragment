@@ -1,0 +1,53 @@
+<footer class="bg-gray-800 text-gray-300">
+  <div class="container mx-auto px-6 py-12 lg:px-8">
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/" class="hover:text-white hover:underline transition-colors duration-200">Cities of India</a></li>
+          <li><a href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Small Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+          <li><a href="https://www.indiacities.net/wpilgrimages/vaishno-devi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishno Devi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/rajasthan/10-small-cities.html" class="hover:text-white hover:underline transition-colors duration-200">10 Small Cities</a></li>
+          <li><a href="https://www.indiacities.net/rajasthan/Ajmer.html" class="hover:text-white hover:underline transition-colors duration-200">Ajmer</a></li>
+          <li><a href="https://www.indiacities.net/rajasthan/Alwar.html" class="hover:text-white hover:underline transition-colors duration-200">Alwar</a></li>
+          <li><a href="https://www.indiacities.net/rajasthan/Bharatpur-Bird-Sanctuary.html" class="hover:text-white hover:underline transition-colors duration-200">Bharatpur Bird Sanctuary</a></li>
+          <li><a href="https://www.indiacities.net/rajasthan/Bharatpur.html" class="hover:text-white hover:underline transition-colors duration-200">Bharatpur</a></li>
+          <li><a href="https://www.indiacities.net/rajasthan/bhilwara-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Bhilwara Tour</a></li>
+          <li><a href="https://www.indiacities.net/rajasthan/Bhiwadi.html" class="hover:text-white hover:underline transition-colors duration-200">Bhiwadi</a></li>
+          <li><a href="https://www.indiacities.net/rajasthan/Bikaner.html" class="hover:text-white hover:underline transition-colors duration-200">Bikaner</a></li>
+          <li><a href="https://www.indiacities.net/rajasthan/Jaipur.html" class="hover:text-white hover:underline transition-colors duration-200">Jaipur</a></li>
+          <li><a href="https://www.indiacities.net/rajasthan/Jaisalmer.html" class="hover:text-white hover:underline transition-colors duration-200">Jaisalmer</a></li>
+          <li><a href="https://www.indiacities.net/rajasthan/pushkar.html" class="hover:text-white hover:underline transition-colors duration-200">Pushkar</a></li>
+          <li><a href="https://www.indiacities.net/rajasthan/Ranthambore-National-Park.html" class="hover:text-white hover:underline transition-colors duration-200">Ranthambore National Park</a></li>
+          <li><a href="https://www.indiacities.net/rajasthan/Sariska-National-Park.html" class="hover:text-white hover:underline transition-colors duration-200">Sariska National Park</a></li>
+          <li><a href="https://www.indiacities.net/rajasthan/udaipur.html" class="hover:text-white hover:underline transition-colors duration-200">Udaipur</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+      <p class="text-sm text-gray-400">&copy; 2026 India Cities. All rights reserved.</p>
+      
+    </div>
+
+  </div>
+</footer>

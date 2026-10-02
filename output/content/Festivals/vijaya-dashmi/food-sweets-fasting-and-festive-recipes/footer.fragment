@@ -1,0 +1,59 @@
+<footer class="bg-gray-800 text-gray-300">
+  <div class="container mx-auto px-6 py-12 lg:px-8">
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/" class="hover:text-white hover:underline transition-colors duration-200">Cities of India</a></li>
+          <li><a href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Small Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+          <li><a href="https://www.indiacities.net/wpilgrimages/vaishno-devi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishno Devi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/20-traditional-and-modern-dussehra-recipes-for-a-festive-meal.html" class="hover:text-white hover:underline transition-colors duration-200">20 Traditional And Modern Dussehra Recipes For A Festive Meal</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/dussehra-potluck-menu-ideas.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Potluck Menu Ideas</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/dussehra-prasad-ideas-for-home-puja.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Prasad Ideas For Home Puja</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/dussehra-recipes-for-a-large-family-gathering.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Recipes For A Large Family Gathering</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/dussehra-snack-ideas-for-guests.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Snack Ideas For Guests</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/dussehra-sweets-popular-mithai-and-festive-desserts.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Sweets Popular Mithai And Festive Desserts</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/easy-dussehra-sweets-you-can-make-at-home.html" class="hover:text-white hover:underline transition-colors duration-200">Easy Dussehra Sweets You Can Make At Home</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/fafda-jalebi-for-dussehra-gujarati-tradition-and-recipe-guide.html" class="hover:text-white hover:underline transition-colors duration-200">Fafda Jalebi For Dussehra Gujarati Tradition And Recipe Guide</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/festive-rice-dishes-for-dussehra.html" class="hover:text-white hover:underline transition-colors duration-200">Festive Rice Dishes For Dussehra</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/healthy-dussehra-snack-and-sweet-ideas.html" class="hover:text-white hover:underline transition-colors duration-200">Healthy Dussehra Snack And Sweet Ideas</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/jalebi-and-dussehra-why-this-sweet-is-popular-during-the-festival.html" class="hover:text-white hover:underline transition-colors duration-200">Jalebi And Dussehra Why This Sweet Is Popular During The Festival</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/kheer-recipes-for-dussehra-and-vijayadashami.html" class="hover:text-white hover:underline transition-colors duration-200">Kheer Recipes For Dussehra And Vijayadashami</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/navratri-fasting-to-dussehra-feast-how-the-food-traditions-change.html" class="hover:text-white hover:underline transition-colors duration-200">Navratri Fasting To Dussehra Feast How The Food Traditions Change</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/payasam-recipes-for-vijayadashami.html" class="hover:text-white hover:underline transition-colors duration-200">Payasam Recipes For Vijayadashami</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/puran-poli-for-dussehra-maharashtrian-festive-recipe.html" class="hover:text-white hover:underline transition-colors duration-200">Puran Poli For Dussehra Maharashtrian Festive Recipe</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/regional-dussehra-foods-from-north-south-east-and-west-india.html" class="hover:text-white hover:underline transition-colors duration-200">Regional Dussehra Foods From North South East And West India</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/shrikhand-and-puri-for-dussehra-traditional-meal-ideas.html" class="hover:text-white hover:underline transition-colors duration-200">Shrikhand And Puri For Dussehra Traditional Meal Ideas</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/sundal-recipes-for-navratri-and-vijayadashami.html" class="hover:text-white hover:underline transition-colors duration-200">Sundal Recipes For Navratri And Vijayadashami</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/traditional-dussehra-foods-across-india.html" class="hover:text-white hover:underline transition-colors duration-200">Traditional Dussehra Foods Across India</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/vegetarian-dussehra-dinner-menu-ideas.html" class="hover:text-white hover:underline transition-colors duration-200">Vegetarian Dussehra Dinner Menu Ideas</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+      <p class="text-sm text-gray-400">&copy; 2026 India Cities. All rights reserved.</p>
+      
+    </div>
+
+  </div>
+</footer>

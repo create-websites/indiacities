@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Allahabad Fort: An Interactive History</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&amp;family=Work+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <!-- Chosen Palette: Historic Parchment -->
+    <!-- Application Structure Plan: The application is designed as a thematic, single-page journey, breaking away from the linear report structure for better user engagement. It starts with a captivating hero section. A sticky navigation bar allows users to jump to key sections: 'Timeline', 'Key Sites', 'Architecture', and 'Modern Role'. The interactive timeline is the core, allowing users to explore different eras (Mughal, British, Modern). The 'Key Sites' section uses a card-based layout for visual appeal, with interactive elements like a tabbed view for the Ashoka Pillar's inscriptions. The 'Architecture' section uses a bar chart to quantify the fort's original scale and side-by-side comparisons to show historical changes. The 'Modern Role' section uses clear iconography. This non-linear, visually-driven structure was chosen to make the dense historical information digestible and engaging, allowing users to explore based on interest rather than following a prescribed order. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Chronological history of the fort's control. Goal: Show change over time. Viz/Method: Interactive horizontal timeline (HTML/CSS/JS). Interaction: Clicking on an era reveals detailed events. Justification: More engaging than a static table, allows focused exploration. Library: Vanilla JS.
+        - Report Info: Inscriptions on the Ashoka Pillar. Goal: Compare imperial proclamations. Viz/Method: Tabbed content block (HTML/JS). Interaction: Clicking tabs for Ashoka, Samudragupta, Jahangir. Justification: Organizes complex information cleanly and interactively. Library: Vanilla JS.
+        - Report Info: Scale of the original Mughal complex (mansions, residences). Goal: Inform about the fort's vastness. Viz/Method: Bar Chart (Chart.js). Interaction: Tooltips on hover. Justification: Visualizes large numbers more effectively than text alone. Library: Chart.js.
+        - Report Info: Architectural changes by the British. Goal: Compare Mughal vs. British styles. Viz/Method: Side-by-side descriptive panels. Interaction: Static comparison. Justification: Clearly contrasts the aesthetic vs. utilitarian approaches without complex interaction. Library: N/A.
+        - Report Info: Dual modern role (Army/ASI). Goal: Inform about current status. Viz/Method: Icon-based feature list (HTML/Tailwind). Interaction: Static. Justification: Quickly conveys the dual mandate in a visually clear format. Library: N/A.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background-color: #FDFBF5; /* Parchment */
+        }
+        h1, h2, h3, .font-display {
+            font-family: 'Tinos', serif;
+        }
+        .bg-stone-800 { background-color: #292524; }
+        .bg-stone-700 { background-color: #44403c; }
+        .text-stone-300 { color: #d6d3d1; }
+        .text-stone-400 { color: #a8a29e; }
+        .border-stone-600 { border-color: #57534e; }
+        .accent-color { color: #c05621; }
+        .accent-bg { background-color: #c05621; }
+        .accent-border { border-color: #c05621; }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -0.625rem;
+            transform: translateY(-50%);
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 9999px;
+            background-color: #FDFBF5;
+            border: 4px solid #c05621;
+        }
+        .timeline-content.hidden { display: none; }
+        .tab-btn.active {
+            border-color: #c05621;
+            background-color: #c05621;
+            color: #FDFBF5;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="text-stone-800 antialiased">
+
+    <header class="bg-stone-800 text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="font-display text-2xl font-bold">Allahabad Fort</div>
+            <div class="hidden md:flex space-x-8">
+                <a class="hover:text-amber-400 transition-colors duration-300" href="#timeline">Timeline</a>
+                <a class="hover:text-amber-400 transition-colors duration-300" href="#sites">Key Sites</a>
+                <a class="hover:text-amber-400 transition-colors duration-300" href="#architecture">Architecture</a>
+                <a class="hover:text-amber-400 transition-colors duration-300" href="#modern">Modern Role</a>
+            </div>
+            <button class="md:hidden flex items-center" id="mobile-menu-button">
+                <span class="text-3xl">☰</span>
+            </button>
+        </nav>
+        <div class="hidden md:hidden" id="mobile-menu">
+            <a class="block text-center py-2 px-4 text-sm hover:bg-stone-700" href="#timeline">Timeline</a>
+            <a class="block text-center py-2 px-4 text-sm hover:bg-stone-700" href="#sites">Key Sites</a>
+            <a class="block text-center py-2 px-4 text-sm hover:bg-stone-700" href="#architecture">Architecture</a>
+            <a class="block text-center py-2 px-4 text-sm hover:bg-stone-700" href="#modern">Modern Role</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="h-[60vh] bg-cover bg-center flex items-center justify-center text-white" id="hero" style="background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://placehold.co/1920x1080/a52a2a/ffffff?text=Allahabad+Fort');">
+            <div class="text-center">
+                <h1 class="font-display text-5xl md:text-7xl font-bold drop-shadow-lg">The Sentinel of the Sangam</h1>
+                <p class="mt-4 text-lg md:text-xl max-w-2xl mx-auto">A captivating exploration of four centuries of empire, faith, and power at India's sacred river confluence.</p>
+            </div>
+        </section>
+
+        <section class="py-16 md:py-24 bg-stone-100" id="timeline">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="font-display text-4xl font-bold">A Palimpsest of Power</h2>
+                    <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">The fort's past reveals a rich tapestry of empires. Select an era to uncover the pivotal moments that defined its fate.</p>
+                </div>
+
+                <div class="relative w-full">
+                    <div class="absolute left-1/2 -translate-x-1/2 w-1 h-full bg-stone-300 hidden md:block"></div>
+                    <div class="space-y-12 md:space-y-0" id="timeline-container">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 md:py-24" id="sites">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="font-display text-4xl font-bold">Legacy in Stone</h2>
+                    <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">Akbar raised his fortress on hallowed ground. Discover the timeless monuments and legendary sites enshrined within its walls.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8" id="sites-grid">
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 md:py-24 bg-stone-100" id="architecture">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="font-display text-4xl font-bold">Anatomy of a Fortress</h2>
+                    <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">From Mughal opulence to British restraint, the fort's design reflects shifting ideals and contrasting styles.</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div class="order-2 lg:order-1">
+                        <h3 class="font-display text-3xl font-semibold mb-4">The Scale of an Empire</h3>
+                        <p class="text-stone-700 mb-6">The Mughal complex functioned as a miniature city, showcasing astounding imperial wealth and order. The figures below, drawn from historical accounts, highlight its vast scale prior to British-era demolitions.</p>
+                        <div class="chart-container">
+                            <canvas id="architectureChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="order-1 lg:order-2">
+                        <h3 class="font-display text-3xl font-semibold mb-4">From Palace to Barracks</h3>
+                        <p class="text-stone-700 mb-6">The British seized control, swapping ornate pavilions for stark barracks, transforming the fort's essence.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-red-700">
+                                <h4 class="font-display text-xl font-bold mb-2">Mughal Grandeur</h4>
+                                <p class="text-sm text-stone-600">Defined by red sandstone, detailed carvings, vanished gems like 'Chalis Sutun' (Hall of Forty Pillars), and a fusion of Indo-Islamic and Hindu designs. Emphasis lay on elegance, royal grandeur, and symbolic authority.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-700">
+                                <h4 class="font-display text-xl font-bold mb-2">British Utilitarianism</h4>
+                                <p class="text-sm text-stone-600">Driven by military practicality. Graceful designs gave way to open fields of fire. Tall walls were reduced in height and capped with grass parapets. The style embraced a bare, utilitarian purpose.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 md:py-24" id="modern">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="font-display text-4xl font-bold">A Living Heritage</h2>
+                    <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">Today, the fort reflects the intricacies of modern India, serving as a historic landmark, a revered sacred site, and a functioning military post.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div class="bg-white p-8 rounded-lg shadow-lg">
+                        <div class="text-5xl accent-color mb-4">🛡️</div>
+                        <h3 class="font-display text-2xl font-semibold mb-2">Military Cantonment</h3>
+                        <p class="text-stone-600">The fort serves its age-old role as a strategic base, now hosting an ordnance depot for the Indian Army, safeguarding it from urban sprawl.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-lg">
+                        <div class="text-5xl accent-color mb-4">🏛️</div>
+                        <h3 class="font-display text-2xl font-semibold mb-2">National Monument</h3>
+                        <p class="text-stone-600">Designated as a protected site of national significance by the ASI, the fort remains under military use, restricting public access.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-lg">
+                        <div class="text-5xl accent-color mb-4">🙏</div>
+                        <h3 class="font-display text-2xl font-semibold mb-2">Sacred Site</h3>
+                        <p class="text-stone-600">During Kumbh Mela, the Army eases rules, allowing millions of pilgrims into the fort's sacred sites.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300">
+<div class="container mx-auto px-6 py-12 lg:px-8">
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/">Cities of India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html">Small Cities</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/pilgrimages/">Pilgrimages</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/wpilgrimages/vaishno-devi/">Vaishno Devi</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html">Agra Fort History Architecture Mughal Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html">Ajanta Ellora Rock Cut Wonders</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html">Ajinkyatara Fort Exploration Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html">Ajinkyatara Fort Guide History Visitor Info</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html">Ajinkyatara Fort History Legacy Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html">Aligarh Fort History Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html">Aligarh Fort History Visitor Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html">Allahabad Fort History And Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html">Allahabad Fort History Significance</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html">Amber Fort Guide History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html">Amber Fort History Architecture Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html">Aranthangi Fort Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html">Arnala Fort Guide History Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html">Arnala Fort History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html">Ashoka Pillars Legacy Dhamma</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html">Belgaum Fort History Architecture Pluralism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html">Chitradurga Fort Seven Circles</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html">Daulatabad Fort Invincible Deccan Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html">Explore Indias Majestic Forts</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html">Fortress Explorer Iconic Fortresses</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html">Forts Monuments India Interactive History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html">Forts Of India Design History Legends</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html">Golconda Fort History Engineering Diamonds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html">Golconda Fortress Diamonds Power</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html">Great Stupa Sanchi History Symbolism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html">Great Stupa Sanchi Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html">Gwalior Fort Gibraltar India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html">Hawa Mahal Jaipur Palace Winds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/india-great-empires-history.html">India Great Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html">Indias Architectural Heritage Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html">Indias Architectural Heritage Report</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html">Indias Architectural Heritage Timeless Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html">Indias Architectural Heritage Visual Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html">Indias Architectural Heritage Visual Journey</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html">Indias Great Empires Visual History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html">Janjira Fort Unconquered Sea Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html">Khajuraho Art History Temples</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html">Mysore Palace History Architecture Tourism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html">Mysore Palace History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html">Qutub Minar History Architecture Icon</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html">Qutub Minar History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html">Ramgarh Fort Heritage Hotel History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html">Sentinels Of India Iconic Forts Overview</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html">Shaniwar Wada History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html">Sovereign Tapestry Indian Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html">Tamil Nadu Temples Forts Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html">Tipu Sultan Fort History Legacy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-8 text-center text-sm text-gray-400">
+<p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+</div>
+<div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+<p class="text-sm text-gray-400">© 2026 India Cities. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const navLinks = document.querySelectorAll('#mobile-menu a, header nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+            
+            const timelineData = [
+                {
+                    era: "The Mughal Era",
+                    color: "red-700",
+                    description: "Akbar's grand design and the fort's role in dynastic politics.",
+                    events: [
+                        { year: "1583", title: "Construction Begins", text: "Emperor Akbar commissions his largest fortress at the sacred site of Prayag, renaming it 'Illahabas'. The project is a masterful blend of strategic military planning and symbolic appropriation of a potent Hindu spiritual center." },
+                        { year: "c. 1600", title: "Prince Salim's Rebellion", text: "Akbar's son, Salim (the future Emperor Jahangir), rebels and establishes a parallel court within the fort, highlighting its immediate strategic importance as a power base." },
+                        { year: "17th Century", title: "Imperial Inscriptions", text: "Jahangir adds a Persian inscription to the ancient Ashoka Pillar, overwriting parts of the original edicts to assert his own imperial legacy." }
+                    ]
+                },
+                {
+                    era: "The British Raj",
+                    color: "blue-700",
+                    description: "The fort's transformation into a bastion of colonial power.",
+                    events: [
+                        { year: "1798", title: "Cession to the Company", text: "Under financial pressure, the Nawab of Awadh cedes the fort to the British East India Company, marking the end of native control." },
+                        { year: "1801-1857", title: "Architectural Transformation", text: "The British convert the fort into a 'modern stronghold', demolishing elegant Mughal pavilions like the Chalis Sutun and topping the ramparts with turf parapets for military efficiency." },
+                        { year: "1857", title: "Epicenter of Rebellion", text: "During the Sepoy Mutiny, the fort becomes the last refuge for the British in the region. Its survival is critical, and it serves as the staging ground for the British counter-offensive." },
+                        { year: "1858", title: "A New Capital", text: "Allahabad is made the capital of the North-Western Provinces, and Queen Victoria's Proclamation is read here, officially beginning the British Raj." }
+                    ]
+                },
+                {
+                    era: "Modern India",
+                    color: "green-700",
+                    description: "A living heritage site navigating a complex dual identity.",
+                    events: [
+                        { year: "1947-Present", title: "Dual Mandate", text: "After independence, the fort is controlled by the Indian Army as an ordnance depot while also being recognized by the Archaeological Survey of India (ASI) as a Monument of National Importance." },
+                        { year: "Present Day", title: "Limited Access", text: "Due to its military status, public access is restricted to a small portion of the complex, primarily the sacred sites like the Patalpuri Temple and Akshayavat." },
+                        { year: "During Kumbh Mela", title: "A Sacred Backdrop", text: "The Army traditionally relaxes access restrictions during the Kumbh Mela, allowing millions of pilgrims to visit the holy sites within the fort, acknowledging the primacy of faith." }
+                    ]
+                }
+            ];
+
+            const timelineContainer = document.getElementById('timeline-container');
+            timelineData.forEach((item, index) => {
+                const alignmentClass = index % 2 === 0 ? 'md:text-right md:pr-8' : 'md:pl-8';
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `timeline-item relative md:w-1/2 ${index % 2 === 0 ? 'md:ml-0' : 'md:ml-1/2'} p-4`;
+                
+                let eventsHtml = item.events.map(event => `
+                    <div class="mb-4 last:mb-0">
+                        <h4 class="font-bold text-lg accent-color">${event.year}: ${event.title}</h4>
+                        <p class="text-sm text-stone-600">${event.text}</p>
+                    </div>
+                `).join('');
+
+                itemDiv.innerHTML = `
+                    <div class="cursor-pointer p-6 bg-white rounded-lg shadow-lg border-l-4 border-${item.color}">
+                        <h3 class="font-display text-2xl font-bold">${item.era}</h3>
+                        <p class="text-stone-500 text-md italic mb-4">${item.description}</p>
+                        <div class="timeline-content hidden mt-4 pt-4 border-t border-stone-200">
+                            ${eventsHtml}
+                        </div>
+                    </div>
+                `;
+                timelineContainer.appendChild(itemDiv);
+
+                itemDiv.querySelector('.cursor-pointer').addEventListener('click', (e) => {
+                    const content = e.currentTarget.querySelector('.timeline-content');
+                    content.classList.toggle('hidden');
+                });
+            });
+
+            const sitesData = [
+                {
+                    title: "The Ashoka Pillar",
+                    icon: "📜",
+                    description: "A monolithic sandstone pillar from the 3rd century BCE, serving as a public ledger for three great empires. Its surface bears inscriptions from Ashoka, Samudragupta, and Jahangir.",
+                    interactive: true,
+                    content: {
+                        Ashoka: { script: "Brahmi (3rd Century BCE)", purpose: "Promoted *Dhamma* (ethical governance) and unity in the Buddhist *Sangha*. A primary source for Mauryan history." },
+                        Samudragupta: { script: "Brahmi (4th Century CE)", purpose: "A famous eulogy (*prashasti*) detailing the Gupta emperor's military conquests, legitimizing his rule." },
+                        Jahangir: { script: "Persian (17th Century CE)", purpose: "A genealogical record commemorating the Mughal emperor's accession, overwriting parts of Ashoka's edicts." }
+                    }
+                },
+                {
+                    title: "Patalpuri Temple",
+                    icon: "🕉️",
+                    description: "An ancient, underground Hindu shrine that predates the fort. Believed to be an entrance to the netherworld (*Patal Lok*), it was visited by Lord Rama and preserved by Akbar.",
+                    interactive: false
+                },
+                {
+                    title: "Akshayavat",
+                    icon: "🌳",
+                    description: "The 'Immortal Banyan Tree', a symbol of eternity in Hindu, Jain, and Buddhist traditions. Legend holds it survived a cosmic flood and attempts at destruction by emperors.",
+                    interactive: false
+                },
+                {
+                    title: "Saraswati Koop",
+                    icon: "💧",
+                    description: "A deep well revered as the subterranean source of the mythical Saraswati river, the third river of the Triveni Sangam, further sanctifying the fort's grounds.",
+                    interactive: false
+                }
+            ];
+
+            const sitesGrid = document.getElementById('sites-grid');
+            sitesData.forEach(site => {
+                const siteCard = document.createElement('div');
+                siteCard.className = 'bg-white p-6 rounded-lg shadow-lg flex flex-col';
+                
+                let interactiveHtml = '';
+                if (site.interactive) {
+                    interactiveHtml = `
+                        <div class="mt-4 pt-4 border-t border-stone-200">
+                            <div class="flex space-x-2 mb-3" role="tablist">
+                                <button class="tab-btn text-sm px-3 py-1 border-2 border-stone-300 rounded-full transition-all duration-300 active" data-tab="Ashoka">Ashoka</button>
+                                <button class="tab-btn text-sm px-3 py-1 border-2 border-stone-300 rounded-full transition-all duration-300" data-tab="Samudragupta">Samudragupta</button>
+                                <button class="tab-btn text-sm px-3 py-1 border-2 border-stone-300 rounded-full transition-all duration-300" data-tab="Jahangir">Jahangir</button>
+                            </div>
+                            <div class="tab-content text-sm">
+                                <div id="content-Ashoka">
+                                    <p><strong>Script:</strong> ${site.content.Ashoka.script}</p>
+                                    <p><strong>Purpose:</strong> ${site.content.Ashoka.purpose}</p>
+                                </div>
+                                <div id="content-Samudragupta" class="hidden">
+                                    <p><strong>Script:</strong> ${site.content.Samudragupta.script}</p>
+                                    <p><strong>Purpose:</strong> ${site.content.Samudragupta.purpose}</p>
+                                </div>
+                                <div id="content-Jahangir" class="hidden">
+                                    <p><strong>Script:</strong> ${site.content.Jahangir.script}</p>
+                                    <p><strong>Purpose:</strong> ${site.content.Jahangir.purpose}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                siteCard.innerHTML = `
+                    <div class="flex-grow">
+                        <div class="text-4xl mb-4">${site.icon}</div>
+                        <h3 class="font-display text-2xl font-bold mb-2">${site.title}</h3>
+                        <p class="text-stone-600">${site.description}</p>
+                    </div>
+                    ${interactiveHtml}
+                `;
+                sitesGrid.appendChild(siteCard);
+            });
+
+            sitesGrid.querySelectorAll('.tab-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const parent = button.closest('.interactive-card-content');
+                    const tabName = button.dataset.tab;
+                    
+                    button.parentElement.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    button.closest('.mt-4').querySelectorAll('.tab-content > div').forEach(content => content.classList.add('hidden'));
+                    document.getElementById(`content-${tabName}`).classList.remove('hidden');
+                });
+            });
+
+            const ctx = document.getElementById('architectureChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mansions (Mahals)', 'Residences', 'Barracks', 'Cellars'],
+                    datasets: [{
+                        label: 'Number of Structures in Original Fort',
+                        data: [33, 277, 176, 77],
+                        backgroundColor: [
+                            'rgba(192, 86, 33, 0.6)',
+                            'rgba(68, 64, 60, 0.6)',
+                            'rgba(168, 162, 158, 0.6)',
+                            'rgba(120, 113, 108, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(192, 86, 33, 1)',
+                            'rgba(68, 64, 60, 1)',
+                            'rgba(168, 162, 158, 1)',
+                            'rgba(120, 113, 108, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Original Mughal Complex Structures',
+                            font: {
+                                family: "'Tinos', serif",
+                                size: 16
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                font: {
+                                    family: "'Work Sans', sans-serif"
+                                }
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                font: {
+                                    family: "'Work Sans', sans-serif"
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+
+</body></html>

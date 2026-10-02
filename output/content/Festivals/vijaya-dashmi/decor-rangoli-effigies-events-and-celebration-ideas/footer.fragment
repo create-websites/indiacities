@@ -1,0 +1,59 @@
+<footer class="bg-gray-800 text-gray-300">
+  <div class="container mx-auto px-6 py-12 lg:px-8">
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/" class="hover:text-white hover:underline transition-colors duration-200">Cities of India</a></li>
+          <li><a href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Small Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+          <li><a href="https://www.indiacities.net/wpilgrimages/vaishno-devi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishno Devi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/dussehra-celebration-ideas-for-apartment-communities.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Celebration Ideas For Apartment Communities</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/dussehra-celebration-ideas-for-families-living-abroad.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Celebration Ideas For Families Living Abroad</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/dussehra-decoration-ideas-for-home.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Decoration Ideas For Home</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/dussehra-door-and-entrance-decoration-ideas.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Door And Entrance Decoration Ideas</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/dussehra-event-planning-checklist.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Event Planning Checklist</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/dussehra-flower-decoration-ideas.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Flower Decoration Ideas</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/dussehra-games-and-activities-for-families.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Games And Activities For Families</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/dussehra-office-celebration-ideas.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Office Celebration Ideas</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/dussehra-party-and-cultural-program-ideas.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Party And Cultural Program Ideas</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/dussehra-photo-booth-and-backdrop-ideas.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Photo Booth And Backdrop Ideas</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/dussehra-puja-room-decoration-ideas.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Puja Room Decoration Ideas</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/dussehra-stage-decoration-ideas.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Stage Decoration Ideas</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/easy-vijayadashami-rangoli-designs-for-beginners.html" class="hover:text-white hover:underline transition-colors duration-200">Easy Vijayadashami Rangoli Designs For Beginners</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/eco-friendly-dussehra-celebration-ideas.html" class="hover:text-white hover:underline transition-colors duration-200">Eco Friendly Dussehra Celebration Ideas</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/eco-friendly-ravana-effigy-ideas.html" class="hover:text-white hover:underline transition-colors duration-200">Eco Friendly Ravana Effigy Ideas</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/how-to-celebrate-dussehra-without-burning-an-effigy.html" class="hover:text-white hover:underline transition-colors duration-200">How To Celebrate Dussehra Without Burning An Effigy</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/how-to-organize-a-community-dussehra-celebration.html" class="hover:text-white hover:underline transition-colors duration-200">How To Organize A Community Dussehra Celebration</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/how-to-organize-a-small-ramlila-in-a-community.html" class="hover:text-white hover:underline transition-colors duration-200">How To Organize A Small Ramlila In A Community</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/ravana-effigy-making-ideas-for-community-events.html" class="hover:text-white hover:underline transition-colors duration-200">Ravana Effigy Making Ideas For Community Events</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/traditional-dussehra-rangoli-designs.html" class="hover:text-white hover:underline transition-colors duration-200">Traditional Dussehra Rangoli Designs</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+      <p class="text-sm text-gray-400">&copy; 2026 India Cities. All rights reserved.</p>
+      
+    </div>
+
+  </div>
+</footer>

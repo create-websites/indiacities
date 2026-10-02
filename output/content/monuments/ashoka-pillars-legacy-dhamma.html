@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Infographic: The Pillars of Ashoka</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+    <!-- Chosen Palette: Energetic & Playful -->
+    <!-- Application Structure Plan: The infographic follows a top-down narrative, starting with a powerful hook (The Kalinga War's impact), moving to the solution (The Pillars of Dhamma), analyzing their creation and meaning (Architecture & Symbolism), and concluding with their modern legacy. This structure was chosen to guide the user through a clear cause-and-effect story, making the complex history digestible and engaging. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Kalinga War Casualties. Goal: Inform. Viz: Donut Chart (Chart.js). Justification: Immediately conveys the scale of the tragedy and Ashoka's motivation.
+        - Report Info: Core Tenets of Dhamma. Goal: Organize. Viz: Flowchart-style diagram (HTML/CSS). Justification: Visually breaks down the abstract concept of Dhamma into its core, actionable principles.
+        - Report Info: Pillar Construction. Goal: Compare. Viz: Side-by-side comparison table (HTML/CSS). Justification: Clearly highlights the unique engineering of Ashokan pillars versus Achaemenid columns.
+        - Report Info: Surviving Pillar Distribution. Goal: Change/Location. Viz: Bar Chart (Chart.js). Justification: Provides a quick, quantitative overview of the geographical distribution of this historical legacy.
+        - Report Info: Sarnath Capital Symbolism. Goal: Organize. Viz: Icon-based list (HTML/Unicode). Justification: Simplifies the complex iconography into easily understandable components.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #FEF3C7; /* yellow-100 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        .stat-card {
+            background-color: #FFFFFF;
+            border-left: 5px solid #F59E0B; /* amber-500 */
+        }
+        .flow-arrow {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+        }
+        .flow-arrow-down {
+            border-top: 15px solid #FB923C; /* orange-400 */
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -25px;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-orange-600 mb-2">PILLARS OF DHAMMA</h1>
+            <p class="text-lg text-gray-700">How Ashoka's inner turmoil carved a moral legacy in stone.</p>
+        </header>
+
+        <section class="mb-16">
+            <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-center text-red-600 mb-4">THE CATALYST: A WAR OF HORRORS</h2>
+                <p class="text-center text-gray-600 mb-6 max-w-2xl mx-auto">The devastating Kalinga War (c. 260 BCE) caused immense suffering, deeply shocking Emperor Ashoka and inspiring his shift from ruthless warrior to advocate of peace.</p>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="text-center">
+                        <div class="stat-card rounded-lg p-4 mb-4 shadow-md">
+                            <p class="text-4xl font-bold text-red-500">~150,000</p>
+                            <p class="text-gray-600">Kalingan People Killed</p>
+                        </div>
+                        <div class="stat-card rounded-lg p-4 shadow-md">
+                            <p class="text-4xl font-bold text-gray-700">~100,000</p>
+                            <p class="text-gray-600">Mauryan Soldiers Killed</p>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="kalingaWarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-center text-orange-600 mb-4">THE RESPONSE: A CODE FOR A KINGDOM</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Ashoka introduced **Dhamma**, a universal ethical code aimed at unity. Rather than a religion, it was a pragmatic philosophy to rule his vast, diverse empire through righteousness (*dhammavijaya*), not violence.</p>
+            <div class="relative flex flex-col items-center space-y-8">
+                <div class="relative bg-orange-400 text-white p-4 rounded-lg shadow-lg text-center w-64">
+                    <h3 class="font-bold">POLICY OF DHAMMA</h3>
+                    <div class="flow-arrow flow-arrow-down"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+                    <div class="bg-white p-4 rounded-lg shadow-md text-center">
+                        <span class="text-3xl">🕊️</span>
+                        <h4 class="font-semibold mt-2">Non-Violence</h4>
+                        <p class="text-sm text-gray-500">Compassion for all living beings.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-md text-center">
+                         <span class="text-3xl">🤝</span>
+                        <h4 class="font-semibold mt-2">Tolerance</h4>
+                        <p class="text-sm text-gray-500">Respect for all sects and beliefs.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-md text-center">
+                         <span class="text-3xl">👨‍👩‍👧‍👦</span>
+                        <h4 class="font-semibold mt-2">Social Duty</h4>
+                        <p class="text-sm text-gray-500">Respect for elders; humane treatment of servants.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-md text-center">
+                         <span class="text-3xl">💖</span>
+                        <h4 class="font-semibold mt-2">Personal Virtue</h4>
+                        <p class="text-sm text-gray-500">Truthfulness, compassion, and generosity.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+             <h2 class="text-3xl font-bold text-center text-orange-600 mb-4">THE MEDIUM: ENGINEERING AN EMPIRE'S MESSAGE</h2>
+             <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Ashoka's pillars showcased Mauryan brilliance, blending imperial grandeur with the ethical messages carved upon them.</p>
+             <div class="grid md:grid-cols-2 gap-6">
+                 <div class="bg-white p-6 rounded-lg shadow-xl">
+                     <h3 class="font-bold text-center text-xl mb-4">ASHOKAN PILLARS (INDIA)</h3>
+                     <ul class="space-y-3">
+                        <li class="flex items-start"><span class="text-green-500 font-bold mr-3 text-2xl">✓</span><div><strong class="text-gray-800">Monolithic:</strong> Carved from a single 50-ton stone.</div></li>
+                        <li class="flex items-start"><span class="text-green-500 font-bold mr-3 text-2xl">✓</span><div><strong class="text-gray-800">Smooth Surface:</strong> Famous for its mirror-like "Mauryan Polish".</div></li>
+                        <li class="flex items-start"><span class="text-green-500 font-bold mr-3 text-2xl">✓</span><div><strong class="text-gray-800">Freestanding:</strong> Placed as independent monuments along trade routes.</div></li>
+                     </ul>
+                 </div>
+                 <div class="bg-gray-800 text-white p-6 rounded-lg shadow-xl">
+                     <h3 class="font-bold text-center text-xl mb-4">ACHAEMENID COLUMNS (PERSIA)</h3>
+                     <ul class="space-y-3">
+                        <li class="flex items-start"><span class="text-red-400 font-bold mr-3 text-2xl">✗</span><div><strong class="text-gray-200">Segmented:</strong> Built from multiple stacked drums.</div></li>
+                        <li class="flex items-start"><span class="text-red-400 font-bold mr-3 text-2xl">✗</span><div><strong class="text-gray-200">Fluted Surface:</strong> Carved with vertical grooves.</div></li>
+                        <li class="flex items-start"><span class="text-red-400 font-bold mr-3 text-2xl">✗</span><div><strong class="text-gray-200">Structural:</strong> Used to support roofs inside palaces.</div></li>
+                     </ul>
+                 </div>
+             </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-center text-orange-600 mb-4">A UNIVERSE OF SYMBOLS: THE SARNATH CAPITAL</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">The iconic Lion Capital of Sarnath symbolizes imperial authority fused with profound spirituality and now serves as India's National Emblem.</p>
+            <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 grid md:grid-cols-2 gap-8 items-center">
+                <div class="text-center">
+                    <img alt="Lion Capital of Sarnath" class="mx-auto rounded-lg" onerror="this.onerror=null;this.src='https://placehold.co/400x450/FFFFFF/A0AEC0?text=Image+Not+Found';" src="https://placehold.co/400x450/FFFFFF/F97316?text=Lion+Capital"/>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-center">
+                        <span class="text-4xl mr-4">🦁</span>
+                        <div><h4 class="font-bold">Four Lions</h4><p class="text-gray-600 text-sm">Echo the Buddha's wisdom resounding to the ends of the earth.</p></div>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-4xl mr-4">☸️</span>
+                        <div><h4 class="font-bold">The Wheel (Chakra)</h4><p class="text-gray-600 text-sm">Represents the Wheel of Dharma and the cycle of life.</p></div>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-4xl mr-4">🐘</span>
+                        <div><h4 class="font-bold">The Four Animals</h4><p class="text-gray-600 text-sm">An elephant, bull, horse, and lion symbolize key events in Buddha's journey.</p></div>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-4xl mr-4">🌸</span>
+                        <div><h4 class="font-bold">The Inverted Lotus</h4><p class="text-gray-600 text-sm">Represents purity and enlightenment rising above the material world.</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-3xl font-bold text-center text-orange-600 mb-4">A DISPERSED LEGACY</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Currently, around 20 of Ashoka's pillars remain, primarily spread across northern India. The chart highlights the locations of major surviving pillars by modern states or countries.</p>
+            <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8">
+                <div class="chart-container h-80 max-h-[450px]">
+                    <canvas id="pillarDistributionChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    const wrapLabel = (label) => {
+        const maxLen = 16;
+        if (label.length <= maxLen) return label;
+        const words = label.split(' ');
+        const lines = [];
+        let currentLine = '';
+        for (const word of words) {
+            if ((currentLine + word).length > maxLen) {
+                lines.push(currentLine.trim());
+                currentLine = '';
+            }
+            currentLine += word + ' ';
+        }
+        lines.push(currentLine.trim());
+        return lines;
+    };
+
+    const tooltipTitleCallback = (tooltipItems) => {
+        const item = tooltipItems[0];
+        let label = item.chart.data.labels[item.dataIndex];
+        return Array.isArray(label) ? label.join(' ') : label;
+    };
+
+    const kalingaWarCtx = document.getElementById('kalingaWarChart').getContext('2d');
+    new Chart(kalingaWarCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Kalingan People Killed', 'Mauryan Soldiers Killed'],
+            datasets: [{
+                data: [150000, 100000],
+                backgroundColor: ['#EF4444', '#4B5563'],
+                borderColor: '#FFFFFF',
+                borderWidth: 4,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#4B5563',
+                        font: {
+                            size: 14,
+                            weight: '600'
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    }
+                }
+            }
+        }
+    });
+
+    const pillarDistributionCtx = document.getElementById('pillarDistributionChart').getContext('2d');
+    new Chart(pillarDistributionCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Bihar', 'Uttar Pradesh', 'Madhya Pradesh', 'Nepal', 'Haryana (moved)', 'Delhi (relocated)'].map(wrapLabel),
+            datasets: [{
+                label: 'Number of Major Pillar Sites',
+                data: [4, 4, 1, 2, 1, 2],
+                backgroundColor: '#F97316',
+                borderRadius: 5,
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Surviving Pillar Sites by Location',
+                    color: '#4B5563',
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+
+});
+</script>
+
+
+<footer class="bg-gray-800 text-gray-300">
+<div class="container mx-auto px-6 py-12 lg:px-8">
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/">Cities of India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html">Small Cities</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/pilgrimages/">Pilgrimages</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/wpilgrimages/vaishno-devi/">Vaishno Devi</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html">Agra Fort History Architecture Mughal Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html">Ajanta Ellora Rock Cut Wonders</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html">Ajinkyatara Fort Exploration Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html">Ajinkyatara Fort Guide History Visitor Info</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html">Ajinkyatara Fort History Legacy Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html">Aligarh Fort History Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html">Aligarh Fort History Visitor Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html">Allahabad Fort History And Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html">Allahabad Fort History Significance</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html">Amber Fort Guide History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html">Amber Fort History Architecture Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html">Aranthangi Fort Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html">Arnala Fort Guide History Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html">Arnala Fort History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html">Ashoka Pillars Legacy Dhamma</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html">Belgaum Fort History Architecture Pluralism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html">Chitradurga Fort Seven Circles</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html">Daulatabad Fort Invincible Deccan Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html">Explore Indias Majestic Forts</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html">Fortress Explorer Iconic Fortresses</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html">Forts Monuments India Interactive History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html">Forts Of India Design History Legends</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html">Golconda Fort History Engineering Diamonds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html">Golconda Fortress Diamonds Power</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html">Great Stupa Sanchi History Symbolism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html">Great Stupa Sanchi Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html">Gwalior Fort Gibraltar India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html">Hawa Mahal Jaipur Palace Winds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/india-great-empires-history.html">India Great Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html">Indias Architectural Heritage Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html">Indias Architectural Heritage Report</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html">Indias Architectural Heritage Timeless Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html">Indias Architectural Heritage Visual Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html">Indias Architectural Heritage Visual Journey</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html">Indias Great Empires Visual History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html">Janjira Fort Unconquered Sea Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html">Khajuraho Art History Temples</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html">Mysore Palace History Architecture Tourism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html">Mysore Palace History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html">Qutub Minar History Architecture Icon</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html">Qutub Minar History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html">Ramgarh Fort Heritage Hotel History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html">Sentinels Of India Iconic Forts Overview</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html">Shaniwar Wada History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html">Sovereign Tapestry Indian Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html">Tamil Nadu Temples Forts Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html">Tipu Sultan Fort History Legacy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-8 text-center text-sm text-gray-400">
+<p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+</div>
+<div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+<p class="text-sm text-gray-400">© 2026 India Cities. All rights reserved.</p>
+</div>
+</div>
+</footer></body></html>

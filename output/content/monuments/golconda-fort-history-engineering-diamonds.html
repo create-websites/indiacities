@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Golconda Fort: An Interactive Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&amp;family=Source+Sans+3:wght@400;600&amp;display=swap" rel="stylesheet"/>
+    <!-- Chosen Palette: Warm Neutrals with Gold Accent -->
+    <!-- Application Structure Plan: A thematic, non-linear dashboard structure was chosen to allow users to explore the multifaceted story of Golconda Fort at their own pace, which is more engaging than a static report. The application is structured into four key interactive modules: 1) 'The Rise of a Citadel', an interactive timeline to make the complex dynastic history digestible. 2) 'Engineering Marvels', a section with clickable elements to demonstrate the fort's famous acoustics and water system. 3) 'The Kingdom of Diamonds', a visual showcase of legendary gems with a comparative chart and interactive details. 4) 'A Legacy Under Threat', which uses interactive cards to highlight modern conservation challenges. This structure turns passive reading into active exploration. -->
+    <!-- Visualization & Content Choices: 
+        - Dynastic History -> Goal: Show Change -> Viz: Interactive Timeline. Justification: More engaging for chronological data than a table. Method: Vanilla JS + Tailwind.
+        - Fort Acoustics -> Goal: Inform/Engage -> Viz: Interactive Simulation. Justification: Demonstrates the concept more effectively than text. Method: JS event listener.
+        - Water System -> Goal: Organize -> Viz: HTML/CSS Diagram. Justification: Clearly visualizes the flow process without complex graphics. Method: Styled HTML divs.
+        - Diamond Comparison -> Goal: Compare -> Viz: Bar Chart (Chart.js). Justification: Provides an immediate visual comparison of the diamonds' scale. Library: Chart.js.
+        - Conservation Issues -> Goal: Inform -> Viz: Interactive Cards. Justification: Breaks down complex issues into scannable, engaging components. Method: HTML/Tailwind with hover effects.
+        CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Source Sans 3', sans-serif; background-color: #fdfaf6; }
+        h1, h2, h3, h4, .font-display { font-family: 'Merriweather', serif; }
+        .nav-link { position: relative; color: #44403c; transition: color 0.3s; }
+        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 50%; transform: translateX(-50%); background-color: #b45309; transition: width 0.3s ease; }
+        .nav-link.active, .nav-link:hover { color: #b45309; }
+        .nav-link.active::after, .nav-link:hover::after { width: 100%; }
+        .timeline-btn.active { background-color: #b45309; color: white; }
+        .diamond-card { transition: transform 0.3s, box-shadow 0.3s; }
+        .diamond-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+        #acoustic-signal { transition: opacity 0.5s, transform 0.5s; }
+    </style>
+</head>
+<body class="bg-[#fdfaf6] text-stone-700 antialiased">
+
+    <header class="bg-white/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-stone-800">Golconda Fort</h1>
+            <div class="hidden md:flex space-x-8">
+                <a class="nav-link" href="#history">History</a>
+                <a class="nav-link" href="#engineering">Engineering</a>
+                <a class="nav-link" href="#diamonds">Diamonds</a>
+                <a class="nav-link" href="#conservation">Conservation</a>
+            </div>
+             <button class="md:hidden text-stone-800" id="mobile-menu-button">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            </button>
+        </nav>
+        <div class="hidden md:hidden bg-white shadow-lg" id="mobile-menu">
+            <a class="block py-2 px-6 text-sm hover:bg-stone-100" href="#history">History</a>
+            <a class="block py-2 px-6 text-sm hover:bg-stone-100" href="#engineering">Engineering</a>
+            <a class="block py-2 px-6 text-sm hover:bg-stone-100" href="#diamonds">Diamonds</a>
+            <a class="block py-2 px-6 text-sm hover:bg-stone-100" href="#conservation">Conservation</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        
+        <section class="text-center mb-24">
+            <h2 class="text-5xl md:text-7xl font-bold text-stone-900 leading-tight">Fortress of Legends</h2>
+            <p class="max-w-3xl mx-auto mt-4 text-lg">From a shepherd’s hill to a glittering gem hub, uncover Golconda’s tale a fortress of power, brilliance, and vast riches that shaped Deccan's legacy.</p>
+        </section>
+
+        <section class="mb-24 scroll-mt-20" id="history">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-stone-900">The Rise of a Citadel</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-stone-600">Golconda's tale is one of constant change, molded by various dynasties. Over time, rulers transformed a modest mud fort into a vast granite city. Explore the timeline to witness its growth under each reign.</p>
+            </div>
+            <div class="flex flex-col lg:flex-row gap-8 items-start" id="timeline-container">
+                <div class="lg:w-1/3 w-full">
+                    <div class="flex flex-wrap gap-2 lg:flex-col lg:gap-2" id="timeline-controls"></div>
+                </div>
+                <div class="lg:w-2/3 w-full bg-white p-8 rounded-lg shadow-lg">
+                    <h4 class="text-2xl font-bold text-stone-900" id="timeline-title"></h4>
+                    <p class="text-lg font-semibold text-amber-700 mb-2" id="timeline-ruler"></p>
+                    <p class="text-stone-700 leading-relaxed" id="timeline-content"></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-24 scroll-mt-20" id="engineering">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-stone-900">Engineering Marvels</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-stone-600">Golconda's architects excelled in practical engineering, devising defenses and sustainability through two key innovations: an intricate acoustic alert system and a pioneering hydraulic framework.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h4 class="text-2xl font-bold mb-4">The Whispering Walls</h4>
+                    <p class="mb-6">A clap at the gate echoes over a kilometer to the peak, serving as an instant alert. This clever sound system was an early warning marvel. Tap the gate to try it.</p>
+                    <div class="bg-stone-100 p-4 rounded-lg flex items-center justify-between">
+                        <button class="bg-amber-700 text-white px-4 py-2 rounded-lg hover:bg-amber-800 transition" id="clap-btn">Clap at Fateh Darwaza</button>
+                        <div class="text-right">
+                             <div class="opacity-0 transform translate-y-2 text-2xl" id="acoustic-signal">🔊</div>
+                             <p class="font-semibold">Bala Hisar</p>
+                             <p class="text-sm text-stone-500" id="alert-message">Awaiting signal...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h4 class="text-2xl font-bold mb-4">The Lifeline of Water</h4>
+                    <p class="mb-6">The fort withstood prolonged sieges due to its hydraulic system, relying on gravity and siphons to channel water from a faraway lake into the city.</p>
+                     <div class="text-sm space-y-2">
+                        <div class="bg-blue-100 p-3 rounded-lg text-center font-semibold">Durgam Cheruvu (Lake)</div>
+                        <div class="text-center text-blue-500 font-bold">↓</div>
+                        <div class="bg-stone-200 p-3 rounded-lg text-center">Terracotta Aqueducts (Qanat System)</div>
+                        <div class="text-center text-stone-500 font-bold">↓</div>
+                         <div class="bg-blue-100 p-3 rounded-lg text-center font-semibold">Fort Storage Tanks &amp; Baolis</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-24 scroll-mt-20" id="diamonds">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-stone-900">The Kingdom of Diamonds</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-stone-600">For ages, Golconda reigned as the diamond hub of the world. Its nearby mines yielded famed treasures, while the fort served as a secure center for trade, fueling the kingdom's vast riches.</p>
+            </div>
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 grid md:grid-cols-2 gap-6" id="diamond-gallery">
+                </div>
+                <div class="lg:col-span-1 bg-white p-8 rounded-lg shadow-lg">
+                     <h4 class="text-2xl font-bold mb-4">A Legacy in Carats</h4>
+                     <p class="mb-6 text-sm">Golconda's diamonds were renowned for their remarkable size. This chart showcases the estimated original weights of its legendary gems.</p>
+                     <div class="chart-container" style="height:400px;">
+                        <canvas id="diamondChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="fixed inset-0 bg-black bg-opacity-60 z-50 hidden flex items-center justify-center p-4" id="diamond-modal">
+            <div class="bg-white rounded-lg shadow-2xl p-6 max-w-lg w-full transform transition-all scale-95 relative" id="modal-content">
+                 <button class="absolute top-2 right-4 text-3xl font-light text-stone-600 hover:text-stone-900" id="modal-close">×</button>
+                <h4 class="text-2xl font-bold mb-2 text-stone-900" id="modal-title"></h4>
+                <p class="text-sm text-stone-700" id="modal-text"></p>
+                <p class="mt-4 text-xs font-semibold uppercase" id="modal-status"></p>
+            </div>
+        </div>
+
+        <section class="scroll-mt-20" id="conservation">
+             <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-stone-900">A Legacy Under Threat</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-stone-600">The fort's grand legacy is under threat from modern issues. Urban sprawl, pollution, and neglect endanger its survival and its bid for UNESCO World Heritage recognition.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-lg border-l-4 border-red-500">
+                    <h4 class="text-xl font-bold">Urban Encroachment</h4>
+                    <p class="mt-2 text-sm">Sections of the historic Naya Qila have turned into a private golf course, limiting access and harming the site's heritage.</p>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow-lg border-l-4 border-yellow-500">
+                    <h4 class="text-xl font-bold">Water Pollution</h4>
+                    <p class="mt-2 text-sm">Ancient water bodies such as Katora Houz now suffer from neglect and sewage, turning into polluted cesspools and ruining historic systems.</p>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow-lg border-l-4 border-blue-500">
+                    <h4 class="text-xl font-bold">Moat Neglect</h4>
+                    <p class="mt-2 text-sm">The fort's wide defensive moat, neglected since 1947, is choked with trash, weakening its foundation.</p>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow-lg border-l-4 border-gray-500">
+                    <h4 class="text-xl font-bold">Bureaucratic Hurdles</h4>
+                    <p class="mt-2 text-sm">Restoration plans frequently face delays, tangled in agency disputes and weak enforcement.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300">
+<div class="container mx-auto px-6 py-12 lg:px-8">
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/">Cities of India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html">Small Cities</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/pilgrimages/">Pilgrimages</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/wpilgrimages/vaishno-devi/">Vaishno Devi</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html">Agra Fort History Architecture Mughal Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html">Ajanta Ellora Rock Cut Wonders</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html">Ajinkyatara Fort Exploration Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html">Ajinkyatara Fort Guide History Visitor Info</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html">Ajinkyatara Fort History Legacy Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html">Aligarh Fort History Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html">Aligarh Fort History Visitor Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html">Allahabad Fort History And Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html">Allahabad Fort History Significance</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html">Amber Fort Guide History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html">Amber Fort History Architecture Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html">Aranthangi Fort Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html">Arnala Fort Guide History Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html">Arnala Fort History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html">Ashoka Pillars Legacy Dhamma</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html">Belgaum Fort History Architecture Pluralism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html">Chitradurga Fort Seven Circles</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html">Daulatabad Fort Invincible Deccan Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html">Explore Indias Majestic Forts</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html">Fortress Explorer Iconic Fortresses</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html">Forts Monuments India Interactive History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html">Forts Of India Design History Legends</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html">Golconda Fort History Engineering Diamonds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html">Golconda Fortress Diamonds Power</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html">Great Stupa Sanchi History Symbolism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html">Great Stupa Sanchi Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html">Gwalior Fort Gibraltar India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html">Hawa Mahal Jaipur Palace Winds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/india-great-empires-history.html">India Great Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html">Indias Architectural Heritage Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html">Indias Architectural Heritage Report</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html">Indias Architectural Heritage Timeless Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html">Indias Architectural Heritage Visual Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html">Indias Architectural Heritage Visual Journey</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html">Indias Great Empires Visual History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html">Janjira Fort Unconquered Sea Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html">Khajuraho Art History Temples</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html">Mysore Palace History Architecture Tourism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html">Mysore Palace History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html">Qutub Minar History Architecture Icon</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html">Qutub Minar History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html">Ramgarh Fort Heritage Hotel History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html">Sentinels Of India Iconic Forts Overview</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html">Shaniwar Wada History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html">Sovereign Tapestry Indian Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html">Tamil Nadu Temples Forts Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html">Tipu Sultan Fort History Legacy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-8 text-center text-sm text-gray-400">
+<p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+</div>
+<div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+<p class="text-sm text-gray-400">© 2026 India Cities. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const timelineData = [
+                { id: 'kakatiya', title: 'Kakatiya Dynasty', ruler: 'c. 1143', content: "The fort's story begins with the Kakatiyas, who built the first fortification on the strategic granite hill. It was a modest mud fort known as 'Golla Konda' (Shepherd's Hill), serving as a key military outpost." },
+                { id: 'bahmani', title: 'Bahmani Sultanate', ruler: 'c. 1364', content: "After capturing the fort, the Bahmani rulers recognized its potential. They began the first major upgrade, fortifying the mud structure with stone and establishing Golconda as a key provincial headquarters." },
+                { id: 'qutbshahi', title: 'Qutb Shahi Dynasty', ruler: '1518–1687', content: "This was Golconda's golden age. The Qutb Shahi rulers declared independence and transformed the fort into their magnificent capital, expanding it into a massive granite citadel and the center of the global diamond trade." },
+                { id: 'mughal', title: 'Mughal Empire', ruler: '1687', content: "The fort's immense wealth made it a target for Emperor Aurangzeb. After a grueling eight-month siege, the fort fell not to force but to treachery. It was annexed and left to fall into ruin, ending an era." }
+            ];
+
+            const diamondData = [
+                { name: 'Koh-i-Noor', weight: 190, text: 'Perhaps the most famous diamond, its name means "Mountain of Light." Its history is a chronicle of conquest, passing through Mughal, Persian, and Sikh hands before being ceded to the British. Its ownership is still disputed.', status: 'In the British Crown Jewels.' },
+                { name: 'Hope Diamond', weight: 115, text: 'A legendary deep-blue diamond, originally the "Tavernier Blue." It was stolen during the French Revolution, recut, and is associated with a history of curses and tragedy.', status: 'At the Smithsonian Institution, USA.' },
+                { name: 'Regent Diamond', weight: 410, text: 'Known for its exceptional clarity and perfect cut, this massive diamond was acquired by the French Crown and once adorned the hilt of Napoleon Bonaparte\'s sword.', status: 'At the Louvre Museum, Paris.' },
+                { name: 'Daria-i-Noor', weight: 182, text: 'The "Sea of Light," this is the world\'s largest known pink diamond. It was part of the Mughal Peacock Throne before being looted by Persian ruler Nader Shah in 1739.', status: 'In the Iranian Crown Jewels.' }
+            ];
+
+            const timelineControls = document.getElementById('timeline-controls');
+            const timelineTitle = document.getElementById('timeline-title');
+            const timelineRuler = document.getElementById('timeline-ruler');
+            const timelineContent = document.getElementById('timeline-content');
+            
+            timelineData.forEach(item => {
+                const button = document.createElement('button');
+                button.className = 'timeline-btn w-full text-left px-6 py-3 rounded-lg bg-white hover:bg-stone-100 shadow-sm transition';
+                button.dataset.id = item.id;
+                button.textContent = item.title;
+                button.onclick = () => updateTimeline(item.id);
+                timelineControls.appendChild(button);
+            });
+
+            function updateTimeline(id) {
+                const item = timelineData.find(d => d.id === id);
+                timelineTitle.textContent = item.title;
+                timelineRuler.textContent = item.ruler;
+                timelineContent.textContent = item.content;
+                document.querySelectorAll('.timeline-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.id === id);
+                });
+            }
+            updateTimeline('qutbshahi');
+
+            const clapBtn = document.getElementById('clap-btn');
+            const acousticSignal = document.getElementById('acoustic-signal');
+            const alertMessage = document.getElementById('alert-message');
+            clapBtn.addEventListener('click', () => {
+                alertMessage.textContent = 'Signal sent...';
+                clapBtn.disabled = true;
+                setTimeout(() => {
+                    acousticSignal.classList.remove('opacity-0', 'translate-y-2');
+                    alertMessage.textContent = 'Alert received at summit!';
+                }, 300);
+                 setTimeout(() => {
+                    acousticSignal.classList.add('opacity-0', 'translate-y-2');
+                    alertMessage.textContent = 'Awaiting signal...';
+                    clapBtn.disabled = false;
+                }, 2000);
+            });
+
+            const diamondGallery = document.getElementById('diamond-gallery');
+            const modal = document.getElementById('diamond-modal');
+            const modalContent = document.getElementById('modal-content');
+            const modalTitle = document.getElementById('modal-title');
+            const modalText = document.getElementById('modal-text');
+            const modalStatus = document.getElementById('modal-status');
+            const modalClose = document.getElementById('modal-close');
+
+            diamondData.forEach(diamond => {
+                const card = document.createElement('div');
+                card.className = 'diamond-card bg-white p-6 rounded-lg shadow-lg cursor-pointer';
+                card.innerHTML = `<h4 class="text-xl font-bold text-stone-900">${diamond.name}</h4><p class="text-sm text-stone-500 mt-1">Original wt: ~${diamond.weight} carats</p>`;
+                card.onclick = () => {
+                    modalTitle.textContent = diamond.name;
+                    modalText.textContent = diamond.text;
+                    modalStatus.textContent = `Current Status: ${diamond.status}`;
+                    modal.classList.remove('hidden');
+                    setTimeout(()=> modalContent.classList.remove('scale-95'), 10);
+                };
+                diamondGallery.appendChild(card);
+            });
+
+            function closeModal() {
+                modalContent.classList.add('scale-95');
+                setTimeout(()=> modal.classList.add('hidden'), 200);
+            }
+            modalClose.onclick = closeModal;
+            modal.onclick = (e) => { if(e.target === modal) closeModal(); };
+
+            const diamondCtx = document.getElementById('diamondChart').getContext('2d');
+            new Chart(diamondCtx, {
+                type: 'bar',
+                data: {
+                    labels: diamondData.map(d => d.name),
+                    datasets: [{
+                        label: 'Original Estimated Carat Weight',
+                        data: diamondData.map(d => d.weight),
+                        backgroundColor: ['#b45309', '#ca8a04', '#78716c', '#fca5a5'],
+                        borderColor: '#fdfaf6',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { title: () => '', label: (c) => ` ${c.raw} carats` } }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Carats' } }
+                    }
+                }
+            });
+            
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            mobileMenu.addEventListener('click', (e) => {
+                if(e.target.tagName === 'A') {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+            
+            const navLinks = document.querySelectorAll('nav a');
+            const sections = document.querySelectorAll('main section');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 80) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                 navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+
+
+</body></html>

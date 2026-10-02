@@ -1,0 +1,46 @@
+<footer class="bg-gray-800 text-gray-300">
+  <div class="container mx-auto px-6 py-12 lg:px-8">
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/" class="hover:text-white hover:underline transition-colors duration-200">Cities of India</a></li>
+          <li><a href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Small Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+          <li><a href="https://www.indiacities.net/wpilgrimages/vaishno-devi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishno Devi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/South/Hyderabad/guntur.html" class="hover:text-white hover:underline transition-colors duration-200">Guntur</a></li>
+          <li><a href="https://www.indiacities.net/South/Hyderabad/hyderabad.html" class="hover:text-white hover:underline transition-colors duration-200">Hyderabad</a></li>
+          <li><a href="https://www.indiacities.net/South/Hyderabad/IT Hub - Gachibowli Madhupur.html" class="hover:text-white hover:underline transition-colors duration-200">It Hub   Gachibowli Madhupur</a></li>
+          <li><a href="https://www.indiacities.net/South/Hyderabad/Madhupur.html" class="hover:text-white hover:underline transition-colors duration-200">Madhupur</a></li>
+          <li><a href="https://www.indiacities.net/South/Hyderabad/What to see in Hyderabad.html" class="hover:text-white hover:underline transition-colors duration-200">What To See In Hyderabad</a></li>
+          <li><a href="https://www.indiacities.net/South/Hyderabad/Where to eat in Hyderababd.html" class="hover:text-white hover:underline transition-colors duration-200">Where To Eat In Hyderababd</a></li>
+          <li><a href="https://www.indiacities.net/South/Hyderabad/Where to Shop in Hyderababd.html" class="hover:text-white hover:underline transition-colors duration-200">Where To Shop In Hyderababd</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+      <p class="text-sm text-gray-400">&copy; 2026 India Cities. All rights reserved.</p>
+      
+    </div>
+
+  </div>
+</footer>

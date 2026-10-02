@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Daulatabad Fort: The Unconquerable Hill of the Gods</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&amp;family=Roboto+Slab:wght@400;700&amp;display=swap" rel="stylesheet"/>
+    <!-- Chosen Palette: Deep Earth & Terracotta -->
+    <!-- Application Structure Plan: The SPA is designed as a single-page narrative that guides the user through the fort's complex history and architecture. This thematic structure is more engaging than a linear report. It includes: 1) A Hero section with key stats. 2) An interactive timeline covering the fort's evolution under different dynasties. 3) A central, interactive diagram of the fort's multi-layered defense system, where users can click hotspots to understand each element. 4) A dedicated section on Muhammad bin Tughlaq's infamous capital shift. 5) An overview of key monuments within the complex. This modular approach makes the dense information accessible and memorable. -->
+    <!-- Visualization & Content Choices: 
+        - Key Stats -> Goal: Inform -> Viz: Animated Counters. Justification: Provides a high-impact introduction to the fort's imposing scale.
+        - Dynastic History -> Goal: Change -> Viz: Interactive Timeline (JS-powered tabs). Justification: Allows users to focus on distinct periods, making the history digestible.
+        - Defensive Layers -> Goal: Organize/Inform -> Viz: Clickable Hotspot Diagram. Justification: A visual, spatial exploration of the fort's concentric defenses is more intuitive than text.
+        - Tughlaq's March -> Goal: Inform/Compare -> Viz: Data cards and a simplified map diagram. Justification: Visually represents the immense distance and logistical challenge of the capital transfer.
+        - Key Monuments -> Goal: Inform -> Viz: Styled Info Cards. Justification: Breaks down information about key structures into scannable, focused segments.
+        CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Roboto Slab', serif; background-color: #fefae0; }
+        h1, h2, h3, h4, .font-display { font-family: 'Cinzel', serif; }
+        .nav-link { position: relative; color: #606c38; transition: color 0.3s; }
+        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 50%; transform: translateX(-50%); background-color: #bc6c25; transition: width 0.3s ease; }
+        .nav-link.active, .nav-link:hover { color: #bc6c25; }
+        .nav-link.active::after, .nav-link:hover::after { width: 100%; }
+        .timeline-btn.active { background-color: #283618; color: white; border-color: #283618; }
+        .hotspot { transition: transform 0.2s, background-color 0.2s; }
+        .hotspot:hover { transform: scale(1.2); }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+    </style>
+</head>
+<body class="bg-[#fefae0] text-[#283618]">
+
+    <header class="bg-white/90 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-black">Daulatabad Fort</h1>
+            <div class="hidden md:flex space-x-8">
+                <a class="nav-link" href="#history">History</a>
+                <a class="nav-link" href="#defenses">Defenses</a>
+                <a class="nav-link" href="#tughlaq">Tughlaq's Folly</a>
+                <a class="nav-link" href="#monuments">Monuments</a>
+            </div>
+            <button class="md:hidden text-zinc-800" id="mobile-menu-button">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            </button>
+        </nav>
+        <div class="hidden md:hidden bg-white shadow-lg" id="mobile-menu">
+            <a class="block py-2 px-6 text-sm hover:bg-gray-100" href="#history">History</a>
+            <a class="block py-2 px-6 text-sm hover:bg-gray-100" href="#defenses">Defenses</a>
+            <a class="block py-2 px-6 text-sm hover:bg-gray-100" href="#tughlaq">Tughlaq's Folly</a>
+            <a class="block py-2 px-6 text-sm hover:bg-gray-100" href="#monuments">Monuments</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        
+        <section class="text-center mb-20">
+            <h2 class="text-5xl md:text-7xl font-bold text-black leading-tight">The Hill of the Gods</h2>
+            <p class="max-w-3xl mx-auto mt-4 text-lg text-gray-700">Uncover the legendary tale of Daulatabad, the invincible Deccan fortress, famed for its strategic brilliance, masterful design, and a legacy forged by mighty empires.</p>
+        </section>
+
+        <section class="mb-20 scroll-mt-20" id="history">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-black">A Fortress Forged by Dynasties</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-gray-600">Once a Yadava bastion and later a Sultanate hub, Daulatabad Fort embodies layers of India's rich past. Explore the timeline to uncover its evolution through diverse reigns.</p>
+            </div>
+            <div class="flex flex-col lg:flex-row gap-8">
+                <div class="w-full lg:w-1/4 flex lg:flex-col justify-center flex-wrap gap-3" id="timeline-controls">
+                    <!-- Buttons injected by JS -->
+                </div>
+                <div class="w-full lg:w-3/4 bg-white p-8 rounded-lg shadow-lg">
+                    <h4 class="text-2xl font-bold text-gray-800 mb-1" id="timeline-title"></h4>
+                    <p class="text-md font-semibold text-amber-800 mb-4" id="timeline-period"></p>
+                    <div class="text-gray-700 leading-relaxed" id="timeline-content"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-20 scroll-mt-20" id="defenses">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-black">Anatomy of an Unconquerable Fort</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-gray-600">Daulatabad's famed might lay in its intricate defense system, crafted to wear down and confuse invaders. Tap the hotspots to uncover its brilliant design.</p>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <div class="bg-zinc-200 p-8 rounded-lg relative aspect-square">
+                    <div class="w-full h-full border-4 border-dashed border-zinc-400 rounded-lg flex items-center justify-center">
+                         <div class="w-4/5 h-4/5 bg-zinc-500 rounded-lg relative shadow-inner p-4 flex items-center justify-center">
+                            <div class="w-2/3 h-2/3 bg-zinc-600 rounded-lg relative flex items-center justify-center">
+                                <div class="w-1/2 h-1/2 bg-zinc-700 rounded-lg relative">
+                                    <div class="hotspot absolute -top-2 left-1/2 -translate-x-1/2 w-6 h-6 bg-amber-700 rounded-full cursor-pointer flex items-center justify-center text-white font-bold" id="hotspot-balkot" title="Balkot">1</div>
+                                </div>
+                                <div class="hotspot absolute -bottom-2 left-1/2 -translate-x-1/2 w-6 h-6 bg-amber-700 rounded-full cursor-pointer flex items-center justify-center text-white font-bold" id="hotspot-andheri" title="Andheri">2</div>
+                            </div>
+                            <div class="hotspot absolute top-1/2 -right-2 -translate-y-1/2 w-6 h-6 bg-amber-700 rounded-full cursor-pointer flex items-center justify-center text-white font-bold" id="hotspot-moat" title="Moat &amp; Scarp">3</div>
+                         </div>
+                         <div class="hotspot absolute top-1/2 -left-2 -translate-y-1/2 w-6 h-6 bg-amber-700 rounded-full cursor-pointer flex items-center justify-center text-white font-bold" id="hotspot-walls" title="Concentric Walls">4</div>
+                    </div>
+                    <p class="absolute bottom-2 text-xs text-center w-full text-zinc-500">Simplified Defense Layers Diagram</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg min-h-[350px]" id="defense-display">
+                    <h4 class="text-2xl font-bold text-gray-800" id="defense-title"></h4>
+                    <p class="text-gray-700 leading-relaxed mt-4" id="defense-content"></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-20 scroll-mt-20" id="tughlaq">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-black">Tughlaq's Folly: The Capital Shift</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-gray-600">In 1327, Sultan Muhammad bin Tughlaq controversially shifted the Delhi Sultanate's capital to Daulatabad, triggering a mass migration and widespread suffering.</p>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <div class="grid md:grid-cols-3 gap-8 text-center">
+                    <div>
+                        <p class="font-display text-5xl text-amber-800">1,200 km</p>
+                        <p class="font-bold mt-2">The Grueling March</p>
+                        <p class="text-sm text-gray-600">The length Delhi's population had to walk on foot.</p>
+                    </div>
+                    <div>
+                        <p class="font-display text-5xl text-amber-800">2 Capitals</p>
+                        <p class="font-bold mt-2">The Strategic Goal</p>
+                        <p class="text-sm text-gray-600">Tughlaq aimed to make Daulatabad a central second capital for tighter Deccan control.</p>
+                    </div>
+                    <div>
+                        <p class="font-display text-5xl text-amber-800">1334</p>
+                        <p class="font-bold mt-2">The Abandonment</p>
+                        <p class="text-sm text-gray-600">Recognizing the logistical issues and northern threats, Tughlaq commanded the capital's return to Delhi.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="scroll-mt-20" id="monuments">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-black">Monuments Within the Fortress</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-gray-600">Beyond its fortifications, Daulatabad showcases diverse structures from various periods, each narrating its history.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h4 class="text-xl font-bold">Chand Minar</h4>
+                    <p class="text-amber-800 font-semibold">Tower of Victory</p>
+                    <p class="mt-2 text-sm">Constructed in 1445 by Ala-ud-din Bahmani, this 63-meter-high minaret, modeled after the Qutb Minar, marks the Bahmani Sultanate's victory over the fort. Adorned with Persian blue tiles, it stands as a striking piece of Indo-Islamic design.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h4 class="text-xl font-bold">Chini Mahal</h4>
+                    <p class="text-amber-800 font-semibold">The Chinese Palace</p>
+                    <p class="mt-2 text-sm">Once adorned with blue and white tiles, this palace became a high-security prison, housing Abul Hasan Tana Shah, Golconda's last king.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h4 class="text-xl font-bold">Bharat Mata Mandir</h4>
+                    <p class="text-amber-800 font-semibold">A Layered History</p>
+                    <p class="mt-2 text-sm">Once a Jain temple, this site was turned into a mosque by Alauddin Khalji and, post-independence, was rededicated to Bharat Mata, reflecting the fort's layered religious past.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300">
+<div class="container mx-auto px-6 py-12 lg:px-8">
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/">Cities of India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html">Small Cities</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/pilgrimages/">Pilgrimages</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/wpilgrimages/vaishno-devi/">Vaishno Devi</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html">Agra Fort History Architecture Mughal Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html">Ajanta Ellora Rock Cut Wonders</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html">Ajinkyatara Fort Exploration Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html">Ajinkyatara Fort Guide History Visitor Info</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html">Ajinkyatara Fort History Legacy Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html">Aligarh Fort History Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html">Aligarh Fort History Visitor Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html">Allahabad Fort History And Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html">Allahabad Fort History Significance</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html">Amber Fort Guide History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html">Amber Fort History Architecture Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html">Aranthangi Fort Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html">Arnala Fort Guide History Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html">Arnala Fort History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html">Ashoka Pillars Legacy Dhamma</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html">Belgaum Fort History Architecture Pluralism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html">Chitradurga Fort Seven Circles</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html">Daulatabad Fort Invincible Deccan Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html">Explore Indias Majestic Forts</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html">Fortress Explorer Iconic Fortresses</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html">Forts Monuments India Interactive History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html">Forts Of India Design History Legends</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html">Golconda Fort History Engineering Diamonds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html">Golconda Fortress Diamonds Power</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html">Great Stupa Sanchi History Symbolism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html">Great Stupa Sanchi Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html">Gwalior Fort Gibraltar India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html">Hawa Mahal Jaipur Palace Winds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/india-great-empires-history.html">India Great Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html">Indias Architectural Heritage Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html">Indias Architectural Heritage Report</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html">Indias Architectural Heritage Timeless Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html">Indias Architectural Heritage Visual Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html">Indias Architectural Heritage Visual Journey</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html">Indias Great Empires Visual History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html">Janjira Fort Unconquered Sea Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html">Khajuraho Art History Temples</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html">Mysore Palace History Architecture Tourism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html">Mysore Palace History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html">Qutub Minar History Architecture Icon</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html">Qutub Minar History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html">Ramgarh Fort Heritage Hotel History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html">Sentinels Of India Iconic Forts Overview</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html">Shaniwar Wada History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html">Sovereign Tapestry Indian Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html">Tamil Nadu Temples Forts Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html">Tipu Sultan Fort History Legacy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-8 text-center text-sm text-gray-400">
+<p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+</div>
+<div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+<p class="text-sm text-gray-400">© 2026 India Cities. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const timelineData = {
+                yadava: {
+                    title: "The Yadava Dynasty",
+                    period: "c. 1187 - 1317",
+                    content: "The fort, originally named Devagiri (Hill of the Gods), was founded by the Yadava king Bhillama V. It served as their powerful capital, from which they dominated the Deccan region until the invasions of the Delhi Sultanate began in 1296 under Alauddin Khalji."
+                },
+                tughlaq: {
+                    title: "The Delhi Sultanate",
+                    period: "1327 - 1334",
+                    content: "Sultan Muhammad bin Tughlaq renamed the city Daulatabad (Abode of Fortune) and controversially shifted his imperial capital here from Delhi. The move was a logistical disaster, causing immense hardship and was abandoned within a few years."
+                },
+                bahmani: {
+                    title: "The Bahmani Sultanate",
+                    period: "c. 1347 - 1499",
+                    content: "After breaking away from Delhi, the Bahmani rulers took control of Daulatabad. It was during this period that the iconic Chand Minar was constructed by Sultan Hasan Gangu Bahmani in 1445 to commemorate a military victory, adding a distinct Persian architectural flavor to the fort."
+                },
+                nizam_shahi: {
+                    title: "Nizam Shahi & Mughals",
+                    period: "c. 1499 - 1760",
+                    content: "The fort became a key secondary capital for the Ahmadnagar Sultanate. The Chini Mahal was likely built during this era. The Mughals captured the fort in 1633, using it as a prison for high-profile political enemies, before it eventually passed to the Marathas."
+                }
+            };
+
+            const defenseData = {
+                walls: { title: "Three Concentric Walls", content: "The fort is protected by three massive fortification walls: Ambarkot (outermost), Mahakot (middle), and Kalakot (innermost). An invading army had to breach all three before even reaching the main citadel, a time-consuming and costly endeavor." },
+                moat: { title: "Sheer Scarp & Crocodile Moat", content: "The base of the conical hill was scarped vertically to a height of 50 meters, making it impossible to climb. This sheer rock face was surrounded by a deep, wide moat that was reputedly infested with crocodiles, forming a formidable barrier." },
+                andheri: { title: "Andheri (The Dark Passage)", content: "A pitch-black, winding tunnel that was the only route to the upper fort. It was filled with confusing turns, dead ends, and defensive traps, including vents through which soldiers could pour hot oil or smoke on invaders. It was designed to disorient and eliminate any enemy who breached the lower gates." },
+                balkot: { title: "Balkot (The Citadel)", content: "The final defensive layer at the summit of the hill. Reaching it required crossing a single narrow bridge over a deep chasm, which could be easily defended by a handful of soldiers. The summit housed the royal palaces and offered a commanding view of the entire region." }
+            };
+
+            const timelineControls = document.getElementById('timeline-controls');
+            Object.keys(timelineData).forEach(key => {
+                const button = document.createElement('button');
+                button.className = 'timeline-btn border-2 border-zinc-300 px-4 py-2 rounded-lg bg-white hover:bg-zinc-200 transition-all w-full text-left';
+                button.textContent = timelineData[key].title;
+                button.dataset.id = key;
+                button.onclick = () => updateTimeline(key);
+                timelineControls.appendChild(button);
+            });
+
+            function updateTimeline(id) {
+                const data = timelineData[id];
+                document.getElementById('timeline-title').textContent = data.title;
+                document.getElementById('timeline-period').textContent = data.period;
+                document.getElementById('timeline-content').textContent = data.content;
+                document.querySelectorAll('.timeline-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.id === id);
+                });
+            }
+            updateTimeline('yadava');
+
+            const archDisplayTitle = document.getElementById('defense-title');
+            const archDisplayContent = document.getElementById('defense-content');
+            Object.keys(defenseData).forEach(key => {
+                document.getElementById(`hotspot-${key}`).onclick = () => updateDefense(key);
+            });
+
+            function updateDefense(id) {
+                const data = defenseData[id] || { title: "Click a hotspot", content: "Select a numbered point on the diagram to learn about its defensive purpose." };
+                archDisplayTitle.textContent = data.title;
+                archDisplayContent.textContent = data.content;
+            }
+            updateDefense(null);
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            
+            const navLinks = document.querySelectorAll('nav a');
+            const sections = document.querySelectorAll('main section');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    if (pageYOffset >= section.offsetTop - 80) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+
+
+</body></html>

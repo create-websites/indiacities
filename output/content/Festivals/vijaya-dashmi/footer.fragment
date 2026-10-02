@@ -1,0 +1,59 @@
+<footer class="bg-gray-800 text-gray-300">
+  <div class="container mx-auto px-6 py-12 lg:px-8">
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/" class="hover:text-white hover:underline transition-colors duration-200">Cities of India</a></li>
+          <li><a href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Small Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+          <li><a href="https://www.indiacities.net/wpilgrimages/vaishno-devi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishno Devi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Folders</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/" class="hover:text-white hover:underline transition-colors duration-200">Ayudha Puja Vidyarambham Shami And Auspicious Traditions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/decor-rangoli-effigies-events-and-celebration-ideas/" class="hover:text-white hover:underline transition-colors duration-200">Decor Rangoli Effigies Events And Celebration Ideas</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/durga-vijayadashami-and-shakti-traditions/" class="hover:text-white hover:underline transition-colors duration-200">Durga Vijayadashami And Shakti Traditions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/dussehra-2027-city-events-and-local-search/" class="hover:text-white hover:underline transition-colors duration-200">Dussehra 2027 City Events And Local Search</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/food-sweets-fasting-and-festive-recipes/" class="hover:text-white hover:underline transition-colors duration-200">Food Sweets Fasting And Festive Recipes</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/" class="hover:text-white hover:underline transition-colors duration-200">Foundation History Meaning And Core Traditions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/global-diaspora-and-cultural-comparisons/" class="hover:text-white hover:underline transition-colors duration-200">Global Diaspora And Cultural Comparisons</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/" class="hover:text-white hover:underline transition-colors duration-200">Kids School Essays Crafts And Educational Content</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/" class="hover:text-white hover:underline transition-colors duration-200">Ramayana Ramlila Ravana And Mythology</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/" class="hover:text-white hover:underline transition-colors duration-200">Regional Dussehra Traditions Across India</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/" class="hover:text-white hover:underline transition-colors duration-200">Travel Fairs Ramlila And Cultural Tourism</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/" class="hover:text-white hover:underline transition-colors duration-200">Ultra Long Tail Seo Faqs Comparisons And Micro Topics</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/" class="hover:text-white hover:underline transition-colors duration-200">Wishes Quotes Messages Captions And Greetings</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/gallery.html" class="hover:text-white hover:underline transition-colors duration-200">Gallery</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+      <p class="text-sm text-gray-400">&copy; 2026 India Cities. All rights reserved.</p>
+      
+    </div>
+
+  </div>
+</footer>

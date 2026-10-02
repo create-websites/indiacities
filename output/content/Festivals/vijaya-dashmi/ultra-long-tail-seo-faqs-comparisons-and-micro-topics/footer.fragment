@@ -1,0 +1,59 @@
+<footer class="bg-gray-800 text-gray-300">
+  <div class="container mx-auto px-6 py-12 lg:px-8">
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/" class="hover:text-white hover:underline transition-colors duration-200">Cities of India</a></li>
+          <li><a href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Small Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+          <li><a href="https://www.indiacities.net/wpilgrimages/vaishno-devi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishno Devi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/100-dussehra-questions-and-answers-complete-festival-faq.html" class="hover:text-white hover:underline transition-colors duration-200">100 Dussehra Questions And Answers Complete Festival Faq</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/can-dussehra-be-celebrated-without-ravana-dahan.html" class="hover:text-white hover:underline transition-colors duration-200">Can Dussehra Be Celebrated Without Ravana Dahan</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/can-you-start-a-new-business-on-dussehra.html" class="hover:text-white hover:underline transition-colors duration-200">Can You Start A New Business On Dussehra</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/dussehra-at-home-vs-community-celebration-ideas-and-planning.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra At Home Vs Community Celebration Ideas And Planning</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/dussehra-glossary-50-terms-characters-rituals-and-traditions-explained.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Glossary 50 Terms Characters Rituals And Traditions Explained</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/dussehra-vs-diwali-which-comes-first-and-how-are-they-connected.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Vs Diwali Which Comes First And How Are They Connected</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/dussehra-vs-navratri-dates-rituals-and-meaning.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Vs Navratri Dates Rituals And Meaning</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/is-dussehra-the-same-day-as-vijayadashami.html" class="hover:text-white hover:underline transition-colors duration-200">Is Dussehra The Same Day As Vijayadashami</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/what-is-simollanghan-and-why-is-it-done.html" class="hover:text-white hover:underline transition-colors duration-200">What Is Simollanghan And Why Is It Done</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/what-should-you-offer-during-dussehra-puja.html" class="hover:text-white hover:underline transition-colors duration-200">What Should You Offer During Dussehra Puja</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/what-should-you-wear-on-dussehra.html" class="hover:text-white hover:underline transition-colors duration-200">What Should You Wear On Dussehra</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/what-time-is-ravana-dahan-usually-performed.html" class="hover:text-white hover:underline transition-colors duration-200">What Time Is Ravana Dahan Usually Performed</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/which-color-is-considered-auspicious-on-vijayadashami.html" class="hover:text-white hover:underline transition-colors duration-200">Which Color Is Considered Auspicious On Vijayadashami</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/why-are-apta-leaves-exchanged-on-dussehra.html" class="hover:text-white hover:underline transition-colors duration-200">Why Are Apta Leaves Exchanged On Dussehra</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/why-are-books-and-instruments-worshipped-on-vijayadashami.html" class="hover:text-white hover:underline transition-colors duration-200">Why Are Books And Instruments Worshipped On Vijayadashami</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/why-are-kumbhakarna-and-meghnad-effigies-burned-with-ravana.html" class="hover:text-white hover:underline transition-colors duration-200">Why Are Kumbhakarna And Meghnad Effigies Burned With Ravana</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/why-do-people-buy-vehicles-on-vijayadashami.html" class="hover:text-white hover:underline transition-colors duration-200">Why Do People Buy Vehicles On Vijayadashami</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/why-does-ravana-have-ten-heads.html" class="hover:text-white hover:underline transition-colors duration-200">Why Does Ravana Have Ten Heads</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/why-is-ravana-burned-on-dussehra.html" class="hover:text-white hover:underline transition-colors duration-200">Why Is Ravana Burned On Dussehra</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ultra-long-tail-seo-faqs-comparisons-and-micro-topics/why-is-vidyarambham-performed-on-vijayadashami.html" class="hover:text-white hover:underline transition-colors duration-200">Why Is Vidyarambham Performed On Vijayadashami</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+      <p class="text-sm text-gray-400">&copy; 2026 India Cities. All rights reserved.</p>
+      
+    </div>
+
+  </div>
+</footer>

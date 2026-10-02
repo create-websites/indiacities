@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Interactive Report: The Forts and Monuments of India</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&amp;family=Source+Sans+Pro:wght@400;600&amp;display=swap" rel="stylesheet"/>
+    <!-- Chosen Palette: Warm Neutrals (Sandstone, Slate, and Ochre) -->
+    <!-- Application Structure Plan: The SPA is designed as a dashboard for non-linear exploration. The core is an interactive gallery of fort cards, which can be dynamically filtered by Dynasty, Style, or State. This replaces a static map to be more robust and avoid SVG dependencies. Clicking a card opens a detailed modal. Below this interactive gallery, thematic sections provide deeper context: 1) 'Architectural Philosophies' uses HTML/CSS diagrams to compare the core tenets of Rajput, Maratha, and Mughal builders. 2) 'Comparative Analysis' features an interactive Chart.js bar chart for direct comparison of styles based on report data. 3) 'Historical Timeline' is a scrollable HTML/CSS timeline of key events. This structure allows users to explore freely, either by drilling down into specific forts or by understanding the broader historical and architectural trends. -->
+    <!-- Visualization & Content Choices: 
+        - Fort Gallery & Filters: Goal: Organize/Explore. Method: A dynamic grid of cards built with HTML/CSS and manipulated with JavaScript. Interaction: Users click filter buttons to instantly re-render the gallery, showing only relevant forts. This is a highly interactive way to manage the large dataset of 40+ sites.
+        - Architectural Philosophies: Goal: Compare. Method: A three-column layout using HTML/CSS to create a flow-diagram effect, linking dynasty to key principles. Justification: A clear, static visual for foundational concepts.
+        - Comparative Chart: Goal: Compare. Viz: Horizontal Bar Chart (Chart.js/Canvas). Interaction: Buttons dynamically update the chart to show different comparison metrics (materials, defense, etc.). Justification: Best method for visual comparison of categorical data from the report's Table 2.
+        - Timeline: Goal: Change. Method: A vertical timeline built with structured HTML/CSS. Interaction: Hovering or clicking can reveal more info (though kept simple here for clarity). Justification: Effectively shows chronological progression without complex libraries.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background-color: #F8F5F2; /* Warm off-white */
+            color: #4A4A4A;
+        }
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+        }
+        .filter-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .filter-btn.active {
+            background-color: #D4A373; /* Ochre */
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .fort-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 5px solid transparent;
+        }
+        .fort-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .fort-card.rajput { border-color: #E59866; }
+        .fort-card.maratha { border-color: #82E0AA; }
+        .fort-card.mughal { border-color: #73C6B6; }
+        .fort-card.southern { border-color: #EC7063; }
+        .fort-card.ancient { border-color: #A569BD; }
+        .fort-card.british { border-color: #5DADE2; }
+
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -31px;
+            top: 4px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: #F8F5F2;
+            border: 4px solid #CCD1D1;
+        }
+        .timeline-item:hover::before {
+            background-color: #D4A373;
+        }
+        .chart-container {
+            position: relative; 
+            width: 100%; 
+            max-width: 800px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 450px;
+            max-height: 60vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 500px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold text-[#34495E]">Citadels of Power</h1>
+            <p class="mt-2 text-lg md:text-xl text-gray-600">An Interactive History of India's Forts &amp; Monuments</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <section class="mb-16" id="explorer">
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold text-center mb-6 text-[#34495E]">Fort &amp; Monument Explorer</h2>
+                <p class="text-center max-w-3xl mx-auto text-gray-600 mb-8">Start your adventure by discovering India's rich architectural legacy. Apply the filters below to explore sites by dynasty, style, or region. Select any card to learn about its history, design, and stories.</p>
+                
+                <div class="mb-8" id="filters">
+                    <div class="mb-4">
+                        <h3 class="font-bold text-lg mb-2 text-gray-700">Filter by Dynasty / Era:</h3>
+                        <div class="flex flex-wrap gap-2" id="dynasty-filters"></div>
+                    </div>
+                     <div class="mb-4">
+                        <h3 class="font-bold text-lg mb-2 text-gray-700">Filter by Style:</h3>
+                        <div class="flex flex-wrap gap-2" id="style-filters"></div>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-700">Filter by State:</h3>
+                        <div class="flex flex-wrap gap-2" id="state-filters"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="fort-gallery">
+                    <!-- Fort cards will be dynamically inserted here -->
+                </div>
+            </div>
+        </section>
+
+        <section class="my-16" id="philosophies">
+            <h2 class="text-4xl font-bold text-center mb-4 text-[#34495E]">Architectural Philosophies</h2>
+            <p class="text-center max-w-3xl mx-auto text-lg text-gray-600 mb-12">The design of a fort reflects the vision of its creators. India’s great dynasties crafted unique architectural styles, skillfully shaped by their terrain, defense needs, and cultural ideals.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <h3 class="text-2xl font-bold text-[#E59866]">Rajput Style</h3>
+                    <p class="font-semibold mt-1 text-gray-500">Grandeur &amp; Intimidation</p>
+                    <div class="text-4xl my-4 text-gray-300">▼</div>
+                    <p class="text-gray-700">Majestic forts stood as grand symbols of dynastic might, crafted to inspire awe and command respect with their vast scale, towering heights, and intricate splendor blending Hindu and Mughal artistry.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <h3 class="text-2xl font-bold text-[#82E0AA]">Maratha Style</h3>
+                    <p class="font-semibold mt-1 text-gray-500">Pragmatism &amp; Mobility</p>
+                    <div class="text-4xl my-4 text-gray-300">▼</div>
+                    <p class="text-gray-700">Forts as guerrilla warfare tools: focused on concealment, strategic positioning, autonomy, and interconnected defenses, not aesthetics.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <h3 class="text-2xl font-bold text-[#73C6B6]">Mughal Style</h3>
+                    <p class="font-semibold mt-1 text-gray-500">Symmetry &amp; Ceremony</p>
+                    <div class="text-4xl my-4 text-gray-300">▼</div>
+                    <p class="text-gray-700">Forts as majestic palace-cities showcased the might of a unified empire with precise symmetry, opulent gardens, and splendid halls for public and private gatherings.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="my-16 bg-white p-6 md:p-8 rounded-lg shadow-lg" id="comparison">
+            <h2 class="text-4xl font-bold text-center mb-4 text-[#34495E]">Comparative Analysis</h2>
+            <p class="text-center max-w-3xl mx-auto text-lg text-gray-600 mb-8">Explore the fundamental design traits of key fortification styles. Toggle the buttons to examine features and see how each dynasty shaped strategy through stonework.</p>
+            <div class="flex justify-center flex-wrap gap-2 mb-6">
+                <button class="comparison-btn bg-[#D4A373] text-white px-4 py-2 rounded-md shadow-sm" data-type="materials">Materials</button>
+                <button class="comparison-btn bg-gray-200 text-gray-800 px-4 py-2 rounded-md shadow-sm" data-type="defense">Defense</button>
+                <button class="comparison-btn bg-gray-200 text-gray-800 px-4 py-2 rounded-md shadow-sm" data-type="aesthetics">Aesthetics</button>
+            </div>
+            <div class="chart-container">
+                <canvas id="comparisonChart"></canvas>
+            </div>
+        </section>
+
+        <section class="my-16" id="timeline">
+            <h2 class="text-4xl font-bold text-center mb-12 text-[#34495E]">A Timeline of Power &amp; Stone</h2>
+            <div class="relative max-w-3xl mx-auto" id="timeline-container">
+                <div class="border-l-4 border-slate-300 absolute h-full top-0 left-4 md:left-1/2 md:-ml-2"></div>
+                <!-- Timeline items will be dynamically inserted here -->
+            </div>
+        </section>
+        
+    <footer class="bg-gray-800 text-gray-300">
+<div class="container mx-auto px-6 py-12 lg:px-8">
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/">Cities of India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html">Small Cities</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/pilgrimages/">Pilgrimages</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/wpilgrimages/vaishno-devi/">Vaishno Devi</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html">Agra Fort History Architecture Mughal Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html">Ajanta Ellora Rock Cut Wonders</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html">Ajinkyatara Fort Exploration Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html">Ajinkyatara Fort Guide History Visitor Info</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html">Ajinkyatara Fort History Legacy Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html">Aligarh Fort History Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html">Aligarh Fort History Visitor Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html">Allahabad Fort History And Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html">Allahabad Fort History Significance</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html">Amber Fort Guide History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html">Amber Fort History Architecture Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html">Aranthangi Fort Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html">Arnala Fort Guide History Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html">Arnala Fort History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html">Ashoka Pillars Legacy Dhamma</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html">Belgaum Fort History Architecture Pluralism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html">Chitradurga Fort Seven Circles</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html">Daulatabad Fort Invincible Deccan Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html">Explore Indias Majestic Forts</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html">Fortress Explorer Iconic Fortresses</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html">Forts Monuments India Interactive History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html">Forts Of India Design History Legends</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html">Golconda Fort History Engineering Diamonds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html">Golconda Fortress Diamonds Power</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html">Great Stupa Sanchi History Symbolism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html">Great Stupa Sanchi Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html">Gwalior Fort Gibraltar India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html">Hawa Mahal Jaipur Palace Winds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/india-great-empires-history.html">India Great Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html">Indias Architectural Heritage Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html">Indias Architectural Heritage Report</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html">Indias Architectural Heritage Timeless Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html">Indias Architectural Heritage Visual Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html">Indias Architectural Heritage Visual Journey</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html">Indias Great Empires Visual History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html">Janjira Fort Unconquered Sea Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html">Khajuraho Art History Temples</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html">Mysore Palace History Architecture Tourism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html">Mysore Palace History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html">Qutub Minar History Architecture Icon</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html">Qutub Minar History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html">Ramgarh Fort Heritage Hotel History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html">Sentinels Of India Iconic Forts Overview</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html">Shaniwar Wada History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html">Sovereign Tapestry Indian Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html">Tamil Nadu Temples Forts Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html">Tipu Sultan Fort History Legacy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-8 text-center text-sm text-gray-400">
+<p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+</div>
+<div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+<p class="text-sm text-gray-400">© 2026 India Cities. All rights reserved.</p>
+</div>
+</div>
+</footer></main>
+
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden" id="modal">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto relative" id="modal-content">
+            <!-- Modal content will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fortsData = [
+                { name: 'Ajinkyatara Fort', state: 'Maharashtra', dynasty: 'Maratha', style: 'Hill Fort', period: '1190 CE', summary: 'Known as the "Impregnable Star", it became a key Maratha capital under Chhatrapati Shahu Maharaj.', icon: '⭐' },
+                { name: 'Aligarh Fort', state: 'Uttar Pradesh', dynasty: 'Sultanate', style: 'Provincial Indo-Islamic', period: '1524-25 CE', summary: 'A provincial stronghold later fortified by French engineers for the Marathas.', icon: '🛡️' },
+                { name: 'Allahabad Fort', state: 'Uttar Pradesh', dynasty: 'Mughal', style: 'Riverine Fort', period: '1583 CE', summary: 'Built by Akbar at the sacred confluence of rivers, a masterstroke of strategic and symbolic control.', icon: '🌊' },
+                { name: 'Arnala Fort', state: 'Maharashtra', dynasty: 'Maratha', style: 'Sea Fort', period: '1737 CE (Maratha)', summary: 'A coastal sentinel captured from the Portuguese, crucial for Maratha naval control.', icon: '🏝️' },
+                { name: 'Ashok Pillar', state: 'Uttar Pradesh', dynasty: 'Ancient', style: 'Monument', period: 'c. 3rd Century BCE', summary: 'Monolithic pillars inscribed with Emperor Ashoka\'s edicts of Dharma. The Sarnath capital is India\'s National Emblem.', icon: '🏛️' },
+                { name: 'Barabati Fort', state: 'Odisha', dynasty: 'Ganga Dynasty', style: 'Riverine Fort', period: 'c. 13th Century CE', summary: 'A medieval fort on the banks of the Mahanadi river, known for its nine-storied palace.', icon: '🏰' },
+                { name: 'Bekal Fort', state: 'Kerala', dynasty: 'Southern', style: 'Coastal Fort', period: '1650 CE', summary: 'The largest fort in Kerala, famous for its unique keyhole shape and commanding views of the Arabian Sea.', icon: '🔑' },
+                { name: 'Belgaum Fort', state: 'Karnataka', dynasty: 'Southern', style: 'Composite Fort', period: '1204 CE', summary: 'An architectural palimpsest with Jain, Hindu, and Indo-Saracenic structures, reflecting centuries of changing rulers.', icon: '🔄' },
+                { name: 'Birbal Bhawan', state: 'Uttar Pradesh', dynasty: 'Mughal', style: 'Palace', period: '1571 CE', summary: 'An exquisitely carved two-storey structure in Fatehpur Sikri, noted for its ingenious double-domed cooling system.', icon: '🏛️' },
+                { name: 'Chitradurga Fort', state: 'Karnataka', dynasty: 'Southern', style: 'Hill Fort', period: '15th-18th C. CE', summary: 'The "Fort of Seven Circles", known for its sophisticated rainwater harvesting and the legend of Onake Obavva.', icon: '겹' },
+                { name: 'Chittorgarh Fort', state: 'Rajasthan', dynasty: 'Rajput', style: 'Hill Fort', period: 'c. 7th Century CE', summary: 'The epicenter of Rajput resistance, defined by its three great sieges and the heroic sacrifice of Jauhar.', icon: '🔥' },
+                { name: 'Daulatabad Fort', state: 'Maharashtra', dynasty: 'Southern', style: 'Hill Fort', period: 'c. 14th Century CE', summary: 'A formidable and unconquerable fortress, famous for its sheer rock-cut defenses and treacherous dark passage.', icon: '⛰️' },
+                { name: 'Gateway of India', state: 'Maharashtra', dynasty: 'British', style: 'Indo-Saracenic', period: '1913-1924 CE', summary: 'Built to welcome King George V, it ironically became the exit point for the last British troops.', icon: '🚪' },
+                { name: 'Gingee Fort', state: 'Tamil Nadu', dynasty: 'Southern', style: 'Hill Fort', period: 'c. 9th Century CE', summary: 'The "Troy of the East", an impregnable complex across three hillocks with a layered history of rulers.', icon: '🔺' },
+                { name: 'Gwalior Fort', state: 'Madhya Pradesh', dynasty: 'Rajput', style: 'Composite Fort', period: 'c. 8th-9th C. CE', summary: 'The "Pearl amongst Fortresses", a historical palimpsest with magnificent Rajput, Jain, and Indo-Islamic architecture.', icon: '💎' },
+                { name: 'Harishchandragad Fort', state: 'Maharashtra', dynasty: 'Ancient', style: 'Hill Fort', period: 'c. 6th Century CE', summary: 'A fort of immense antiquity, famed for its breathtaking Konkan Kada cliff and ancient Kedareshwar cave temple.', icon: '🌄' },
+                { name: 'Hawa Mahal', state: 'Rajasthan', dynasty: 'Rajput', style: 'Palace', period: '1799 CE', summary: 'The "Palace of Winds", an iconic facade with 953 windows, built for royal women to observe street life unseen.', icon: '🌬️' },
+                { name: 'India Gate', state: 'Delhi', dynasty: 'British', style: 'Triumphal Arch', period: '1921-1931 CE', summary: 'The nation\'s preeminent war memorial, commemorating Indian soldiers who died in World War I.', icon: '🎖️' },
+                { name: 'Jaisalmer Fort', state: 'Rajasthan', dynasty: 'Rajput', style: 'Desert Fort', period: '1156 CE', summary: 'The "Golden Fort", a living fort rising from the Thar Desert, built of honey-colored sandstone.', icon: '🏜️' },
+                { name: 'Janjira Fort', state: 'Maharashtra', dynasty: 'Siddi', style: 'Sea Fort', period: '17th Century CE', summary: 'The unconquered sea fort of the Siddis, which repelled numerous attacks from Marathas, Portuguese, and British.', icon: '🌊' },
+                { name: 'Jantar Mantar', state: 'Rajasthan', dynasty: 'Rajput', style: 'Observatory', period: '1734 CE', summary: 'A monumental open-air astronomical observatory with colossal masonry instruments, including the world\'s largest sundial.', icon: '☀️' },
+                { name: 'Jodha Bai Palace', state: 'Uttar Pradesh', dynasty: 'Mughal', style: 'Palace', period: '16th Century CE', summary: 'A masterpiece of cultural synthesis in Fatehpur Sikri, blending Mughal and Rajput styles for Akbar\'s queen.', icon: '👑' },
+                { name: 'Lalgarh Palace', state: 'Rajasthan', dynasty: 'Rajput', style: 'Indo-Saracenic', period: '1902-1926 CE', summary: 'A magnificent red sandstone palace in Bikaner, blending Rajput, Mughal, and European styles.', icon: '🏛️' },
+                { name: 'Lohagad Fort', state: 'Maharashtra', dynasty: 'Maratha', style: 'Hill Fort', period: '1648 CE (Shivaji)', summary: 'The "Iron Fort", used by Shivaji as his treasury, known for its unique "Scorpion\'s Tail" fortified spur.', icon: '🦂' },
+                { name: 'Mysore Palace', state: 'Karnataka', dynasty: 'Wodeyar', style: 'Indo-Saracenic', period: '1897-1912 CE', summary: 'The opulent seat of the Wodeyar dynasty, a lavish blend of Hindu, Mughal, Rajput, and Gothic styles.', icon: '✨' },
+                { name: 'Neemrana', state: 'Rajasthan', dynasty: 'Rajput', style: 'Hill Fort', period: '1464 CE', summary: 'A 15th-century fort-palace, now a pioneering heritage hotel that set a trend for adaptive reuse.', icon: '🏨' },
+                { name: 'Palakkad Fort', state: 'Kerala', dynasty: 'Southern', style: 'Inland Fort', period: '1766 CE', summary: 'Also known as Tipu\'s Fort, it was built by Hyder Ali to control the strategic Palghat Gap.', icon: ' Gap ' },
+                { name: 'Pratapgarh Fort', state: 'Maharashtra', dynasty: 'Maratha', style: 'Hill Fort', period: '1656 CE', summary: 'The "Fort of Valour", immortalized as the site of Shivaji\'s legendary victory over Afzal Khan.', icon: '⚔️' },
+                { name: 'Purandar Fort', state: 'Maharashtra', dynasty: 'Maratha', style: 'Hill Fort', period: 'c. 14th Century CE', summary: 'Birthplace of Sambhaji Maharaj and site of the historic Treaty of Purandar signed by Shivaji.', icon: '📜' },
+                { name: 'Qutub Minar', state: 'Delhi', dynasty: 'Sultanate', style: 'Minaret / Monument', period: '1199 CE', summary: 'A towering victory minaret, the quintessential monument of the early Delhi Sultanate.', icon: '🗼' },
+                { name: 'Raigad Fort', state: 'Maharashtra', dynasty: 'Maratha', style: 'Hill Fort', period: '1674 CE (as capital)', summary: 'The coronation capital of Chhatrapati Shivaji, the heart of the sovereign Maratha Empire.', icon: '👑' },
+                { name: 'Rajgad Fort', state: 'Maharashtra', dynasty: 'Maratha', style: 'Hill Fort', period: '1647 CE (Shivaji)', summary: 'The "King of Forts" and the first capital of Shivaji\'s fledgling kingdom for 26 years.', icon: '♔' },
+                { name: 'Ramgarh Fort', state: 'Haryana', dynasty: 'Rajput', style: 'Hill Fort', period: 'c. 17th Century CE', summary: 'A 360-year-old fort built by Chandel Rajputs, now preserved as a heritage hotel.', icon: '🏨' },
+                { name: 'Red Fort', state: 'Delhi', dynasty: 'Mughal', style: 'Palace-City', period: '1639-1648 CE', summary: 'The zenith of Mughal power, a magnificent palace-fort that served as the empire\'s capital.', icon: '🟥' },
+                { name: 'Sanchi Stupa', state: 'Madhya Pradesh', dynasty: 'Ancient', style: 'Stupa / Monument', period: 'c. 3rd Century BCE', summary: 'One of the oldest and most important Buddhist monuments, originally commissioned by Emperor Ashoka.', icon: '☸️' },
+                { name: 'Shivneri Fort', state: 'Maharashtra', dynasty: 'Maratha', style: 'Hill Fort', period: 'c. 15th Century CE', summary: 'A place of immense reverence as the birthplace of Chhatrapati Shivaji Maharaj.', icon: '👶' },
+                { name: 'Sinhagad Fort', state: 'Maharashtra', dynasty: 'Maratha', style: 'Hill Fort', period: '1670 CE (Maratha)', summary: 'The "Lion\'s Fort", renamed by Shivaji to honor the heroic sacrifice of his general Tanaji Malusare.', icon: '🦁' },
+                { name: 'Siri Fort', state: 'Delhi', dynasty: 'Sultanate', style: 'Garrison Fort', period: 'c. 1303 CE', summary: 'Built by Alauddin Khalji as a defense against Mongol invasions, now largely in ruins.', icon: '🧱' },
+                { name: 'Taj Mahal', state: 'Uttar Pradesh', dynasty: 'Mughal', style: 'Mausoleum', period: '1632-1653 CE', summary: 'The ultimate architectural expression of love, a universally admired masterpiece of world heritage.', icon: '🤍' },
+                { name: 'Umaid Bhawan Palace', state: 'Rajasthan', dynasty: 'Rajput', style: 'Indo-Deco', period: '1929-1943 CE', summary: 'One of the world\'s largest private residences, built as a famine-relief project in a stunning Indo-Deco style.', icon: '🏨' },
+                { name: 'Vellore Fort', state: 'Karnataka', dynasty: 'Southern', style: 'Military Fort', period: '16th Century CE', summary: 'A quintessential example of South Indian military architecture, site of the 1806 Vellore Mutiny.', icon: '🐊' },
+            ];
+
+            const gallery = document.getElementById('fort-gallery');
+            const dynastyFilters = document.getElementById('dynasty-filters');
+            const styleFilters = document.getElementById('style-filters');
+            const stateFilters = document.getElementById('state-filters');
+            let activeFilters = { dynasty: 'All', style: 'All', state: 'All' };
+
+            function createFilters() {
+                const dynasties = ['All', ...new Set(fortsData.map(f => f.dynasty))];
+                const styles = ['All', ...new Set(fortsData.map(f => f.style))];
+                const states = ['All', ...new Set(fortsData.map(f => f.state))];
+
+                dynastyFilters.innerHTML = dynasties.map(d => `<button class="filter-btn px-3 py-1 text-sm rounded-full shadow-sm ${d === 'All' ? 'active' : 'bg-gray-200'}" data-filter-type="dynasty" data-filter-value="${d}">${d}</button>`).join('');
+                styleFilters.innerHTML = styles.map(s => `<button class="filter-btn px-3 py-1 text-sm rounded-full shadow-sm ${s === 'All' ? 'active' : 'bg-gray-200'}" data-filter-type="style" data-filter-value="${s}">${s}</button>`).join('');
+                stateFilters.innerHTML = states.map(s => `<button class="filter-btn px-3 py-1 text-sm rounded-full shadow-sm ${s === 'All' ? 'active' : 'bg-gray-200'}" data-filter-type="state" data-filter-value="${s}">${s}</button>`).join('');
+            
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const { filterType, filterValue } = e.target.dataset;
+                        activeFilters[filterType] = filterValue;
+
+                        document.querySelectorAll(`[data-filter-type="${filterType}"]`).forEach(b => b.classList.remove('active', 'bg-[#D4A373]', 'text-white'));
+                        document.querySelectorAll(`[data-filter-type="${filterType}"]`).forEach(b => b.classList.add('bg-gray-200'));
+                        e.target.classList.add('active');
+                        e.target.classList.remove('bg-gray-200');
+
+                        renderGallery();
+                    });
+                });
+            }
+
+            function renderGallery() {
+                gallery.innerHTML = '';
+                const filteredData = fortsData.filter(fort => {
+                    return (activeFilters.dynasty === 'All' || fort.dynasty === activeFilters.dynasty) &&
+                           (activeFilters.style === 'All' || fort.style === activeFilters.style) &&
+                           (activeFilters.state === 'All' || fort.state === activeFilters.state);
+                });
+
+                if (filteredData.length === 0) {
+                    gallery.innerHTML = `<p class="col-span-full text-center text-gray-500">No sites match the selected filters.</p>`;
+                    return;
+                }
+
+                filteredData.forEach(fort => {
+                    const card = document.createElement('div');
+                    card.className = `fort-card bg-white p-4 rounded-lg shadow-md cursor-pointer ${fort.dynasty.toLowerCase().split(' ')[0]}`;
+                    card.innerHTML = `
+                        <div class="flex items-start justify-between">
+                            <h3 class="font-bold text-lg text-gray-800 pr-2">${fort.name}</h3>
+                            <div class="text-2xl">${fort.icon}</div>
+                        </div>
+                        <p class="text-sm text-gray-500">${fort.state}</p>
+                        <p class="text-xs text-gray-400 mt-1">${fort.dynasty} | ${fort.style}</p>
+                    `;
+                    card.addEventListener('click', () => showModal(fort));
+                    gallery.appendChild(card);
+                });
+            }
+
+            const modal = document.getElementById('modal');
+            const modalContent = document.getElementById('modal-content');
+
+            function showModal(fort) {
+                modalContent.innerHTML = `
+                    <button id="close-modal" class="absolute top-4 right-4 text-3xl text-gray-500 hover:text-gray-800">&times;</button>
+                    <div class="p-6 md:p-8">
+                        <div class="flex items-center mb-4">
+                            <div class="text-5xl mr-4">${fort.icon}</div>
+                            <div>
+                                <h2 class="text-3xl font-bold text-[#34495E]">${fort.name}</h2>
+                                <p class="text-lg text-gray-600">${fort.state} &bull; Est. ${fort.period}</p>
+                            </div>
+                        </div>
+                        <div class="text-md text-gray-500 mb-4">
+                            <span class="font-semibold">Dynasty/Era:</span> ${fort.dynasty} | <span class="font-semibold">Style:</span> ${fort.style}
+                        </div>
+                        <p class="text-lg text-gray-700">${fort.summary}</p>
+                    </div>
+                `;
+                modal.classList.remove('hidden');
+                document.getElementById('close-modal').addEventListener('click', hideModal);
+            }
+
+            function hideModal() {
+                modal.classList.add('hidden');
+            }
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    hideModal();
+                }
+            });
+
+            function createTimeline() {
+                const container = document.getElementById('timeline-container');
+                const timelineEvents = [
+                    { period: 'c. 3rd Century BCE', title: 'Mauryan Foundations', text: 'Emperor Ashoka commissions the Great Stupa at Sanchi and erects pillars with his edicts, laying a foundation for monumental architecture.'},
+                    { period: 'c. 6th-9th Century CE', title: 'Early Fortifications', text: 'Ancient hill forts like Harishchandragad and the first structures at Chittorgarh and Gingee are established by regional dynasties.'},
+                    { period: 'c. 12th-14th Century CE', title: 'The Age of Sultanates & Early Rajputs', text: 'The Delhi Sultanate begins with the Qutub Minar. The Rajput clans establish major strongholds like Jaisalmer, while Daulatabad becomes a formidable Deccan fortress.'},
+                    { period: 'c. 15th-16th Century CE', title: 'Rajput & Mughal Ascent', text: 'A golden age of Rajput construction with forts like Kumbhalgarh and Mehrangarh. The Mughal Empire is established, building forts like Allahabad and Aligarh.'},
+                    { period: '17th Century CE', title: 'The Rise of the Marathas', text: 'Chhatrapati Shivaji forges the Maratha Empire, building and capturing a network of pragmatic hill forts like Raigad and Pratapgad. The Mughals build the Red Fort.'},
+                    { period: '18th Century CE', title: 'Syncretism & Science', text: 'Rajput architecture produces marvels like the Hawa Mahal and the Jantar Mantar observatory. Maratha power expands across India.'},
+                    { period: '19th-20th Century CE', title: 'The British Raj & Modern India', text: 'The British build monuments like the Gateway of India and India Gate. Princely states create lavish Indo-Saracenic and Indo-Deco palaces like Mysore and Umaid Bhawan.'},
+                ];
+
+                let html = '';
+                timelineEvents.forEach((event, index) => {
+                    const alignmentClass = index % 2 === 0 ? 'md:text-right md:pr-16' : 'md:text-left md:pl-16';
+                    const itemClass = index % 2 === 0 ? 'md:flex-row-reverse' : '';
+                    html += `
+                        <div class="timeline-item mb-8 flex justify-between items-center w-full ${itemClass}">
+                            <div class="order-1 md:w-5/12"></div>
+                            <div class="order-1 w-full md:w-5/12 px-1 py-4 ${alignmentClass}">
+                                <p class="mb-3 text-base text-[#D4A373]">${event.period}</p>
+                                <h4 class="mb-3 font-bold text-lg md:text-2xl">${event.title}</h4>
+                                <p class="text-sm md:text-base leading-snug text-gray-600">${event.text}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            }
+
+            let comparisonChart;
+            function createComparisonChart(type = 'materials') {
+                const ctx = document.getElementById('comparisonChart').getContext('2d');
+                const chartData = {
+                    labels: ['Rajput', 'Maratha', 'Mughal', 'Southern'],
+                    materials: { title: 'Primary Materials', data: [4, 2, 5, 3.5] },
+                    defense: { title: 'Key Defensive Features', data: [3, 5, 4, 3] },
+                    aesthetics: { title: 'Aesthetic Focus', data: [5, 1, 4, 3] }
+                };
+                const tooltips = {
+                    materials: ['Sandstone, Marble', 'Local Basalt, Rubble', 'Red Sandstone, White Marble', 'Granite, Laterite'],
+                    defense: ['Elevation, Multiple Gates', 'Camouflage, Secret Passages', 'Massive Walls, Moats', 'Layered Walls, Water Bodies'],
+                    aesthetics: ['Ornate Palaces, Jharokhas', 'Functional Minimalism', 'Symmetry, Gardens', 'Grand Temples, Gopurams']
+                };
+
+                if (comparisonChart) {
+                    comparisonChart.destroy();
+                }
+
+                comparisonChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [{
+                            label: chartData[type].title,
+                            data: chartData[type].data,
+                            backgroundColor: ['#E59866', '#82E0AA', '#73C6B6', '#EC7063'],
+                            borderColor: ['#AF643C', '#55A478', '#4E9A8A', '#C1524A'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            title: { display: true, text: chartData[type].title, font: { size: 18, family: "'Playfair Display', serif" } },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return tooltips[type][context.dataIndex] || '';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { display: false },
+                            y: { ticks: { font: { size: 14, weight: '600', family: "'Source Sans Pro', sans-serif" } } }
+                        }
+                    }
+                });
+            }
+
+            document.querySelectorAll('.comparison-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.comparison-btn').forEach(b => {
+                        b.classList.remove('bg-[#D4A373]', 'text-white');
+                        b.classList.add('bg-gray-200', 'text-gray-800');
+                    });
+                    e.target.classList.add('bg-[#D4A373]', 'text-white');
+                    e.target.classList.remove('bg-gray-200');
+                    createComparisonChart(e.target.dataset.type);
+                });
+            });
+
+            // Initial setup
+            createFilters();
+            renderGallery();
+            createTimeline();
+            createComparisonChart();
+        });
+    </script>
+
+
+</body></html>

@@ -1,0 +1,59 @@
+<footer class="bg-gray-800 text-gray-300">
+  <div class="container mx-auto px-6 py-12 lg:px-8">
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/" class="hover:text-white hover:underline transition-colors duration-200">Cities of India</a></li>
+          <li><a href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Small Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+          <li><a href="https://www.indiacities.net/wpilgrimages/vaishno-devi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishno Devi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/best-dussehra-cultural-experiences-for-international-visitors.html" class="hover:text-white hover:underline transition-colors duration-200">Best Dussehra Cultural Experiences For International Visitors</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/best-places-in-india-to-experience-dussehra.html" class="hover:text-white hover:underline transition-colors duration-200">Best Places In India To Experience Dussehra</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/dussehra-fair-guide-what-to-expect-at-a-mela.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Fair Guide What To Expect At A Mela</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/dussehra-food-guide-for-travelers.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Food Guide For Travelers</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/dussehra-in-ayodhya-travel-and-festival-guide.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Ayodhya Travel And Festival Guide</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/dussehra-in-bastar-tribal-traditions-and-cultural-guide.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Bastar Tribal Traditions And Cultural Guide</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/dussehra-in-delhi-best-ramlila-and-effigy-burning-experiences.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Delhi Best Ramlila And Effigy Burning Experiences</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/dussehra-in-mysuru-complete-travel-guide.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Mysuru Complete Travel Guide</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/dussehra-photography-guide-ramlila-processions-and-effigies.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Photography Guide Ramlila Processions And Effigies</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/dussehra-travel-packing-list.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Travel Packing List</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/dussehra-travel-with-kids-tips-and-family-activities.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Travel With Kids Tips And Family Activities</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/how-to-attend-a-ramlila-respectfully-visitor-etiquette.html" class="hover:text-white hover:underline transition-colors duration-200">How To Attend A Ramlila Respectfully Visitor Etiquette</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/how-to-photograph-fireworks-and-ravana-effigy-burning-safely.html" class="hover:text-white hover:underline transition-colors duration-200">How To Photograph Fireworks And Ravana Effigy Burning Safely</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/how-to-plan-a-dussehra-trip-to-karnataka.html" class="hover:text-white hover:underline transition-colors duration-200">How To Plan A Dussehra Trip To Karnataka</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/how-to-plan-a-dussehra-trip-to-north-india.html" class="hover:text-white hover:underline transition-colors duration-200">How To Plan A Dussehra Trip To North India</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/kota-dussehra-mela-visitor-guide.html" class="hover:text-white hover:underline transition-colors duration-200">Kota Dussehra Mela Visitor Guide</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/kullu-dussehra-complete-travel-and-festival-guide.html" class="hover:text-white hover:underline transition-colors duration-200">Kullu Dussehra Complete Travel And Festival Guide</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/ramnagar-ramlila-in-varanasi-visitor-guide.html" class="hover:text-white hover:underline transition-colors duration-200">Ramnagar Ramlila In Varanasi Visitor Guide</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/what-to-wear-when-attending-dussehra-events-in-india.html" class="hover:text-white hover:underline transition-colors duration-200">What To Wear When Attending Dussehra Events In India</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/travel-fairs-ramlila-and-cultural-tourism/why-dussehra-is-one-of-indias-most-diverse-festival-travel-experiences.html" class="hover:text-white hover:underline transition-colors duration-200">Why Dussehra Is One Of Indias Most Diverse Festival Travel Experiences</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+      <p class="text-sm text-gray-400">&copy; 2026 India Cities. All rights reserved.</p>
+      
+    </div>
+
+  </div>
+</footer>

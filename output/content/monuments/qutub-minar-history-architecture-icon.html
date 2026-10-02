@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Infographic: The Qutub Minar - A Monumental History</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;700&amp;family=Roboto:wght@400;500&amp;display=swap" rel="stylesheet"/>
+    <!-- Chosen Palette: Modern Slate & Steel -->
+    <!-- Application Structure Plan: The infographic follows a top-down narrative structure to tell a complete story. It begins with a 'Hook' using large, impactful numbers to grab attention. It then flows chronologically with a 'Timeline' of its construction. The 'Architectural Breakdown' section logically follows, deconstructing the monument itself. The narrative then zooms out to the surrounding 'Complex' to provide context. It moves into the 'Modern Era' with data-driven charts on tourism and conservation, bringing the story to the present day. This linear, scrolling narrative is the most effective way to present a historical report as an infographic, guiding the user through a clear and compelling story from past to present. -->
+    <!-- Visualization & Content Choices:
+        - Key Dimensions (Height, Steps, etc.) -> Goal: Inform -> Viz: Single Big Numbers. Justification: Provides immediate, high-impact information to establish scale. Method: HTML/JS.
+        - Construction Phases -> Goal: Show Change -> Viz: HTML/CSS Timeline. Justification: Clearly visualizes the multi-dynastic construction process over time in a narrative format. Method: HTML/Tailwind.
+        - Architectural Features -> Goal: Organize -> Viz: Icon-based Grid. Justification: Breaks down complex features into easily digestible visual categories. Method: HTML/Tailwind with Unicode characters.
+        - Visitor Trends -> Goal: Change -> Viz: Line Chart. Justification: Best method to show trends over time for multiple categories (domestic vs. foreign). Library: Chart.js.
+        - Conservation Spending -> Goal: Compare -> Viz: Horizontal Bar Chart. Justification: Ideal for comparing categorical data with long labels, ensuring readability. Library: Chart.js.
+        - Key Monuments in Complex -> Goal: Organize -> Viz: Card Grid. Justification: Presents related monuments in a structured, parallel format. Method: HTML/Tailwind.
+        CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Roboto', sans-serif; background-color: #E0E1DD; }
+        h1, h2, h3, .stat-number { font-family: 'Teko', sans-serif; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 350px; } }
+    </style>
+</head>
+<body class="bg-[#E0E1DD] text-[#0D1B2A]">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+
+        <header class="text-center my-8">
+            <h1 class="text-6xl md:text-8xl font-bold text-[#1B263B]">QUTUB MINAR</h1>
+            <h2 class="text-3xl md:text-4xl text-[#415A77]">A MONUMENTAL HISTORY IN NUMBERS</h2>
+            <p class="max-w-3xl mx-auto mt-4 text-[#415A77]">From a triumphal emblem to a world-renowned icon, the Qutub Minar's tale weaves through dynasties, design marvels, and timeless heritage, etched in stone and numbers.</p>
+        </header>
+
+        <section class="my-16" id="big-numbers">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 text-center">
+                <div class="bg-white/70 p-4 rounded-lg shadow-lg">
+                    <p class="stat-number text-6xl text-[#1B263B]">72.5</p>
+                    <p class="font-semibold text-lg text-[#415A77]">Meters High</p>
+                </div>
+                <div class="bg-white/70 p-4 rounded-lg shadow-lg">
+                    <p class="stat-number text-6xl text-[#1B263B]">379</p>
+                    <p class="font-semibold text-lg text-[#415A77]">Spiral Steps</p>
+                </div>
+                <div class="bg-white/70 p-4 rounded-lg shadow-lg">
+                    <p class="stat-number text-6xl text-[#1B263B]">5</p>
+                    <p class="font-semibold text-lg text-[#415A77]">Distinct Storeys</p>
+                </div>
+                <div class="bg-white/70 p-4 rounded-lg shadow-lg">
+                    <p class="stat-number text-6xl text-[#1B263B]">800+</p>
+                    <p class="font-semibold text-lg text-[#415A77]">Years of History</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="my-20" id="timeline">
+             <div class="text-center mb-12">
+                <h2 class="text-5xl font-bold text-[#1B263B]">A TOWER BUILT BY DYNASTIES</h2>
+                <p class="max-w-3xl mx-auto mt-2 text-[#415A77]">The Minar stands as a testament to India's layered history, its construction mirroring the visions and styles of various rulers across three centuries.</p>
+            </div>
+            <div class="relative wrap overflow-hidden p-4 md:p-10 h-full">
+                <div class="absolute border-2-2 border-opacity-20 border-[#415A77] h-full border" style="left: 50%"></div>
+                
+                <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                    <div class="order-1 w-5/12"></div>
+                    <div class="z-20 flex items-center order-1 bg-[#415A77] shadow-xl w-8 h-8 rounded-full"><h1 class="mx-auto font-semibold text-lg text-white">1</h1></div>
+                    <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4">
+                        <h3 class="font-bold text-gray-800 text-xl">Qutb-ud-din Aibak <span class="font-light text-base">(c. 1199)</span></h3>
+                        <p class="text-sm leading-snug tracking-wide text-gray-900 text-opacity-100">Established the base and raised the first level as a triumph pillar.</p>
+                    </div>
+                </div>
+
+                <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
+                    <div class="order-1 w-5/12"></div>
+                    <div class="z-20 flex items-center order-1 bg-[#415A77] shadow-xl w-8 h-8 rounded-full"><h1 class="mx-auto text-white font-semibold text-lg">2</h1></div>
+                    <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4">
+                        <h3 class="font-bold text-gray-800 text-xl">Iltutmish <span class="font-light text-base">(c. 1220)</span></h3>
+                        <p class="text-sm leading-snug tracking-wide text-gray-900 text-opacity-100">Added the next three storeys, completing the original four-storey structure.</p>
+                    </div>
+                </div>
+                
+                <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                    <div class="order-1 w-5/12"></div>
+                    <div class="z-20 flex items-center order-1 bg-[#415A77] shadow-xl w-8 h-8 rounded-full"><h1 class="mx-auto font-semibold text-lg text-white">3</h1></div>
+                    <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4">
+                        <h3 class="font-bold text-gray-800 text-xl">Firoz Shah Tughlaq <span class="font-light text-base">(1368)</span></h3>
+                        <p class="text-sm leading-snug tracking-wide text-gray-900 text-opacity-100">Following lightning damage, restored and built the 4th and 5th floors with marble.</p>
+                    </div>
+                </div>
+
+                <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
+                    <div class="order-1 w-5/12"></div>
+                    <div class="z-20 flex items-center order-1 bg-[#415A77] shadow-xl w-8 h-8 rounded-full"><h1 class="mx-auto text-white font-semibold text-lg">4</h1></div>
+                    <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4">
+                        <h3 class="font-bold text-gray-800 text-xl">Later Repairs <span class="font-light text-base">(1505 &amp; 1828)</span></h3>
+                        <p class="text-sm leading-snug tracking-wide text-gray-900 text-opacity-100">Rebuilt by Sikandar Lodi post-quake, later fixed by British Major Smith.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="my-20" id="architecture">
+             <div class="text-center mb-12">
+                <h2 class="text-5xl font-bold text-[#1B263B]">ANATOMY OF A MASTERPIECE</h2>
+                <p class="max-w-3xl mx-auto mt-2 text-[#415A77]">The Minar blends Central Asian styles with Indian artistry, creating distinctive architectural elements.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <p class="text-6xl">✨</p>
+                    <h3 class="text-2xl font-bold mt-2">FLUTED SHAFT</h3>
+                    <p>Angular and rounded columns alternate, casting a striking dance of light and shadow.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <p class="text-6xl">📜</p>
+                    <h3 class="text-2xl font-bold mt-2">CALLIGRAPHY BANDS</h3>
+                    <p>Delicate Quranic verses and historic accounts are etched in graceful Kufic and Naskh calligraphy.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                     <p class="text-6xl">🍯</p>
+                    <h3 class="text-2xl font-bold mt-2">MUQARNAS CORBELS</h3>
+                    <p>Intricate honeycomb-patterned brackets, iconic in Islamic design, uphold every jutting balcony.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="my-20" id="modern-era">
+             <div class="text-center mb-12">
+                <h2 class="text-5xl font-bold text-[#1B263B]">A MODERN ICON</h2>
+                <p class="max-w-3xl mx-auto mt-2 text-[#415A77]">The Qutub Minar, a UNESCO World Heritage site, remains a popular tourist attraction and is actively preserved by the Archaeological Survey of India (ASI).</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-center mb-4">SURGING VISITOR NUMBERS (2021-2024)</h3>
+                    <p class="text-center text-sm text-[#415A77] mb-4">Tourism has surged post-pandemic, fueled by new attractions like a laser show, now ranking it as the #2 spot for international visitors.</p>
+                    <div class="chart-container">
+                        <canvas id="visitorChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-center mb-4">CONSERVATION SPENDING (2021-24)</h3>
+                     <p class="text-center text-sm text-[#415A77] mb-4">The ASI steadily funds efforts to maintain the site, tackling structural repairs, water damage, and visitor amenities.</p>
+                    <div class="chart-container">
+                        <canvas id="conservationChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <footer class="bg-gray-800 text-gray-300">
+<div class="container mx-auto px-6 py-12 lg:px-8">
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/">Cities of India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html">Small Cities</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/pilgrimages/">Pilgrimages</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/wpilgrimages/vaishno-devi/">Vaishno Devi</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html">Agra Fort History Architecture Mughal Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html">Ajanta Ellora Rock Cut Wonders</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html">Ajinkyatara Fort Exploration Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html">Ajinkyatara Fort Guide History Visitor Info</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html">Ajinkyatara Fort History Legacy Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html">Aligarh Fort History Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html">Aligarh Fort History Visitor Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html">Allahabad Fort History And Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html">Allahabad Fort History Significance</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html">Amber Fort Guide History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html">Amber Fort History Architecture Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html">Aranthangi Fort Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html">Arnala Fort Guide History Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html">Arnala Fort History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html">Ashoka Pillars Legacy Dhamma</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html">Belgaum Fort History Architecture Pluralism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html">Chitradurga Fort Seven Circles</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html">Daulatabad Fort Invincible Deccan Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html">Explore Indias Majestic Forts</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html">Fortress Explorer Iconic Fortresses</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html">Forts Monuments India Interactive History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html">Forts Of India Design History Legends</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html">Golconda Fort History Engineering Diamonds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html">Golconda Fortress Diamonds Power</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html">Great Stupa Sanchi History Symbolism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html">Great Stupa Sanchi Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html">Gwalior Fort Gibraltar India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html">Hawa Mahal Jaipur Palace Winds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/india-great-empires-history.html">India Great Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html">Indias Architectural Heritage Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html">Indias Architectural Heritage Report</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html">Indias Architectural Heritage Timeless Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html">Indias Architectural Heritage Visual Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html">Indias Architectural Heritage Visual Journey</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html">Indias Great Empires Visual History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html">Janjira Fort Unconquered Sea Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html">Khajuraho Art History Temples</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html">Mysore Palace History Architecture Tourism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html">Mysore Palace History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html">Qutub Minar History Architecture Icon</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html">Qutub Minar History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html">Ramgarh Fort Heritage Hotel History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html">Sentinels Of India Iconic Forts Overview</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html">Shaniwar Wada History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html">Sovereign Tapestry Indian Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html">Tamil Nadu Temples Forts Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html">Tipu Sultan Fort History Legacy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-8 text-center text-sm text-gray-400">
+<p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+</div>
+<div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+<p class="text-sm text-gray-400">© 2026 India Cities. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const visitorChartCtx = document.getElementById('visitorChart').getContext('2d');
+            new Chart(visitorChartCtx, {
+                type: 'line',
+                data: {
+                    labels: ['2021-22', '2022-23', '2023-24'],
+                    datasets: [{
+                        label: 'Domestic Visitors',
+                        data: [476063, 1767548, 3123643],
+                        borderColor: '#1B263B',
+                        backgroundColor: 'rgba(27, 38, 59, 0.1)',
+                        fill: true,
+                        tension: 0.1,
+                        pointBackgroundColor: '#1B263B',
+                        pointRadius: 5
+                    }, {
+                        label: 'Foreign Visitors',
+                        data: [2849, 115247, 220017],
+                        borderColor: '#415A77',
+                        backgroundColor: 'rgba(65, 90, 119, 0.1)',
+                        fill: true,
+                        tension: 0.1,
+                        pointBackgroundColor: '#415A77',
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, ticks: { callback: (value) => value > 999999 ? `${value/1000000}M` : `${value/1000}K` } } },
+                    plugins: { tooltip: { callbacks: { title: (items) => items[0].label } } }
+                }
+            });
+
+            function wrapLabel(str, maxWidth) {
+                if (str.length <= maxWidth) return str;
+                const words = str.split(' ');
+                let lines = [];
+                let currentLine = '';
+                words.forEach(word => {
+                    if ((currentLine + ' ' + word).trim().length > maxWidth && currentLine.length > 0) {
+                        lines.push(currentLine);
+                        currentLine = word;
+                    } else {
+                        currentLine = (currentLine + ' ' + word).trim();
+                    }
+                });
+                if(currentLine) lines.push(currentLine);
+                return lines;
+            }
+
+            const conservationLabels = [
+                'Restoration of Fallen Western Boundary Wall',
+                'Conservation of Quwwatul Islam Mosque Arch',
+                'Providing & Laying Bituminous Road',
+                'Providing & Fixing Tourist Friendly Wooden Passage',
+                'Providing & Fixing Signage',
+                'Conservation of Wells and Ancient Tank',
+                'Repair & Upgradation of Toilet Block'
+            ];
+            
+            const wrappedLabels = conservationLabels.map(label => wrapLabel(label, 16));
+
+            const conservationChartCtx = document.getElementById('conservationChart').getContext('2d');
+            new Chart(conservationChartCtx, {
+                type: 'bar',
+                data: {
+                    labels: wrappedLabels,
+                    datasets: [{
+                        label: 'Expenditure (in Lakhs INR)',
+                        data: [19.41, 16.29, 13.61, 17.96, 15.81, 15.78, 13.54],
+                        backgroundColor: '#415A77',
+                        borderColor: '#1B263B',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { x: { beginAtZero: true, title: { display: true, text: 'Expenditure (in Lakhs INR)' } } },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    const item = tooltipItems[0];
+                                    let label = item.chart.data.labels[item.dataIndex];
+                                    return Array.isArray(label) ? label.join(' ') : label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+
+
+</body></html>

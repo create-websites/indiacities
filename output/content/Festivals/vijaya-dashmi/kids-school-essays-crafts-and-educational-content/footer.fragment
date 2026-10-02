@@ -1,0 +1,59 @@
+<footer class="bg-gray-800 text-gray-300">
+  <div class="container mx-auto px-6 py-12 lg:px-8">
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/" class="hover:text-white hover:underline transition-colors duration-200">Cities of India</a></li>
+          <li><a href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Small Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+          <li><a href="https://www.indiacities.net/wpilgrimages/vaishno-devi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishno Devi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/10-lines-on-dussehra-for-kids.html" class="hover:text-white hover:underline transition-colors duration-200">10 Lines On Dussehra For Kids</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/50-dussehra-general-knowledge-questions-for-students.html" class="hover:text-white hover:underline transition-colors duration-200">50 Dussehra General Knowledge Questions For Students</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/dussehra-activities-for-families-and-children-at-home.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Activities For Families And Children At Home</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/dussehra-coloring-pages-and-printable-activities.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Coloring Pages And Printable Activities</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/dussehra-drawing-ideas-for-kids.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Drawing Ideas For Kids</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/dussehra-essay-in-200-500-and-1000-words.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Essay In 200 500 And 1000 Words</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/dussehra-essay-in-hindi-for-students.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Essay In Hindi For Students</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/dussehra-paragraph-for-class-3-4-and-5-students.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Paragraph For Class 3 4 And 5 Students</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/dussehra-poster-ideas-for-school-competitions.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Poster Ideas For School Competitions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/dussehra-project-ideas-for-school-students.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Project Ideas For School Students</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/dussehra-quiz-for-kids-questions-and-answers.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Quiz For Kids Questions And Answers</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/dussehra-speech-for-school-assembly.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Speech For School Assembly</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/dussehra-vocabulary-important-words-and-their-meanings.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Vocabulary Important Words And Their Meanings</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/dussehra-worksheet-for-kids-rama-ravana-durga-and-traditions.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Worksheet For Kids Rama Ravana Durga And Traditions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/easy-dussehra-craft-ideas-for-children.html" class="hover:text-white hover:underline transition-colors duration-200">Easy Dussehra Craft Ideas For Children</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/how-to-explain-dussehra-to-children.html" class="hover:text-white hover:underline transition-colors duration-200">How To Explain Dussehra To Children</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/how-to-make-a-ravana-effigy-craft-for-school-projects.html" class="hover:text-white hover:underline transition-colors duration-200">How To Make A Ravana Effigy Craft For School Projects</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/ramayana-story-for-kids-simple-dussehra-version.html" class="hover:text-white hover:underline transition-colors duration-200">Ramayana Story For Kids Simple Dussehra Version</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/short-dussehra-speech-in-hindi.html" class="hover:text-white hover:underline transition-colors duration-200">Short Dussehra Speech In Hindi</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/kids-school-essays-crafts-and-educational-content/short-essay-on-dussehra-for-school-students.html" class="hover:text-white hover:underline transition-colors duration-200">Short Essay On Dussehra For School Students</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+      <p class="text-sm text-gray-400">&copy; 2026 India Cities. All rights reserved.</p>
+      
+    </div>
+
+  </div>
+</footer>

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Arnala Fort: An Interactive Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&amp;family=Lato:wght@400;700&amp;display=swap" rel="stylesheet"/>
+    <!-- Chosen Palette: Earth & Sea Neutrals -->
+    <!-- Application Structure Plan: A thematic, single-page application designed for non-linear exploration. The structure prioritizes user engagement over mirroring the report's layout. It includes: 1) A Hero section for immediate impact. 2) An interactive Timeline section to make history dynamic. 3) An 'Explore the Fort' section with a clickable map for spatial understanding. 4) A 'Culture & Legacy' section blending faith with the fort's modern story. 5) A 'Plan Your Visit' accordion for practical, task-oriented information. This structure was chosen to transform passive reading into active discovery, allowing users to dive into topics of interest in any order, which is more intuitive for a web-based experience. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Historical rulers and periods. -> Goal: Compare durations of rule. -> Viz: Chart.js Horizontal Bar Chart. -> Interaction: Hover tooltips for exact years. -> Justification: Provides an immediate visual comparison of influence over time, which is more impactful than a simple list or table.
+        - Report Info: Timeline of key events. -> Goal: Show historical progression. -> Viz: Custom HTML/CSS/JS interactive timeline. -> Interaction: Click buttons to display detailed text. -> Justification: Creates an engaging, narrative-driven exploration of the fort's 500-year story.
+        - Report Info: Architectural features. -> Goal: Organize spatial information. -> Viz: Custom HTML/CSS interactive diagram. -> Interaction: Clickable hotspots revealing details. -> Justification: Allows users to virtually 'walk' through the fort and understand its layout intuitively.
+        - Report Info: Visitor's guide. -> Goal: Inform travelers. -> Viz: HTML/CSS/JS accordion. -> Interaction: Click to expand/collapse sections. -> Justification: Organizes dense practical information into clean, manageable chunks, improving usability.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #FDFDFB;
+            color: #4A4A4A;
+        }
+        h1, h2, h3 {
+            font-family: 'Merriweather', serif;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #A0522D;
+            border-bottom-color: #A0522D;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -0.5rem;
+            transform: translateY(-50%);
+            width: 1rem;
+            height: 1rem;
+            border-radius: 9999px;
+            background-color: #D2B48C;
+            border: 2px solid #FDFDFB;
+        }
+        .timeline-item.active::before {
+            background-color: #A0522D;
+        }
+        .fort-map-hotspot {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background-color: rgba(160, 82, 45, 0.7);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .fort-map-hotspot:hover, .fort-map-hotspot.active {
+            transform: scale(1.2);
+            background-color: rgba(160, 82, 45, 1);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-[#FDFDFB] text-gray-700">
+
+    <header class="bg-[#FDFDFB]/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm" id="header">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-[#A0522D]">Arnala Fort</h1>
+            <div class="hidden md:flex space-x-8">
+                <a class="nav-link" href="#timeline">Timeline</a>
+                <a class="nav-link" href="#explore">Explore</a>
+                <a class="nav-link" href="#legacy">Legacy</a>
+                <a class="nav-link" href="#visit">Visit</a>
+            </div>
+            <button class="md:hidden text-2xl" id="mobile-menu-button">☰</button>
+        </nav>
+        <div class="hidden md:hidden" id="mobile-menu">
+            <a class="block py-2 px-6 text-center nav-link" href="#timeline">Timeline</a>
+            <a class="block py-2 px-6 text-center nav-link" href="#explore">Explore</a>
+            <a class="block py-2 px-6 text-center nav-link" href="#legacy">Legacy</a>
+            <a class="block py-2 px-6 text-center nav-link" href="#visit">Visit</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="h-[60vh] md:h-[80vh] bg-cover bg-center flex items-center justify-center text-white" id="hero" style="background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://placehold.co/1600x900/D2B48C/4A4A4A?text=Arnala+Fort');">
+            <div class="text-center p-4">
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">Arnala Fort</h1>
+                <p class="text-lg md:text-2xl mt-4 font-light">Sentinel of the Konkan Coast</p>
+            </div>
+        </section>
+
+        <section class="py-16 md:py-24 bg-white" id="timeline">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">A Chronicle of Power</h2>
+                    <p class="mt-4 text-lg max-w-3xl mx-auto">Arnala Fort's 500-year legacy tells of empires rising and falling. Positioned at the Vaitarna River's mouth, its location drew the ambitions of many rulers. Explore the timeline below to discover the strategies and influence of those who shaped this storied island stronghold.</p>
+                </div>
+
+                <div class="chart-container mb-16">
+                    <canvas id="rulersChart"></canvas>
+                </div>
+                
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="w-full md:w-1/3">
+                        <div class="relative border-l-2 border-gray-200 pl-8">
+                            <div id="timeline-buttons"></div>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-2/3 bg-gray-50 p-6 md:p-8 rounded-lg shadow-inner">
+                        <div id="timeline-content"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 md:py-24" id="explore">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Explore the Fort</h2>
+                    <p class="mt-4 text-lg max-w-3xl mx-auto">Step into the history of Arnala Fort. This enduring structure reflects layers of military and cultural evolution, shaped over centuries. Explore its key features on the interactive map, from towering bastions and vital water systems to its enigmatic watchtower.</p>
+                </div>
+                <div class="flex flex-col lg:flex-row gap-8 items-center">
+                    <div class="w-full lg:w-1/2 relative h-96 bg-[#D2B48C] rounded-lg shadow-lg p-4 flex items-center justify-center">
+                        <div class="relative w-[90%] h-[90%] border-4 border-gray-600/50">
+                            <div class="fort-map-hotspot" data-hotspot="1" style="top: -12px; left: 45%;">1</div>
+                            <div class="fort-map-hotspot" data-hotspot="2" style="top: 10%; right: -12px;">2</div>
+                            <div class="fort-map-hotspot" data-hotspot="2" style="bottom: 10%; right: -12px;">2</div>
+                            <div class="fort-map-hotspot" data-hotspot="2" style="bottom: -12px; left: 45%;">2</div>
+                            <div class="fort-map-hotspot" data-hotspot="3" style="top: 45%; left: 45%;">3</div>
+                        </div>
+                        <div class="fort-map-hotspot" data-hotspot="4" style="position: absolute; bottom: -40px; right: 10%;">4</div>
+                    </div>
+                    <div class="w-full lg:w-1/2 bg-white p-6 md:p-8 rounded-lg shadow-md">
+                        <div id="fort-feature-content">
+                            <h3 class="text-2xl font-bold text-[#A0522D] mb-2">Click a Hotspot</h3>
+                            <p>Tap the numbered hotspots on the map to explore the fort's main features.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 md:py-24 bg-white" id="legacy">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Culture &amp; Legacy</h2>
+                    <p class="mt-4 text-lg max-w-3xl mx-auto">Arnala stands as more than a military landmark; it embodies deep cultural and symbolic meaning. It reflects centuries of harmonious faiths and resurfaces in modern times, bridging India’s seafaring heritage with its vision for a self-sufficient future.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
+                        <h3 class="text-2xl font-bold text-[#A0522D] mb-4">A Confluence of Faiths</h3>
+                        <p class="mb-4">The fort's inner space stands as a vivid symbol of the blended cultural heritage of the Konkan coast. Enclosed by its sturdy walls, diverse shrines have harmoniously shared ground for generations, embodying a legacy of unity and mutual respect.</p>
+                        <ul class="space-y-2 list-disc list-inside">
+                            <li><b>Hindu Temples:</b> Dedicated to Ambakeshwar, Bhavani Mata, Lord Shiva, and Kalikamata.</li>
+                            <li><b>Muslim Tombs (Dargas):</b> Tombs of Shah Ali and Hajji Ali, signifying Sufi traditions.</li>
+                            <li><b>Sacred Sandals:</b> A dome housing the 'paduka' of saint Shrinityanand Maharaj.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
+                        <h3 class="text-2xl font-bold text-[#A0522D] mb-4">A Legacy Reborn: INS Arnala</h3>
+                        <p class="mb-4">Though the stone fort's military role has faded, its legacy thrives anew. The Indian Navy's first Anti-Submarine Warfare vessel, 'INS Arnala,' echoes the fort's historic mission of guarding the coastline.</p>
+                        <p>This initiative ties the fort's legacy to India's 'Aatmanirbhar Bharat' vision, preserving Arnala's role as a symbol of maritime resilience and defense.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 md:py-24" id="visit">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Plan Your Visit</h2>
+                    <p class="mt-4 text-lg max-w-3xl mx-auto">Eager to visit Arnala Fort? This guide has all the details you need, from ferry timings and travel tips to must-have essentials. Plan your trip with ease and make your visit to this historic island unforgettable.</p>
+                </div>
+                <div class="max-w-4xl mx-auto" id="accordion-container">
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="bg-gray-800 text-gray-300">
+<div class="container mx-auto px-6 py-12 lg:px-8">
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/">Cities of India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html">Small Cities</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/pilgrimages/">Pilgrimages</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/wpilgrimages/vaishno-devi/">Vaishno Devi</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html">Agra Fort History Architecture Mughal Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html">Ajanta Ellora Rock Cut Wonders</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html">Ajinkyatara Fort Exploration Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html">Ajinkyatara Fort Guide History Visitor Info</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html">Ajinkyatara Fort History Legacy Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html">Aligarh Fort History Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html">Aligarh Fort History Visitor Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html">Allahabad Fort History And Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html">Allahabad Fort History Significance</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html">Amber Fort Guide History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html">Amber Fort History Architecture Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html">Aranthangi Fort Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html">Arnala Fort Guide History Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html">Arnala Fort History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html">Ashoka Pillars Legacy Dhamma</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html">Belgaum Fort History Architecture Pluralism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html">Chitradurga Fort Seven Circles</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html">Daulatabad Fort Invincible Deccan Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html">Explore Indias Majestic Forts</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html">Fortress Explorer Iconic Fortresses</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html">Forts Monuments India Interactive History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html">Forts Of India Design History Legends</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html">Golconda Fort History Engineering Diamonds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html">Golconda Fortress Diamonds Power</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html">Great Stupa Sanchi History Symbolism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html">Great Stupa Sanchi Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html">Gwalior Fort Gibraltar India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html">Hawa Mahal Jaipur Palace Winds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/india-great-empires-history.html">India Great Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html">Indias Architectural Heritage Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html">Indias Architectural Heritage Report</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html">Indias Architectural Heritage Timeless Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html">Indias Architectural Heritage Visual Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html">Indias Architectural Heritage Visual Journey</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html">Indias Great Empires Visual History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html">Janjira Fort Unconquered Sea Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html">Khajuraho Art History Temples</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html">Mysore Palace History Architecture Tourism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html">Mysore Palace History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html">Qutub Minar History Architecture Icon</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html">Qutub Minar History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html">Ramgarh Fort Heritage Hotel History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html">Sentinels Of India Iconic Forts Overview</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html">Shaniwar Wada History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html">Sovereign Tapestry Indian Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html">Tamil Nadu Temples Forts Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html">Tipu Sultan Fort History Legacy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-8 text-center text-sm text-gray-400">
+<p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+</div>
+<div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+<p class="text-sm text-gray-400">© 2026 India Cities. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const timelineData = {
+                "sultanate": {
+                    title: "Gujarat Sultanate (1516)",
+                    content: "The story begins in 1516 with Sultan Mahmud Begda, who built the original fort. This was a strategic move to control the lucrative maritime trade and naval movements along the North Konkan coast, establishing the island's long history as a key maritime stronghold."
+                },
+                "portuguese": {
+                    title: "Portuguese Era (c. 1530-1737)",
+                    content: "The Portuguese gained control in the 1530s, naming the island *Ilha das vacas* (Island of Cows). They tore down the original fort to build a larger one, but never completed it. This set a precedent for future rulers to adapt and rebuild, turning the fort into a layered palimpsest of history. A Martello tower from this era still stands."
+                },
+                "maratha": {
+                    title: "Maratha Conquest (1737-1817)",
+                    content: "In 1737, after the victory at Vasai, Chimaji Appa's forces captured Arnala in a decisive surprise assault. To commemorate this, the Marathas installed a victory plaque on the northern wall. Peshwa Bajirao I ordered the fort to be rebuilt and strengthened, adding three prominent bastions: Bahirav, Bhavani, and Bava."
+                },
+                "british": {
+                    title: "British Period (1817-1947)",
+                    content: "The fort was captured and returned during the Anglo-Maratha Wars, but was permanently surrendered to the British in 1817 under the Treaty of Pune. Under British rule, its military significance waned. On May 26, 1909, it was declared a National Protected Monument, transitioning from a military asset to a heritage site."
+                }
+            };
+
+            const fortFeatureData = {
+                "1": {
+                    title: "The Grand Entrance",
+                    content: "Located on the northern face, the main entrance is flanked by two large bastions. The doorway is adorned with intricate carvings of elephants, tigers, and the mythical Sharabha. The Maratha victory plaque is placed near here, a deliberate political statement."
+                },
+                "2": {
+                    title: "Walls and Bastions",
+                    content: "The fort is enclosed by strong rampart walls about 10 meters high, with a wide path for sentries and cannons. The Marathas built three imposing bastions named Bahirav, Bhavani, and Bava, integrating them into a new defensive scheme."
+                },
+                "3": {
+                    title: "Central Water Reservoir",
+                    content: "A reliable source of fresh water was paramount. The fort contains a large, octagonal water reservoir at its center, along with several other wells, ensuring the garrison's self-sufficiency. This was a lifeline for those stationed on the island."
+                },
+                "4": {
+                    title: "The Martello Tower",
+                    content: "About 550 meters south of the main fort stands an isolated watchtower built by the Portuguese. This crucial early-warning post has a puzzling feature: no obvious entrance gate. This has given rise to local lore that it still holds a secret cache of cannonballs."
+                }
+            };
+
+            const visitData = [
+                {
+                    title: "How to Reach Arnala",
+                    content: "<b>From Mumbai:</b> Take a northbound local train on the Western Railway line to Virar station.<br><b>From Virar Station:</b> Take a State Transport (S.T.) bus or an auto-rickshaw for the ~10 km trip to Arnala Beach. The journey takes about 20-30 minutes."
+                },
+                {
+                    title: "The Ferry Crossing",
+                    content: "A short ferry ride connects Arnala Beach to the fort island.<br><b>Frequency:</b> Daily, every 15 minutes.<br><b>Operating Hours:</b> 06:00 AM to 06:15 PM.<br><b>Duration:</b> 5-10 minutes.<br><b>Note:</b> Be prepared to wade through water to board the boat, depending on the tide."
+                },
+                {
+                    title: "Best Time to Visit & What to Bring",
+                    content: "<b>Best Season:</b> October to April, when the weather is pleasant.<br><b>Essentials:</b> Comfortable footwear for uneven terrain, water, snacks, sunscreen, a hat, and cash for local services."
+                },
+                {
+                    title: "Nearby Attractions",
+                    content: "Extend your trip by visiting other sites in the region:<br><b>Historical:</b> Vasai (Bassein) Fort.<br><b>Beaches:</b> Kalamb Beach, Gorai Beach.<br><b>Spiritual:</b> Global Vipassana Pagoda, Jivdani Temple."
+                }
+            ];
+
+            const timelineButtonsContainer = document.getElementById('timeline-buttons');
+            const timelineContentContainer = document.getElementById('timeline-content');
+            
+            Object.keys(timelineData).forEach((key, index) => {
+                const data = timelineData[key];
+                const button = document.createElement('div');
+                button.className = 'timeline-item relative py-4 cursor-pointer';
+                button.dataset.key = key;
+                button.innerHTML = `<h3 class="font-bold text-lg">${data.title}</h3>`;
+                timelineButtonsContainer.appendChild(button);
+            });
+
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const key = item.dataset.key;
+                    updateTimelineContent(key);
+                    timelineItems.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                });
+            });
+
+            function updateTimelineContent(key) {
+                const data = timelineData[key];
+                timelineContentContainer.innerHTML = `
+                    <h3 class="text-2xl font-bold text-[#A0522D] mb-4">${data.title}</h3>
+                    <p class="text-base leading-relaxed">${data.content}</p>
+                `;
+            }
+
+            updateTimelineContent('sultanate');
+            document.querySelector('.timeline-item').classList.add('active');
+
+            const fortHotspots = document.querySelectorAll('.fort-map-hotspot');
+            const fortFeatureContentContainer = document.getElementById('fort-feature-content');
+
+            fortHotspots.forEach(hotspot => {
+                hotspot.addEventListener('click', () => {
+                    const key = hotspot.dataset.hotspot;
+                    updateFortFeatureContent(key);
+                    fortHotspots.forEach(h => h.classList.remove('active'));
+                    hotspot.classList.add('active');
+                });
+            });
+
+            function updateFortFeatureContent(key) {
+                const data = fortFeatureData[key];
+                fortFeatureContentContainer.innerHTML = `
+                    <h3 class="text-2xl font-bold text-[#A0522D] mb-2">${data.title}</h3>
+                    <p class="text-base leading-relaxed">${data.content}</p>
+                `;
+            }
+
+            const accordionContainer = document.getElementById('accordion-container');
+            visitData.forEach((item, index) => {
+                const accordionItem = document.createElement('div');
+                accordionItem.className = 'border-b border-gray-200';
+                accordionItem.innerHTML = `
+                    <button class="w-full text-left py-4 px-2 flex justify-between items-center accordion-toggle">
+                        <span class="text-lg font-semibold text-gray-800">${item.title}</span>
+                        <span class="text-2xl font-light transform transition-transform duration-300">+</span>
+                    </button>
+                    <div class="accordion-content px-2">
+                        <div class="py-4 text-gray-600">${item.content}</div>
+                    </div>
+                `;
+                accordionContainer.appendChild(accordionItem);
+            });
+
+            const accordionToggles = document.querySelectorAll('.accordion-toggle');
+            accordionToggles.forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const content = toggle.nextElementSibling;
+                    const icon = toggle.querySelector('span:last-child');
+                    
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        icon.style.transform = 'rotate(0deg)';
+                        icon.textContent = '+';
+                    } else {
+                        document.querySelectorAll('.accordion-content').forEach(c => c.style.maxHeight = null);
+                        document.querySelectorAll('.accordion-toggle span:last-child').forEach(i => {
+                            i.style.transform = 'rotate(0deg)';
+                            i.textContent = '+';
+                        });
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        icon.style.transform = 'rotate(45deg)';
+                        icon.textContent = '+';
+                    }
+                });
+            });
+
+            const rulersCtx = document.getElementById('rulersChart').getContext('2d');
+            new Chart(rulersCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Gujarat Sultanate', 'Portuguese Empire', 'Maratha Empire', 'British Rule'],
+                    datasets: [{
+                        label: 'Years of Control',
+                        data: [14, 207, 80, 130],
+                        backgroundColor: [
+                            'rgba(210, 180, 140, 0.7)',
+                            'rgba(70, 130, 180, 0.7)',
+                            'rgba(255, 165, 0, 0.7)',
+                            'rgba(176, 196, 222, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(210, 180, 140, 1)',
+                            'rgba(70, 130, 180, 1)',
+                            'rgba(255, 165, 0, 1)',
+                            'rgba(176, 196, 222, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Duration of Rule Over Arnala Fort (Approx. Years)',
+                            font: { size: 16, family: "'Merriweather', serif" },
+                            color: '#4A4A4A',
+                            padding: { top: 10, bottom: 20 }
+                        },
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Years'
+                            }
+                        }
+                    }
+                }
+            });
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+
+
+</body></html>

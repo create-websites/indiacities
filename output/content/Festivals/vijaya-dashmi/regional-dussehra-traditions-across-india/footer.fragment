@@ -1,0 +1,59 @@
+<footer class="bg-gray-800 text-gray-300">
+  <div class="container mx-auto px-6 py-12 lg:px-8">
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/" class="hover:text-white hover:underline transition-colors duration-200">Cities of India</a></li>
+          <li><a href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Small Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+          <li><a href="https://www.indiacities.net/wpilgrimages/vaishno-devi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishno Devi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/dussehra-in-ayodhya-rama-traditions-and-festival-celebrations.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Ayodhya Rama Traditions And Festival Celebrations</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/dussehra-in-bengaluru-ayudha-puja-and-karnataka-traditions.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Bengaluru Ayudha Puja And Karnataka Traditions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/dussehra-in-chennai-golu-saraswati-puja-and-vijayadashami.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Chennai Golu Saraswati Puja And Vijayadashami</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/dussehra-in-delhi-ramlila-effigy-burning-and-community-celebrations.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Delhi Ramlila Effigy Burning And Community Celebrations</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/dussehra-in-goa-shakti-and-local-temple-traditions.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Goa Shakti And Local Temple Traditions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/dussehra-in-hyderabad-bathukamma-connections-and-local-celebrations.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Hyderabad Bathukamma Connections And Local Celebrations</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/dussehra-in-jaipur-ramlila-fairs-and-local-customs.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Jaipur Ramlila Fairs And Local Customs</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/dussehra-in-kanpur-fairs-ramlila-and-community-celebrations.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Kanpur Fairs Ramlila And Community Celebrations</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/dussehra-in-kerala-vidyarambham-and-learning-traditions.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Kerala Vidyarambham And Learning Traditions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/dussehra-in-kota-fairs-effigies-and-rajasthan-traditions.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Kota Fairs Effigies And Rajasthan Traditions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/dussehra-in-lucknow-ramlila-and-awadhi-traditions.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Lucknow Ramlila And Awadhi Traditions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/dussehra-in-mumbai-community-events-and-vijayadashami-traditions.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Mumbai Community Events And Vijayadashami Traditions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/dussehra-in-mysuru-royal-procession-palace-lights-and-traditions.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Mysuru Royal Procession Palace Lights And Traditions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/dussehra-in-nagpur-shami-puja-and-regional-traditions.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Nagpur Shami Puja And Regional Traditions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/dussehra-in-patna-ramlila-and-bihar-traditions.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Patna Ramlila And Bihar Traditions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/dussehra-in-pune-simollanghan-and-maharashtrian-customs.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Pune Simollanghan And Maharashtrian Customs</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/dussehra-in-ranchi-local-celebrations-and-jharkhand-traditions.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Ranchi Local Celebrations And Jharkhand Traditions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/dussehra-in-varanasi-ramnagar-ramlila-and-local-traditions.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra In Varanasi Ramnagar Ramlila And Local Traditions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/how-dussehra-traditions-differ-across-north-south-east-and-west-india.html" class="hover:text-white hover:underline transition-colors duration-200">How Dussehra Traditions Differ Across North South East And West India</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/regional-dussehra-traditions-across-india/kullu-dussehra-history-deities-and-week-long-celebrations.html" class="hover:text-white hover:underline transition-colors duration-200">Kullu Dussehra History Deities And Week Long Celebrations</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+      <p class="text-sm text-gray-400">&copy; 2026 India Cities. All rights reserved.</p>
+      
+    </div>
+
+  </div>
+</footer>

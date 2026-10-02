@@ -1,0 +1,76 @@
+<footer class="bg-gray-800 text-gray-300">
+  <div class="container mx-auto px-6 py-12 lg:px-8">
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/" class="hover:text-white hover:underline transition-colors duration-200">Cities of India</a></li>
+          <li><a href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Small Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+          <li><a href="https://www.indiacities.net/wpilgrimages/vaishno-devi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishno Devi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Folders</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/India/andhra-pradesh/" class="hover:text-white hover:underline transition-colors duration-200">Andhra Pradesh</a></li>
+          <li><a href="https://www.indiacities.net/India/arunachal-pradesh/" class="hover:text-white hover:underline transition-colors duration-200">Arunachal Pradesh</a></li>
+          <li><a href="https://www.indiacities.net/India/bihar/" class="hover:text-white hover:underline transition-colors duration-200">Bihar</a></li>
+          <li><a href="https://www.indiacities.net/India/chandigarh/" class="hover:text-white hover:underline transition-colors duration-200">Chandigarh</a></li>
+          <li><a href="https://www.indiacities.net/India/chennai/" class="hover:text-white hover:underline transition-colors duration-200">Chennai</a></li>
+          <li><a href="https://www.indiacities.net/India/chhattisgarh/" class="hover:text-white hover:underline transition-colors duration-200">Chhattisgarh</a></li>
+          <li><a href="https://www.indiacities.net/India/Cities/" class="hover:text-white hover:underline transition-colors duration-200">Cities</a></li>
+          <li><a href="https://www.indiacities.net/India/Delhi/" class="hover:text-white hover:underline transition-colors duration-200">Delhi</a></li>
+          <li><a href="https://www.indiacities.net/India/Forts/" class="hover:text-white hover:underline transition-colors duration-200">Forts</a></li>
+          <li><a href="https://www.indiacities.net/India/goa/" class="hover:text-white hover:underline transition-colors duration-200">Goa</a></li>
+          <li><a href="https://www.indiacities.net/India/gujarat/" class="hover:text-white hover:underline transition-colors duration-200">Gujarat</a></li>
+          <li><a href="https://www.indiacities.net/India/haryana/" class="hover:text-white hover:underline transition-colors duration-200">Haryana</a></li>
+          <li><a href="https://www.indiacities.net/India/hillstations/" class="hover:text-white hover:underline transition-colors duration-200">Hillstations</a></li>
+          <li><a href="https://www.indiacities.net/India/himachal-pradesh/" class="hover:text-white hover:underline transition-colors duration-200">Himachal Pradesh</a></li>
+          <li><a href="https://www.indiacities.net/India/jammu-kashmir/" class="hover:text-white hover:underline transition-colors duration-200">Jammu Kashmir</a></li>
+          <li><a href="https://www.indiacities.net/India/jharkhand/" class="hover:text-white hover:underline transition-colors duration-200">Jharkhand</a></li>
+          <li><a href="https://www.indiacities.net/India/karnataka/" class="hover:text-white hover:underline transition-colors duration-200">Karnataka</a></li>
+          <li><a href="https://www.indiacities.net/India/kerala/" class="hover:text-white hover:underline transition-colors duration-200">Kerala</a></li>
+          <li><a href="https://www.indiacities.net/India/madhya-pradesh/" class="hover:text-white hover:underline transition-colors duration-200">Madhya Pradesh</a></li>
+          <li><a href="https://www.indiacities.net/India/maharashtra/" class="hover:text-white hover:underline transition-colors duration-200">Maharashtra</a></li>
+          <li><a href="https://www.indiacities.net/India/manipur/" class="hover:text-white hover:underline transition-colors duration-200">Manipur</a></li>
+          <li><a href="https://www.indiacities.net/India/Meghalya/" class="hover:text-white hover:underline transition-colors duration-200">Meghalya</a></li>
+          <li><a href="https://www.indiacities.net/India/mizoram/" class="hover:text-white hover:underline transition-colors duration-200">Mizoram</a></li>
+          <li><a href="https://www.indiacities.net/India/orissa/" class="hover:text-white hover:underline transition-colors duration-200">Orissa</a></li>
+          <li><a href="https://www.indiacities.net/India/Pondicherry/" class="hover:text-white hover:underline transition-colors duration-200">Pondicherry</a></li>
+          <li><a href="https://www.indiacities.net/India/punjab/" class="hover:text-white hover:underline transition-colors duration-200">Punjab</a></li>
+          <li><a href="https://www.indiacities.net/India/qutubminar/" class="hover:text-white hover:underline transition-colors duration-200">Qutubminar</a></li>
+          <li><a href="https://www.indiacities.net/India/rajasthan/" class="hover:text-white hover:underline transition-colors duration-200">Rajasthan</a></li>
+          <li><a href="https://www.indiacities.net/India/sikkim/" class="hover:text-white hover:underline transition-colors duration-200">Sikkim</a></li>
+          <li><a href="https://www.indiacities.net/India/srisaibaba/" class="hover:text-white hover:underline transition-colors duration-200">Srisaibaba</a></li>
+          <li><a href="https://www.indiacities.net/India/states/" class="hover:text-white hover:underline transition-colors duration-200">States</a></li>
+          <li><a href="https://www.indiacities.net/India/tamilnadu/" class="hover:text-white hover:underline transition-colors duration-200">Tamilnadu</a></li>
+          <li><a href="https://www.indiacities.net/India/tripura/" class="hover:text-white hover:underline transition-colors duration-200">Tripura</a></li>
+          <li><a href="https://www.indiacities.net/India/uttarakhand/" class="hover:text-white hover:underline transition-colors duration-200">Uttarakhand</a></li>
+          <li><a href="https://www.indiacities.net/India/uttarpradesh/" class="hover:text-white hover:underline transition-colors duration-200">Uttarpradesh</a></li>
+          <li><a href="https://www.indiacities.net/India/vaishnodevi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishnodevi</a></li>
+          <li><a href="https://www.indiacities.net/India/west-bengal/" class="hover:text-white hover:underline transition-colors duration-200">West Bengal</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+      <p class="text-sm text-gray-400">&copy; 2026 India Cities. All rights reserved.</p>
+      
+    </div>
+
+  </div>
+</footer>

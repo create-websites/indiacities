@@ -1,0 +1,59 @@
+<footer class="bg-gray-800 text-gray-300">
+  <div class="container mx-auto px-6 py-12 lg:px-8">
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/" class="hover:text-white hover:underline transition-colors duration-200">Cities of India</a></li>
+          <li><a href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Small Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+          <li><a href="https://www.indiacities.net/wpilgrimages/vaishno-devi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishno Devi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/apta-leaves-on-dussehra-why-they-are-exchanged-as-gold.html" class="hover:text-white hover:underline transition-colors duration-200">Apta Leaves On Dussehra Why They Are Exchanged As Gold</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/ayudha-puja-for-cars-bikes-and-vehicles-simple-celebration-guide.html" class="hover:text-white hover:underline transition-colors duration-200">Ayudha Puja For Cars Bikes And Vehicles Simple Celebration Guide</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/ayudha-puja-for-computers-machines-and-modern-workplaces.html" class="hover:text-white hover:underline transition-colors duration-200">Ayudha Puja For Computers Machines And Modern Workplaces</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/ayudha-puja-for-offices-shops-and-businesses.html" class="hover:text-white hover:underline transition-colors duration-200">Ayudha Puja For Offices Shops And Businesses</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/ayudha-puja-meaning-history-and-how-it-is-celebrated.html" class="hover:text-white hover:underline transition-colors duration-200">Ayudha Puja Meaning History And How It Is Celebrated</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/dussehra-and-new-beginnings-business-education-and-personal-goals.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra And New Beginnings Business Education And Personal Goals</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/dussehra-muhurat-traditions-what-makes-vijayadashami-auspicious.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Muhurat Traditions What Makes Vijayadashami Auspicious</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/dussehra-puja-samagri-list-what-you-need.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Puja Samagri List What You Need</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/how-to-perform-a-simple-vijayadashami-puja-at-home.html" class="hover:text-white hover:underline transition-colors duration-200">How To Perform A Simple Vijayadashami Puja At Home</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/how-vidyarambham-is-performed-in-kerala.html" class="hover:text-white hover:underline transition-colors duration-200">How Vidyarambham Is Performed In Kerala</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/saraswati-puja-and-vijayadashami-connection-with-learning.html" class="hover:text-white hover:underline transition-colors duration-200">Saraswati Puja And Vijayadashami Connection With Learning</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/shami-puja-on-dussehra-meaning-and-rituals.html" class="hover:text-white hover:underline transition-colors duration-200">Shami Puja On Dussehra Meaning And Rituals</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/simollanghan-on-dussehra-meaning-and-maharashtrian-tradition.html" class="hover:text-white hover:underline transition-colors duration-200">Simollanghan On Dussehra Meaning And Maharashtrian Tradition</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/vidyarambham-why-children-begin-learning-on-vijayadashami.html" class="hover:text-white hover:underline transition-colors duration-200">Vidyarambham Why Children Begin Learning On Vijayadashami</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/vijayadashami-for-students-why-the-day-is-auspicious-for-education.html" class="hover:text-white hover:underline transition-colors duration-200">Vijayadashami For Students Why The Day Is Auspicious For Education</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/vijayadashami-rituals-for-families-a-practical-guide.html" class="hover:text-white hover:underline transition-colors duration-200">Vijayadashami Rituals For Families A Practical Guide</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/what-to-offer-during-dussehra-puja.html" class="hover:text-white hover:underline transition-colors duration-200">What To Offer During Dussehra Puja</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/why-are-tools-vehicles-and-machines-worshipped-during-ayudha-puja.html" class="hover:text-white hover:underline transition-colors duration-200">Why Are Tools Vehicles And Machines Worshipped During Ayudha Puja</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/why-people-start-new-businesses-on-vijayadashami.html" class="hover:text-white hover:underline transition-colors duration-200">Why People Start New Businesses On Vijayadashami</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ayudha-puja-vidyarambham-shami-and-auspicious-traditions/why-vijayadashami-is-considered-auspicious-for-buying-vehicles-and-property.html" class="hover:text-white hover:underline transition-colors duration-200">Why Vijayadashami Is Considered Auspicious For Buying Vehicles And Property</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+      <p class="text-sm text-gray-400">&copy; 2026 India Cities. All rights reserved.</p>
+      
+    </div>
+
+  </div>
+</footer>

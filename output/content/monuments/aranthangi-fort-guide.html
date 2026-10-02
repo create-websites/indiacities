@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Aranthangi Fort: An Interactive Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+    <!-- Chosen Palette: Earthy Neutrals -->
+    <!-- Application Structure Plan: The SPA is structured into four thematic, non-linear sections accessible via a sticky navigation bar: 1) 'The Story' uses an interactive timeline to narrate the history of the two Tondaiman dynasties, making the complex chronology easier to follow than a static table. 2) 'The Forts' employs a dynamic toggle to directly compare the earthen Aranthangi Fort with the stone Thirumayam Fort, highlighting their architectural and historical contrasts. 3) 'Explore the Region' transforms the report's itinerary into a clickable card grid, encouraging discovery of related heritage sites. 4) 'Plan Your Visit' presents practical data, like climate, in an interactive chart for quick comprehension. This thematic, interactive design was chosen to break down the dense report into engaging, user-driven modules, prioritizing exploration and understanding over linear reading. -->
+    <!-- Visualization & Content Choices: 1. Chronology Table -> Interactive Timeline (HTML/CSS/JS): Goal: Show change over time. Method: Clickable points on a visual timeline reveal detailed information. Justification: More engaging and clarifies the sequence of power shifts. 2. Fort Comparison Table -> Interactive Toggle (HTML/CSS/JS): Goal: Direct comparison. Method: Buttons dynamically switch content for Aranthangi vs. Thirumayam. Justification: Facilitates easier mental comparison than reading a table. 3. Climate Table -> Bar Chart (Chart.js/Canvas): Goal: Inform travel planning. Method: Visual chart with hover tooltips. Justification: Faster comprehension of climate patterns. 4. Textual Content -> Thematic Sections (HTML/Tailwind): Goal: Provide context. Method: Key information is grouped into the app's thematic sections with clear headings. Justification: Supports the non-linear, exploratory structure. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #4B4B4B;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #A0522D;
+            border-bottom-color: #A0522D;
+        }
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+            padding-left: 2.5rem;
+        }
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 0.25rem;
+            height: 1rem;
+            width: 1rem;
+            background-color: #D2B48C;
+            border-radius: 9999px;
+            border: 2px solid #FDFBF8;
+        }
+        .timeline-line {
+            position: absolute;
+            left: 0.45rem;
+            top: 0.25rem;
+            bottom: -0.25rem;
+            width: 2px;
+            background-color: #EAEAEA;
+        }
+        .fort-toggle-btn {
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .fort-toggle-btn.active {
+            background-color: #A0522D;
+            color: #FFFFFF;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm" id="home">
+        <div class="container mx-auto px-4">
+            <nav class="flex justify-between items-center py-4">
+                <div class="text-2xl font-bold text-[#A0522D]">Aranthangi Fort</div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a class="nav-link pb-1" href="#story">The Story</a>
+                    <a class="nav-link pb-1" href="#forts">The Forts</a>
+                    <a class="nav-link pb-1" href="#explore">Explore</a>
+                    <a class="nav-link pb-1" href="#plan">Plan Your Visit</a>
+                </div>
+                <button class="md:hidden text-2xl" id="mobile-menu-button">☰</button>
+            </nav>
+            <div class="hidden md:hidden flex-col space-y-2 pb-4" id="mobile-menu">
+                <a class="nav-link block text-center py-2" href="#story">The Story</a>
+                <a class="nav-link block text-center py-2" href="#forts">The Forts</a>
+                <a class="nav-link block text-center py-2" href="#explore">Explore</a>
+                <a class="nav-link block text-center py-2" href="#plan">Plan Your Visit</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-16">
+
+        <!-- Hero Section -->
+        <section class="text-center mb-16 md:mb-24">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 text-gray-800">The Earthen Bastion of Aranthangi</h1>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                Uncover a fascinating slice of South Indian history. This immersive guide delves into the tale, design, and impact of a rare mud fortress, highlighting its significance in the vibrant heritage of the Pudukkottai-Chettinad area.
+            </p>
+        </section>
+
+        <!-- The Story Section -->
+        <section class="py-16 scroll-mt-20" id="story">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">A Tale of Two Dynasties</h2>
+                <p class="mt-4 max-w-2xl mx-auto text-gray-600">
+                    Aranthangi Fort's tale weaves together two Tondaiman dynasties one that constructed it and another that claimed it unraveling their intertwined legacies and impact on the region's fate.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-5 gap-8 items-start">
+                <div class="md:col-span-3">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="font-bold text-xl mb-4 text-[#A0522D]">The Tondaiman Timeline</h3>
+                        <div class="relative">
+                            <div class="timeline-line"></div>
+                            <div id="timeline-container">
+                                <!-- Timeline items will be injected by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:col-span-2 bg-white p-6 rounded-lg shadow-md sticky top-24" id="timeline-details">
+                    <h4 class="font-bold text-lg mb-2" id="details-title">Click an event on the timeline</h4>
+                    <p class="text-gray-600" id="details-content">Choose a moment on the timeline to explore the pivotal events and leading forces that influenced Aranthangi's history.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Forts Section -->
+        <section class="py-16 scroll-mt-20" id="forts">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">A Study in Contrasts: Earth vs. Stone</h2>
+                 <p class="mt-4 max-w-2xl mx-auto text-gray-600">
+                    A ruler's architectural decisions reflect their priorities. This section contrasts the practical, earthen Aranthangi Fort with the imposing stone stronghold of Thirumayam. Delve into their distinctions to uncover the evolving dynamics of power and warfare in the area.
+                </p>
+            </div>
+
+            <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="flex">
+                    <button class="fort-toggle-btn w-1/2 p-4 text-lg font-semibold text-center active" id="btn-aranthangi">Aranthangi Fort</button>
+                    <button class="fort-toggle-btn w-1/2 p-4 text-lg font-semibold text-center" id="btn-thirumayam">Thirumayam Fort</button>
+                </div>
+                <div class="p-6 md:p-8" id="fort-details">
+                    <!-- Fort details will be injected by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Explore the Region Section -->
+        <section class="py-16 scroll-mt-20" id="explore">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Explore the Heritage Landscape</h2>
+                <p class="mt-4 max-w-2xl mx-auto text-gray-600">
+                    Aranthangi Fort opens the door to a land steeped in history, art, and culture. Begin your journey here to uncover thematic trails, from spiritual temple routes to the grand merchant mansions of Chettinad.
+                </p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Exploration cards will be injected by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Plan Your Visit Section -->
+        <section class="py-16 scroll-mt-20" id="plan">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Plan Your Visit</h2>
+                <p class="mt-4 max-w-2xl mx-auto text-gray-600">
+                   Discover essential details to organize your visit to Aranthangi and Pudukkottai district. Learn the ideal travel season and access important contact info for local officials.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="font-bold text-xl mb-4 text-[#A0522D]">Regional Climate Guide</h3>
+                    <p class="text-gray-600 mb-4">The area experiences a hot, semi-arid climate. Visit between December and March for cooler, drier weather. Check the chart for monthly insights.</p>
+                    <div class="chart-container">
+                        <canvas id="climateChart"></canvas>
+                    </div>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="font-bold text-xl mb-4 text-[#A0522D]">Key Local Contacts</h3>
+                    <p class="text-gray-600 mb-4">Here are key contacts to assist you during your Aranthangi visit.</p>
+                    <div class="space-y-4" id="contacts-container">
+                        <!-- Contacts will be injected by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300">
+<div class="container mx-auto px-6 py-12 lg:px-8">
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/">Cities of India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html">Small Cities</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/pilgrimages/">Pilgrimages</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/wpilgrimages/vaishno-devi/">Vaishno Devi</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html">Agra Fort History Architecture Mughal Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html">Ajanta Ellora Rock Cut Wonders</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html">Ajinkyatara Fort Exploration Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html">Ajinkyatara Fort Guide History Visitor Info</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html">Ajinkyatara Fort History Legacy Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html">Aligarh Fort History Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html">Aligarh Fort History Visitor Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html">Allahabad Fort History And Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html">Allahabad Fort History Significance</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html">Amber Fort Guide History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html">Amber Fort History Architecture Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html">Aranthangi Fort Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html">Arnala Fort Guide History Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html">Arnala Fort History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html">Ashoka Pillars Legacy Dhamma</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html">Belgaum Fort History Architecture Pluralism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html">Chitradurga Fort Seven Circles</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html">Daulatabad Fort Invincible Deccan Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html">Explore Indias Majestic Forts</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html">Fortress Explorer Iconic Fortresses</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html">Forts Monuments India Interactive History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html">Forts Of India Design History Legends</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html">Golconda Fort History Engineering Diamonds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html">Golconda Fortress Diamonds Power</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html">Great Stupa Sanchi History Symbolism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html">Great Stupa Sanchi Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html">Gwalior Fort Gibraltar India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html">Hawa Mahal Jaipur Palace Winds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/india-great-empires-history.html">India Great Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html">Indias Architectural Heritage Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html">Indias Architectural Heritage Report</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html">Indias Architectural Heritage Timeless Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html">Indias Architectural Heritage Visual Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html">Indias Architectural Heritage Visual Journey</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html">Indias Great Empires Visual History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html">Janjira Fort Unconquered Sea Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html">Khajuraho Art History Temples</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html">Mysore Palace History Architecture Tourism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html">Mysore Palace History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html">Qutub Minar History Architecture Icon</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html">Qutub Minar History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html">Ramgarh Fort Heritage Hotel History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html">Sentinels Of India Iconic Forts Overview</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html">Shaniwar Wada History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html">Sovereign Tapestry Indian Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html">Tamil Nadu Temples Forts Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html">Tipu Sultan Fort History Legacy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-8 text-center text-sm text-gray-400">
+<p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+</div>
+<div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+<p class="text-sm text-gray-400">© 2026 India Cities. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+    <script>
+        // Data from the report
+        const timelineData = [
+            {
+                period: "c. 9th - 13th C.",
+                title: "Buffer Zone Era",
+                content: "The Pudukkottai region serves as a strategic buffer between the Chola and Pandya empires. The site gains religious importance with the construction of a temple by Rajendra Chola in the 11th century."
+            },
+            {
+                period: "c. 14th - 15th C.",
+                title: "Rise of Local Chiefs",
+                content: "The decline of major empires creates a power vacuum, leading to the rise of local feudatory chiefs known as 'Araiyars'. This sets the stage for the Aranthangi Tondaimans."
+            },
+            {
+                period: "c. 15th - 18th C.",
+                title: "Aranthangi Tondaimans Rule",
+                content: "The Aranthangi Tondaimans rule the region as feudal chiefs. They construct the earthen Aranthangi Fort as their stronghold and become major patrons of the Avudaiyarkoil temple."
+            },
+            {
+                period: "1686 - 1769",
+                title: "Pudukkottai Tondaimans Emerge",
+                content: "A new, more powerful Tondaiman dynasty is founded in Pudukkottai. They expand their territory, and ruler Vijaya Reghunatha Raya Thondaiman captures Aranthangi, absorbing the fort into the new state."
+            },
+            {
+                period: "c. 1769 - 1948",
+                title: "Princely State & British Era",
+                content: "The Pudukkottai Tondaimans ally with the British. The fort's military significance declines as it becomes an internal holding within a stable princely state under British protection."
+            }
+        ];
+
+        const fortData = {
+            aranthangi: {
+                title: "Aranthangi Fort: The Earthen Bastion",
+                details: [
+                    { label: "Builders", value: "Aranthangi Tondaimans" },
+                    { label: "Period", value: "c. 16th-17th Century" },
+                    { label: "Construction", value: "Earth and mud ramparts" },
+                    { label: "Architectural Style", value: "Vernacular military, functional defense" },
+                    { label: "Key Feature", value: "Rare example of an earthen fort, effective against cannon fire." },
+                    { label: "Current State", value: "Ruined, no internal buildings remain." },
+                    { label: "ASI Protection", value: "<span class='font-bold text-red-600'>Not Officially Listed</span>" }
+                ],
+                description: "Built for pragmatic defense by a local dynasty, Aranthangi Fort's earthen walls were a strategic choice. They were faster to build and better at absorbing cannonball impacts than stone. This structure is a testament to the resourcefulness and military needs of a local power in a volatile region."
+            },
+            thirumayam: {
+                title: "Thirumayam Fort: The Stone Stronghold",
+                details: [
+                    { label: "Builders", value: "Vijaya Raghunatha Sethupathi of Ramnad" },
+                    { label: "Period", value: "1687 A.D." },
+                    { label: "Construction", value: "Stone and brick" },
+                    { label: "Architectural Style", value: "Massive ring fort with concentric walls" },
+                    { label: "Key Feature", value: "Rock-cut Shiva & Vishnu temples, a large cannon, and panoramic views." },
+                    { label: "Current State", value: "Partially intact (4 of 7 walls remain), renovated." },
+                    { label: "ASI Protection", value: "<span class='font-bold text-green-600'>Officially Protected</span>" }
+                ],
+                description: "Built by a more powerful regional ruler, Thirumayam Fort was a statement of dominance. Its massive stone walls, concentric layout, and integrated religious sites project a sense of permanence and grandeur, contrasting sharply with Aranthangi's functional earthworks."
+            }
+        };
+
+        const explorationData = [
+            {
+                title: "The Sacred Circuit",
+                description: "Explore the spiritual world of the fort's builders. Visit Avudaiyarkoil Temple, a masterpiece of stone carving patronized by the Aranthangi Tondaimans, to see the contrast between their pragmatic fort and their profound artistic and religious devotion.",
+                icon: "🙏"
+            },
+            {
+                title: "The Heritage Trail",
+                description: "Step into the opulent world of the Chettiar merchants. A short drive leads to Kanadukathan Palace, where global luxury meets traditional Tamil architecture, offering a rich cultural counterpoint to the region's military history.",
+                icon: "🏛️"
+            },
+            {
+                title: "The Ancient Trail",
+                description: "Journey deeper into the region's past. Discover the 2nd-century Jain frescoes at Sittanavasal Caves and the 7th-century musical inscriptions at Kudumiyanmalai Temple to appreciate the immense historical depth of the land.",
+                icon: "📜"
+            }
+        ];
+
+        const climateData = {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [
+                {
+                    label: 'Avg. High Temp (°C)',
+                    data: [30, 32, 34, 36, 38, 37, 34, 33, 32, 31, 29, 29],
+                    backgroundColor: 'rgba(210, 180, 140, 0.6)',
+                    borderColor: 'rgba(210, 180, 140, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Avg. Rainfall (mm)',
+                    data: [18, 5, 7, 20, 44, 52, 80, 80, 116, 161, 233, 84],
+                    backgroundColor: 'rgba(160, 82, 45, 0.6)',
+                    borderColor: 'rgba(160, 82, 45, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y1'
+                }
+            ]
+        };
+        
+        const contactData = [
+            { office: "Aranthangi Municipality", phone: "04371-220556", email: "commr.aranthangi@tn.gov.in" },
+            { office: "Revenue Divisional Officer", phone: "04371-220589", email: "rdoarg.tnpdk@nic.in" },
+            { office: "Tahsildar (Taluk Office)", phone: "04371-220528", email: "tahsilarg.tnpdk@nic.in" },
+            { office: "Deputy Sup. of Police", phone: "04371-220562", email: "dsp.aranthangi@tncctns.gov.in" }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Mobile Menu Toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Navigation Highlighting
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            // Timeline Initialization
+            const timelineContainer = document.getElementById('timeline-container');
+            timelineData.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'timeline-item cursor-pointer';
+                div.innerHTML = `<div class="timeline-dot"></div><h5 class="font-semibold">${item.period}</h5><p class="text-sm text-gray-500">${item.title}</p>`;
+                div.addEventListener('click', () => updateTimelineDetails(index));
+                timelineContainer.appendChild(div);
+            });
+            updateTimelineDetails(0);
+
+            // Fort Toggle Initialization
+            const btnAranthangi = document.getElementById('btn-aranthangi');
+            const btnThirumayam = document.getElementById('btn-thirumayam');
+            btnAranthangi.addEventListener('click', () => updateFortDetails('aranthangi'));
+            btnThirumayam.addEventListener('click', () => updateFortDetails('thirumayam'));
+            updateFortDetails('aranthangi');
+
+            // Exploration Cards Initialization
+            const exploreContainer = document.querySelector('#explore .grid');
+            explorationData.forEach(card => {
+                const div = document.createElement('div');
+                div.className = 'bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300';
+                div.innerHTML = `
+                    <div class="text-4xl mb-4">${card.icon}</div>
+                    <h3 class="font-bold text-xl mb-2 text-[#A0522D]">${card.title}</h3>
+                    <p class="text-gray-600">${card.description}</p>
+                `;
+                exploreContainer.appendChild(div);
+            });
+            
+            // Contacts Initialization
+            const contactsContainer = document.getElementById('contacts-container');
+            contactData.forEach(contact => {
+                const div = document.createElement('div');
+                div.className = 'border-l-4 border-[#D2B48C] pl-4 py-2';
+                div.innerHTML = `
+                    <h4 class="font-semibold text-gray-700">${contact.office}</h4>
+                    <p class="text-sm text-gray-500">Phone: ${contact.phone}</p>
+                    <p class="text-sm text-gray-500">Email: ${contact.email}</p>
+                `;
+                contactsContainer.appendChild(div);
+            });
+
+            // Climate Chart Initialization
+            const ctx = document.getElementById('climateChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: climateData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Temperature (°C)'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Rainfall (mm)'
+                            },
+                            grid: {
+                                drawOnChartArea: false, 
+                            },
+                        },
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y;
+                                        if(context.dataset.label.includes('Temp')) {
+                                            label += '°C';
+                                        } else {
+                                            label += ' mm';
+                                        }
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        function updateTimelineDetails(index) {
+            const data = timelineData[index];
+            document.getElementById('details-title').textContent = data.title + ` (${data.period})`;
+            document.getElementById('details-content').textContent = data.content;
+        }
+
+        function updateFortDetails(fortName) {
+            const data = fortData[fortName];
+            const container = document.getElementById('fort-details');
+            const btnAranthangi = document.getElementById('btn-aranthangi');
+            const btnThirumayam = document.getElementById('btn-thirumayam');
+
+            let detailsHtml = data.details.map(item => `
+                <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                    <span class="font-semibold text-gray-600">${item.label}</span>
+                    <span class="text-right">${item.value}</span>
+                </div>
+            `).join('');
+
+            container.innerHTML = `
+                <h3 class="font-bold text-2xl mb-4 text-[#A0522D]">${data.title}</h3>
+                <div class="mb-6">${detailsHtml}</div>
+                <p class="text-gray-600 leading-relaxed">${data.description}</p>
+            `;
+
+            if (fortName === 'aranthangi') {
+                btnAranthangi.classList.add('active');
+                btnThirumayam.classList.remove('active');
+            } else {
+                btnThirumayam.classList.add('active');
+                btnAranthangi.classList.remove('active');
+            }
+        }
+    </script>
+
+
+</body></html>

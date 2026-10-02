@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Khajuraho: An Interactive Exploration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;family=Lora:ital,wght@0,400;0,600;1,400&amp;display=swap" rel="stylesheet"/>
+    <!-- Chosen Palette: Sandstone & Ochre -->
+    <!-- Application Structure Plan: A thematic, non-linear SPA with a sticky top navigation. This structure allows users to explore topics of interest (History, Architecture, Sculpture) in any order, which is more user-friendly than the linear report. Key interactions include a filterable sculpture chart to immediately contextualize the erotic art, an interactive temple diagram for architectural understanding, and a card-based temple tour to present detailed information in digestible chunks. This design prioritizes user-driven discovery over passive reading. -->
+    <!-- Visualization & Content Choices: 1. Sculpture Distribution: Report Info -> Thematic percentages. Goal -> Inform/Compare. Viz -> Interactive Donut Chart. Interaction -> Clicking a segment filters content below. Justification -> Instantly clarifies the small proportion of erotic art and encourages exploration of other themes. Library -> Chart.js. 2. Temple Anatomy: Report Info -> List of temple parts. Goal -> Organize. Viz -> Interactive Diagram. Interaction -> Hovering on a section reveals its name/function. Justification -> Visual and kinesthetic learning is more effective for architectural layouts than text. Method -> HTML/CSS/JS. 3. Chandela Timeline: Report Info -> Dynastic history. Goal -> Show Change. Viz -> Interactive Timeline. Interaction -> Clicking a phase reveals details. Justification -> Condenses dense historical text into an engaging, explorable format. Method -> HTML/CSS/JS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF5;
+            color: #4A3728;
+        }
+        h1, h2, h3 {
+            font-family: 'Lora', serif;
+        }
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #D2691E;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .section-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .section-fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .temple-anatomy-part {
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .temple-anatomy-part:hover {
+            transform: scale(1.02);
+            z-index: 10;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: -21px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: #EADDCA;
+            border: 3px solid #D2691E;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-[#FDFBF5]/80 backdrop-blur-md sticky top-0 z-50 shadow-sm" id="header">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a class="text-xl font-bold font-serif text-[#4A3728]" href="#home">Khajuraho</a>
+            <div class="hidden md:flex space-x-8">
+                <a class="nav-link" href="#history">The Builders</a>
+                <a class="nav-link" href="#architecture">The Blueprint</a>
+                <a class="nav-link" href="#sculptures">The Carvings</a>
+                <a class="nav-link" href="#tour">The Masterpieces</a>
+                <a class="nav-link" href="#visit">Visit Today</a>
+            </div>
+            <button class="md:hidden text-2xl" id="mobile-menu-button">☰</button>
+        </nav>
+        <div class="hidden md:hidden bg-[#FDFBF5] py-4" id="mobile-menu">
+            <a class="block text-center py-2 nav-link" href="#history">The Builders</a>
+            <a class="block text-center py-2 nav-link" href="#architecture">The Blueprint</a>
+            <a class="block text-center py-2 nav-link" href="#sculptures">The Carvings</a>
+            <a class="block text-center py-2 nav-link" href="#tour">The Masterpieces</a>
+            <a class="block text-center py-2 nav-link" href="#visit">Visit Today</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="min-h-screen flex items-center justify-center bg-cover bg-center" id="home" style="background-image: linear-gradient(rgba(253, 251, 245, 0.6), rgba(253, 251, 245, 1)), url('https://placehold.co/1920x1080/EADDCA/4A3728?text=Khajuraho+Silhouette');">
+            <div class="text-center px-4">
+                <h1 class="text-4xl md:text-7xl font-bold text-[#4A3728] mb-4">Cosmos in Stone</h1>
+                <p class="text-lg md:text-xl max-w-3xl mx-auto text-[#4A3728]/80">A captivating exploration of the art, architecture, and philosophy behind Khajuraho's UNESCO-listed temples, beyond their renowned legacy.</p>
+            </div>
+        </section>
+
+        <section class="py-20 md:py-32 bg-[#EADDCA]/30 section-fade-in" id="history">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold">The Builders: Age of the Chandelas</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-[#4A3728]/80">The tale of Khajuraho mirrors the rise and fall of the Chandela dynasty, tracing their path from local vassals to grand patrons of art, with their decline ironically safeguarding their enduring legacy.</p>
+                </div>
+
+                <div class="relative max-w-3xl mx-auto">
+                    <div class="absolute left-4 top-0 h-full w-1 bg-[#D2691E]/50 rounded"></div>
+                    <div class="space-y-16">
+                        <div class="timeline-item pl-12 relative">
+                            <h3 class="text-2xl font-semibold mb-2">Rise of a Power (c. 9th - 10th Century)</h3>
+                            <p class="text-[#4A3728]/90">Originating as vassals under the Gurjara-Pratihara dynasty, the early Chandela leaders, including Nannuka, fortified their authority in the Jejakabhukti region. Around 925–950 CE, Yashovarman signaled their ascent to independence by constructing the magnificent Lakshmana Temple, a testament to growing ambition.</p>
+                        </div>
+                        <div class="timeline-item pl-12 relative">
+                            <h3 class="text-2xl font-semibold mb-2">The Golden Century (c. 950 - 1050 CE)</h3>
+                            <p class="text-[#4A3728]/90">Under King Dhanga's rule, the Chandelas emerged as a sovereign power, sparking a remarkable era of architectural brilliance. This period witnessed the creation of Khajuraho's iconic structures, such as the Vishvanatha and the grand Kandariya Mahadeva temples, emblems of their dynasty's strength, devotion, and prosperity.</p>
+                        </div>
+                        <div class="timeline-item pl-12 relative">
+                            <h3 class="text-2xl font-semibold mb-2">Decline &amp; Rediscovery (c. 11th Century onwards)</h3>
+                            <p class="text-[#4A3728]/90">Amid invasions and turmoil, the Chandelas moved their capital, leaving Khajuraho to decline into obscurity. Its isolation shielded the temples from harm. Hidden by dense forests for centuries, the site was rediscovered in the 1800s by British officer T. S. Burt, securing its cultural heritage for future generations.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 md:py-32 section-fade-in" id="architecture">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold">The Blueprint: Building the Cosmos</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-[#4A3728]/80">Khajuraho's temples transcend architecture, serving as cosmic blueprints shaped by sacred geometry. Discover their structured design, leading devotees from the earthly to the spiritual.</p>
+                </div>
+
+                <div class="max-w-5xl mx-auto">
+                    <div class="flex flex-col md:flex-row w-full h-[400px] md:h-[200px] border-2 border-[#4A3728]/20 rounded-lg overflow-hidden shadow-lg" id="temple-diagram">
+                        <div class="temple-anatomy-part flex-1 bg-[#F5F5DC] flex items-center justify-center text-center p-2 cursor-pointer" data-part="ardhamandapa">Ardhamandapa</div>
+                        <div class="temple-anatomy-part flex-1 bg-[#EADDCA] flex items-center justify-center text-center p-2 cursor-pointer" data-part="mandapa">Mandapa</div>
+                        <div class="temple-anatomy-part flex-1 bg-[#DCCDAE] flex items-center justify-center text-center p-2 cursor-pointer" data-part="mahamandapa">Mahamandapa</div>
+                        <div class="temple-anatomy-part flex-1 bg-[#EADDCA] flex items-center justify-center text-center p-2 cursor-pointer" data-part="antarala">Antarala</div>
+                        <div class="temple-anatomy-part flex-1 bg-[#4A3728] text-white flex items-center justify-center text-center p-2 cursor-pointer" data-part="garbhagriha">Garbhagriha</div>
+                    </div>
+                    <div class="mt-8 text-center p-6 bg-[#EADDCA]/30 rounded-lg min-h-[120px]" id="architecture-info">
+                        <h3 class="text-2xl font-semibold mb-2" id="part-name">Hover over a section</h3>
+                        <p class="text-lg text-[#4A3728]/90" id="part-description">Explore the role of each section of a Khajuraho temple, from the outer gateway to the revered inner shrine.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 md:py-32 bg-[#EADDCA]/30 section-fade-in" id="sculptures">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold">The Carvings: A Universe in Stone</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-[#4A3728]/80">Khajuraho's sculptures go beyond ornamentation, embodying a cosmic vision. Though renowned for erotic art, it forms just a fraction of their rich symbolism. Tap the chart to delve into the wide array of themes.</p>
+                </div>
+                
+                <div class="flex flex-col lg:flex-row items-center gap-12">
+                    <div class="w-full lg:w-1/3">
+                        <div class="chart-container">
+                            <canvas id="sculptureChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-2/3">
+                        <div id="sculpture-info-container">
+                            <div class="sculpture-info" id="info-all">
+                                <h3 class="text-2xl font-semibold mb-3">The Complete Vision</h3>
+                                <p class="text-lg">The temple walls embody a unified vision, weaving together every facet of existence. Deities, celestial figures, medieval daily life, mythical beasts, and earthly passions appear as threads in a vast cosmic tapestry. This artistry proclaims that all aspects of life, sacred or worldly, belong to the divine order.</p>
+                            </div>
+                            <div class="sculpture-info hidden" id="info-deities">
+                                <h3 class="text-2xl font-semibold mb-3">Principal Deities (&gt;50%)</h3>
+                                <p class="text-lg">Most carvings honor the divine, with Hindu temples displaying striking images of Shiva, Vishnu and his avatars, alongside Devi. The Eastern cluster highlights tranquil Jain Tirthankars. These sacred sculptures, central to worship, portray vivid mythological tales.</p>
+                            </div>
+                            <div class="sculpture-info hidden" id="info-celestial">
+                                <h3 class="text-2xl font-semibold mb-3">Celestial Beings (~20%)</h3>
+                                <p class="text-lg">Walls come alive with legions of elegant celestial figures. *Apsaras* (nymphs) and *Sura-sundaris* (heavenly maidens) appear in lively, enchanting poses adorning themselves, engaging in play, or penning letters. They embody divine grace, auspiciousness, and celestial joy, inviting devotees into a realm of sacred beauty.</p>
+                            </div>
+                            <div class="sculpture-info hidden" id="info-secular">
+                                <h3 class="text-2xl font-semibold mb-3">Secular Life (~10-15%)</h3>
+                                <p class="text-lg">The sculptures vividly illuminate medieval life, showcasing royal processions, military exploits, teachers with students, musicians, dancers, and everyday domestic moments. By portraying worldly existence (*samsara*) on the temple, the artists embraced its role within the sacred cosmos.</p>
+                            </div>
+                            <div class="sculpture-info hidden" id="info-erotic">
+                                <h3 class="text-2xl font-semibold mb-3">Erotic/Mithuna (~10%)</h3>
+                                <p class="text-lg">The smallest yet most renowned category, these carvings depict scenes from amorous couples (*mithuna*) to vivid unions. Positioned on the outer walls, they hold layered meanings: honoring *Kama* (desire) as a life goal, symbolizing Tantric cosmic harmony, or serving as protective icons for the temple. Worshippers must face and rise above such earthly desires before reaching the sacred inner sanctum.</p>
+                            </div>
+                             <div class="sculpture-info hidden" id="info-mythical">
+                                <h3 class="text-2xl font-semibold mb-3">Mythical &amp; Flora (&lt;10%)</h3>
+                                <p class="text-lg">Guardian figures such as *Vyalas* (lion-like beasts) stand watch over the temple, representing raw natural power. Detailed floral motifs, notably the lotus, embody purity and creation, blending symbolism with ornamental elegance.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 md:py-32 section-fade-in" id="tour">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold">The Masterpieces: A Connoisseur's Tour</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-[#4A3728]/80">Out of the initial 85 temples, roughly 25 remain, grouped into three clusters. Discover the key attractions in each, from the artistic pinnacle of Chandela craftsmanship in the West to the symbol of diverse faiths in the East.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8 text-center">
+                    <div class="bg-white p-8 rounded-lg shadow-lg border border-[#EADDCA]/50">
+                        <h3 class="text-2xl font-semibold mb-4">Western Group</h3>
+                        <p class="mb-4 text-[#4A3728]/90">The grandest and most splendid group, symbolizing Chandela's pinnacle.</p>
+                        <ul class="text-left space-y-2">
+                            <li><strong>Kandariya Mahadeva:</strong> The grandest temple, devoted to Shiva, featuring more than 870 intricate carvings.</li>
+                            <li><strong>Lakshmana Temple:</strong> Among the oldest, well-preserved temples to Vishnu, renowned for its intricate friezes depicting courtly life.</li>
+                            <li><strong>Vishvanatha Temple:</strong> A majestic Shiva temple famed for its intricate carvings and preserved smaller shrines.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-lg border border-[#EADDCA]/50">
+                        <h3 class="text-2xl font-semibold mb-4">Eastern Group</h3>
+                        <p class="mb-4 text-[#4A3728]/90">A striking symbol of the Chandela kingdom's religious harmony and cultural fusion.</p>
+                        <ul class="text-left space-y-2">
+                            <li><strong>Parshvanatha Temple:</strong> The Jain group's masterpiece, celebrated for its intricate details and elegant divine sculptures.</li>
+                            <li><strong>Adinatha &amp; Shantinatha:</strong> Additional notable Jain temples reflect the integration of Chandela artistry with Jain traditions.</li>
+                            <li><strong>Vamana &amp; Javari Temples:</strong> Significant Hindu temples honoring Vishnu's avatars, situated near renowned Jain shrines.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-lg border border-[#EADDCA]/50">
+                        <h3 class="text-2xl font-semibold mb-4">Southern Group</h3>
+                        <p class="mb-4 text-[#4A3728]/90">A compact group of temples from a later period, reflecting changes in architectural style.</p>
+                        <ul class="text-left space-y-2">
+                            <li><strong>Duladeo Temple:</strong> A subsequent Shiva temple featuring a richer yet possibly less dynamic sculptural design.</li>
+                            <li><strong>Chaturbhuja Temple:</strong> This Vishnu temple stands out at Khajuraho, being the sole structure devoid of any erotic carvings.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 md:py-32 bg-[#EADDCA]/30 section-fade-in" id="visit">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold">Visit Today: A Living Heritage</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-[#4A3728]/80">Khajuraho is both a historic marvel and a lively cultural hub. Here’s essential info to help plan your visit to this UNESCO site.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="text-center">
+                        <div class="text-4xl mb-4">🗓️</div>
+                        <h3 class="text-xl font-semibold mb-2">Best Time to Visit</h3>
+                        <p>The best time to visit is in the cool, pleasant winter season from **October to March**. A trip in February offers the chance to witness the vibrant week-long Khajuraho Dance Festival.</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl mb-4">✈️</div>
+                        <h3 class="text-xl font-semibold mb-2">Getting There</h3>
+                        <p>Khajuraho features a domestic airport linking to key cities like Delhi. The town also hosts a railway station, while larger hubs like Jhansi (175 km) and Satna (117 km) offer more frequent train services.</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl mb-4">✨</div>
+                        <h3 class="text-xl font-semibold mb-2">Exploring the Site</h3>
+                        <p>The Western Group is simple to navigate on foot. Rent a bike or hop on an auto-rickshaw to visit the Eastern and Southern groups. Opt for a licensed guide or an official audio tour for a richer experience. Be sure to catch the evening sound and light show!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300">
+<div class="container mx-auto px-6 py-12 lg:px-8">
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/">Cities of India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html">Small Cities</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/pilgrimages/">Pilgrimages</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/wpilgrimages/vaishno-devi/">Vaishno Devi</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html">Agra Fort History Architecture Mughal Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html">Ajanta Ellora Rock Cut Wonders</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html">Ajinkyatara Fort Exploration Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html">Ajinkyatara Fort Guide History Visitor Info</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html">Ajinkyatara Fort History Legacy Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html">Aligarh Fort History Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html">Aligarh Fort History Visitor Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html">Allahabad Fort History And Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html">Allahabad Fort History Significance</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html">Amber Fort Guide History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html">Amber Fort History Architecture Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html">Aranthangi Fort Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html">Arnala Fort Guide History Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html">Arnala Fort History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html">Ashoka Pillars Legacy Dhamma</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html">Belgaum Fort History Architecture Pluralism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html">Chitradurga Fort Seven Circles</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html">Daulatabad Fort Invincible Deccan Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html">Explore Indias Majestic Forts</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html">Fortress Explorer Iconic Fortresses</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html">Forts Monuments India Interactive History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html">Forts Of India Design History Legends</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html">Golconda Fort History Engineering Diamonds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html">Golconda Fortress Diamonds Power</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html">Great Stupa Sanchi History Symbolism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html">Great Stupa Sanchi Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html">Gwalior Fort Gibraltar India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html">Hawa Mahal Jaipur Palace Winds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/india-great-empires-history.html">India Great Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html">Indias Architectural Heritage Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html">Indias Architectural Heritage Report</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html">Indias Architectural Heritage Timeless Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html">Indias Architectural Heritage Visual Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html">Indias Architectural Heritage Visual Journey</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html">Indias Great Empires Visual History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html">Janjira Fort Unconquered Sea Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html">Khajuraho Art History Temples</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html">Mysore Palace History Architecture Tourism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html">Mysore Palace History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html">Qutub Minar History Architecture Icon</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html">Qutub Minar History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html">Ramgarh Fort Heritage Hotel History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html">Sentinels Of India Iconic Forts Overview</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html">Shaniwar Wada History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html">Sovereign Tapestry Indian Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html">Tamil Nadu Temples Forts Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html">Tipu Sultan Fort History Legacy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-8 text-center text-sm text-gray-400">
+<p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+</div>
+<div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+<p class="text-sm text-gray-400">© 2026 India Cities. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            const architectureParts = {
+                ardhamandapa: {
+                    name: 'Ardhamandapa',
+                    description: 'The entrance porch, the first transitional space welcoming the devotee into the temple complex.'
+                },
+                mandapa: {
+                    name: 'Mandapa',
+                    description: 'The main assembly hall, a pillared space where devotees would gather for communal prayers and rituals.'
+                },
+                mahamandapa: {
+                    name: 'Mahamandapa',
+                    description: 'The great hall, found in larger temples, often with transepts and balconied windows connecting the interior with the world.'
+                },
+                antarala: {
+                    name: 'Antarala',
+                    description: 'The vestibule or antechamber, serving as a final transitional space before the most sacred area.'
+                },
+                garbhagriha: {
+                    name: 'Garbhagriha (Womb-Chamber)',
+                    description: 'The small, dark, unadorned inner sanctum housing the primary deity. It is the spiritual heart of the temple for intimate worship.'
+                }
+            };
+
+            const diagram = document.getElementById('temple-diagram');
+            const partName = document.getElementById('part-name');
+            const partDescription = document.getElementById('part-description');
+
+            diagram.querySelectorAll('.temple-anatomy-part').forEach(part => {
+                part.addEventListener('mouseover', () => {
+                    const partId = part.dataset.part;
+                    partName.textContent = architectureParts[partId].name;
+                    partDescription.textContent = architectureParts[partId].description;
+                });
+            });
+
+            const sculptureData = {
+                labels: ['Principal Deities', 'Celestial Beings', 'Secular Life', 'Erotic/Mithuna', 'Mythical & Flora'],
+                datasets: [{
+                    label: 'Sculptural Theme Distribution',
+                    data: [55, 20, 15, 10, 5],
+                    backgroundColor: [
+                        '#4A3728',
+                        '#8B5E3C',
+                        '#D2691E',
+                        '#EADDCA',
+                        '#A98C78'
+                    ],
+                    hoverOffset: 4,
+                    borderColor: '#FDFBF5',
+                    borderWidth: 2
+                }]
+            };
+
+            const sculptureChartCtx = document.getElementById('sculptureChart').getContext('2d');
+            const myChart = new Chart(sculptureChartCtx, {
+                type: 'doughnut',
+                data: sculptureData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#4A3728',
+                                font: {
+                                    family: "'Inter', sans-serif",
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const index = elements[0].index;
+                            const label = sculptureData.labels[index].toLowerCase().split('/')[0].trim().split(' ')[0];
+                            const infoId = `info-${label}`;
+                            
+                            document.querySelectorAll('.sculpture-info').forEach(div => {
+                                div.classList.add('hidden');
+                            });
+
+                            const targetDiv = document.getElementById(infoId);
+                            if (targetDiv) {
+                                targetDiv.classList.remove('hidden');
+                            } else {
+                                document.getElementById('info-all').classList.remove('hidden');
+                            }
+                        }
+                    }
+                }
+            });
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            document.querySelectorAll('.section-fade-in').forEach(section => {
+                observer.observe(section);
+            });
+            
+            const navLinks = document.querySelectorAll('header nav a');
+            const sections = document.querySelectorAll('main section');
+
+            const onScroll = () => {
+                let currentSection = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) {
+                        currentSection = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').substring(1) === currentSection) {
+                        link.classList.add('active');
+                    }
+                });
+            };
+            window.addEventListener('scroll', onScroll);
+        });
+    </script>
+
+
+</body></html>

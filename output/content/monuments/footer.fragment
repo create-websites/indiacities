@@ -1,0 +1,90 @@
+<footer class="bg-gray-800 text-gray-300">
+  <div class="container mx-auto px-6 py-12 lg:px-8">
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/" class="hover:text-white hover:underline transition-colors duration-200">Cities of India</a></li>
+          <li><a href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Small Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+          <li><a href="https://www.indiacities.net/wpilgrimages/vaishno-devi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishno Devi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html" class="hover:text-white hover:underline transition-colors duration-200">Agra Fort History Architecture Mughal Legacy</a></li>
+          <li><a href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html" class="hover:text-white hover:underline transition-colors duration-200">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+          <li><a href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html" class="hover:text-white hover:underline transition-colors duration-200">Ajanta Ellora Rock Cut Wonders</a></li>
+          <li><a href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html" class="hover:text-white hover:underline transition-colors duration-200">Ajinkyatara Fort Exploration Guide</a></li>
+          <li><a href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html" class="hover:text-white hover:underline transition-colors duration-200">Ajinkyatara Fort Guide History Visitor Info</a></li>
+          <li><a href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html" class="hover:text-white hover:underline transition-colors duration-200">Ajinkyatara Fort History Legacy Guide</a></li>
+          <li><a href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html" class="hover:text-white hover:underline transition-colors duration-200">Aligarh Fort History Guide</a></li>
+          <li><a href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html" class="hover:text-white hover:underline transition-colors duration-200">Aligarh Fort History Visitor Guide</a></li>
+          <li><a href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html" class="hover:text-white hover:underline transition-colors duration-200">Allahabad Fort History And Legacy</a></li>
+          <li><a href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html" class="hover:text-white hover:underline transition-colors duration-200">Allahabad Fort History Significance</a></li>
+          <li><a href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html" class="hover:text-white hover:underline transition-colors duration-200">Amber Fort Guide History Architecture</a></li>
+          <li><a href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html" class="hover:text-white hover:underline transition-colors duration-200">Amber Fort History Architecture Guide</a></li>
+          <li><a href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html" class="hover:text-white hover:underline transition-colors duration-200">Aranthangi Fort Guide</a></li>
+          <li><a href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html" class="hover:text-white hover:underline transition-colors duration-200">Arnala Fort Guide History Legacy</a></li>
+          <li><a href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html" class="hover:text-white hover:underline transition-colors duration-200">Arnala Fort History Architecture Legacy</a></li>
+          <li><a href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html" class="hover:text-white hover:underline transition-colors duration-200">Ashoka Pillars Legacy Dhamma</a></li>
+          <li><a href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html" class="hover:text-white hover:underline transition-colors duration-200">Belgaum Fort History Architecture Pluralism</a></li>
+          <li><a href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html" class="hover:text-white hover:underline transition-colors duration-200">Chitradurga Fort Seven Circles</a></li>
+          <li><a href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html" class="hover:text-white hover:underline transition-colors duration-200">Daulatabad Fort Invincible Deccan Fortress</a></li>
+          <li><a href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html" class="hover:text-white hover:underline transition-colors duration-200">Explore Indias Majestic Forts</a></li>
+          <li><a href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html" class="hover:text-white hover:underline transition-colors duration-200">Fortress Explorer Iconic Fortresses</a></li>
+          <li><a href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html" class="hover:text-white hover:underline transition-colors duration-200">Forts Monuments India Interactive History</a></li>
+          <li><a href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html" class="hover:text-white hover:underline transition-colors duration-200">Forts Of India Design History Legends</a></li>
+          <li><a href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html" class="hover:text-white hover:underline transition-colors duration-200">Golconda Fort History Engineering Diamonds</a></li>
+          <li><a href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html" class="hover:text-white hover:underline transition-colors duration-200">Golconda Fortress Diamonds Power</a></li>
+          <li><a href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html" class="hover:text-white hover:underline transition-colors duration-200">Great Stupa Sanchi History Symbolism</a></li>
+          <li><a href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html" class="hover:text-white hover:underline transition-colors duration-200">Great Stupa Sanchi Infographic</a></li>
+          <li><a href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html" class="hover:text-white hover:underline transition-colors duration-200">Gwalior Fort Gibraltar India</a></li>
+          <li><a href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html" class="hover:text-white hover:underline transition-colors duration-200">Hawa Mahal Jaipur Palace Winds</a></li>
+          <li><a href="https://www.indiacities.net/monuments/india-great-empires-history.html" class="hover:text-white hover:underline transition-colors duration-200">India Great Empires History</a></li>
+          <li><a href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html" class="hover:text-white hover:underline transition-colors duration-200">Indias Architectural Heritage Infographic</a></li>
+          <li><a href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html" class="hover:text-white hover:underline transition-colors duration-200">Indias Architectural Heritage Report</a></li>
+          <li><a href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html" class="hover:text-white hover:underline transition-colors duration-200">Indias Architectural Heritage Timeless Legacy</a></li>
+          <li><a href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html" class="hover:text-white hover:underline transition-colors duration-200">Indias Architectural Heritage Visual Guide</a></li>
+          <li><a href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html" class="hover:text-white hover:underline transition-colors duration-200">Indias Architectural Heritage Visual Journey</a></li>
+          <li><a href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html" class="hover:text-white hover:underline transition-colors duration-200">Indias Great Empires Visual History</a></li>
+          <li><a href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html" class="hover:text-white hover:underline transition-colors duration-200">Janjira Fort Unconquered Sea Fortress</a></li>
+          <li><a href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html" class="hover:text-white hover:underline transition-colors duration-200">Khajuraho Art History Temples</a></li>
+          <li><a href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html" class="hover:text-white hover:underline transition-colors duration-200">Mysore Palace History Architecture Tourism</a></li>
+          <li><a href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html" class="hover:text-white hover:underline transition-colors duration-200">Mysore Palace History Architecture</a></li>
+          <li><a href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html" class="hover:text-white hover:underline transition-colors duration-200">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+          <li><a href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html" class="hover:text-white hover:underline transition-colors duration-200">Qutub Minar History Architecture Icon</a></li>
+          <li><a href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html" class="hover:text-white hover:underline transition-colors duration-200">Qutub Minar History Architecture Legacy</a></li>
+          <li><a href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html" class="hover:text-white hover:underline transition-colors duration-200">Ramgarh Fort Heritage Hotel History</a></li>
+          <li><a href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html" class="hover:text-white hover:underline transition-colors duration-200">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+          <li><a href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html" class="hover:text-white hover:underline transition-colors duration-200">Sentinels Of India Iconic Forts Overview</a></li>
+          <li><a href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html" class="hover:text-white hover:underline transition-colors duration-200">Shaniwar Wada History Architecture Legacy</a></li>
+          <li><a href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html" class="hover:text-white hover:underline transition-colors duration-200">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+          <li><a href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html" class="hover:text-white hover:underline transition-colors duration-200">Sovereign Tapestry Indian Empires History</a></li>
+          <li><a href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html" class="hover:text-white hover:underline transition-colors duration-200">Tamil Nadu Temples Forts Architecture</a></li>
+          <li><a href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html" class="hover:text-white hover:underline transition-colors duration-200">Tipu Sultan Fort History Legacy</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+      <p class="text-sm text-gray-400">&copy; 2026 India Cities. All rights reserved.</p>
+      
+    </div>
+
+  </div>
+</footer>

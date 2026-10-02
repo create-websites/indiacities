@@ -1,0 +1,59 @@
+<footer class="bg-gray-800 text-gray-300">
+  <div class="container mx-auto px-6 py-12 lg:px-8">
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/" class="hover:text-white hover:underline transition-colors duration-200">Cities of India</a></li>
+          <li><a href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Small Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+          <li><a href="https://www.indiacities.net/wpilgrimages/vaishno-devi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishno Devi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/50-frequently-asked-questions-about-dussehra.html" class="hover:text-white hover:underline transition-colors duration-200">50 Frequently Asked Questions About Dussehra</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/dussehra-festival-complete-guide-to-history-meaning-traditions-and-celebration.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Festival Complete Guide To History Meaning Traditions And Celebration</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/dussehra-for-beginners-everything-you-need-to-know.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra For Beginners Everything You Need To Know</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/dussehra-myths-vs-facts.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Myths Vs Facts</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/dussehra-puja-vidhi-simple-home-celebration-guide.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Puja Vidhi Simple Home Celebration Guide</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/dussehra-symbols-and-their-meanings.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Symbols And Their Meanings</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/dussehra-traditions-ramlila-processions-puja-and-effigy-burning.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Traditions Ramlila Processions Puja And Effigy Burning</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/dussehra-vs-vijayadashami-are-they-the-same-festival.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Vs Vijayadashami Are They The Same Festival</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/how-dussehra-has-changed-from-traditional-fairs-to-modern-celebrations.html" class="hover:text-white hover:underline transition-colors duration-200">How Dussehra Has Changed From Traditional Fairs To Modern Celebrations</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/how-dussehra-is-celebrated-across-india.html" class="hover:text-white hover:underline transition-colors duration-200">How Dussehra Is Celebrated Across India</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/the-story-of-goddess-durga-and-mahishasura-on-vijayadashami.html" class="hover:text-white hover:underline transition-colors duration-200">The Story Of Goddess Durga And Mahishasura On Vijayadashami</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/the-story-of-rama-and-ravana-behind-dussehra.html" class="hover:text-white hover:underline transition-colors duration-200">The Story Of Rama And Ravana Behind Dussehra</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/what-does-the-victory-of-good-over-evil-mean-on-dussehra.html" class="hover:text-white hover:underline transition-colors duration-200">What Does The Victory Of Good Over Evil Mean On Dussehra</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/what-to-do-on-dussehra-day-complete-celebration-checklist.html" class="hover:text-white hover:underline transition-colors duration-200">What To Do On Dussehra Day Complete Celebration Checklist</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/why-are-weapons-and-tools-worshipped-on-vijayadashami.html" class="hover:text-white hover:underline transition-colors duration-200">Why Are Weapons And Tools Worshipped On Vijayadashami</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/why-is-dussehra-celebrated-after-navratri.html" class="hover:text-white hover:underline transition-colors duration-200">Why Is Dussehra Celebrated After Navratri</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/why-is-dussehra-celebrated-history-mythology-and-cultural-significance.html" class="hover:text-white hover:underline transition-colors duration-200">Why Is Dussehra Celebrated History Mythology And Cultural Significance</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/why-is-ravana-effigy-burning-part-of-dussehra.html" class="hover:text-white hover:underline transition-colors duration-200">Why Is Ravana Effigy Burning Part Of Dussehra</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/why-is-shami-or-apta-tree-worshipped-on-dussehra.html" class="hover:text-white hover:underline transition-colors duration-200">Why Is Shami Or Apta Tree Worshipped On Dussehra</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/foundation-history-meaning-and-core-traditions/why-is-vijayadashami-considered-an-auspicious-day-for-new-beginnings.html" class="hover:text-white hover:underline transition-colors duration-200">Why Is Vijayadashami Considered An Auspicious Day For New Beginnings</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+      <p class="text-sm text-gray-400">&copy; 2026 India Cities. All rights reserved.</p>
+      
+    </div>
+
+  </div>
+</footer>

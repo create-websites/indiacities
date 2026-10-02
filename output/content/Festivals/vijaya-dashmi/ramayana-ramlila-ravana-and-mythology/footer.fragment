@@ -1,0 +1,59 @@
+<footer class="bg-gray-800 text-gray-300">
+  <div class="container mx-auto px-6 py-12 lg:px-8">
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/" class="hover:text-white hover:underline transition-colors duration-200">Cities of India</a></li>
+          <li><a href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Small Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+          <li><a href="https://www.indiacities.net/wpilgrimages/vaishno-devi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishno Devi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/dussehra-and-the-idea-of-dharma-in-the-ramayana.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra And The Idea Of Dharma In The Ramayana</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/famous-ramlila-traditions-of-north-india.html" class="hover:text-white hover:underline transition-colors duration-200">Famous Ramlila Traditions Of North India</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/hanumans-role-in-ramas-victory-over-ravana.html" class="hover:text-white hover:underline transition-colors duration-200">Hanumans Role In Ramas Victory Over Ravana</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/how-ramlila-retells-the-ramayana-for-modern-audiences.html" class="hover:text-white hover:underline transition-colors duration-200">How Ramlila Retells The Ramayana For Modern Audiences</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/how-the-ramayana-is-taught-to-children-during-dussehra.html" class="hover:text-white hover:underline transition-colors duration-200">How The Ramayana Is Taught To Children During Dussehra</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/kumbhakarna-the-story-behind-ravanas-powerful-brother.html" class="hover:text-white hover:underline transition-colors duration-200">Kumbhakarna The Story Behind Ravanas Powerful Brother</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/lakshmanas-role-in-the-ramayana-and-dussehra-story.html" class="hover:text-white hover:underline transition-colors duration-200">Lakshmanas Role In The Ramayana And Dussehra Story</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/lessons-from-the-ramayana-commonly-associated-with-dussehra.html" class="hover:text-white hover:underline transition-colors duration-200">Lessons From The Ramayana Commonly Associated With Dussehra</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/meghnad-or-indrajit-the-warrior-son-of-ravana.html" class="hover:text-white hover:underline transition-colors duration-200">Meghnad Or Indrajit The Warrior Son Of Ravana</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/rama-vs-ravana-the-ramayana-story-behind-dussehra.html" class="hover:text-white hover:underline transition-colors duration-200">Rama Vs Ravana The Ramayana Story Behind Dussehra</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/ramayana-characters-guide-for-dussehra-rama-sita-hanuman-ravana-and-more.html" class="hover:text-white hover:underline transition-colors duration-200">Ramayana Characters Guide For Dussehra Rama Sita Hanuman Ravana And More</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/ramlila-history-meaning-and-how-it-is-performed.html" class="hover:text-white hover:underline transition-colors duration-200">Ramlila History Meaning And How It Is Performed</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/ravana-in-different-ramayana-traditions-across-india.html" class="hover:text-white hover:underline transition-colors duration-200">Ravana In Different Ramayana Traditions Across India</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/ten-heads-of-ravana-what-do-they-symbolize.html" class="hover:text-white hover:underline transition-colors duration-200">Ten Heads Of Ravana What Do They Symbolize</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/the-role-of-sita-in-the-ramayana-and-dussehra-traditions.html" class="hover:text-white hover:underline transition-colors duration-200">The Role Of Sita In The Ramayana And Dussehra Traditions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/vibhishana-why-ravanas-brother-supported-rama.html" class="hover:text-white hover:underline transition-colors duration-200">Vibhishana Why Ravanas Brother Supported Rama</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/was-ravana-only-a-villain-understanding-different-cultural-perspectives.html" class="hover:text-white hover:underline transition-colors duration-200">Was Ravana Only A Villain Understanding Different Cultural Perspectives</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/who-was-ravana-mythology-scholarship-and-popular-interpretations.html" class="hover:text-white hover:underline transition-colors duration-200">Who Was Ravana Mythology Scholarship And Popular Interpretations</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/why-are-ravana-kumbhakarna-and-meghnad-effigies-burned-together.html" class="hover:text-white hover:underline transition-colors duration-200">Why Are Ravana Kumbhakarna And Meghnad Effigies Burned Together</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/ramayana-ramlila-ravana-and-mythology/why-did-lord-rama-defeat-ravana.html" class="hover:text-white hover:underline transition-colors duration-200">Why Did Lord Rama Defeat Ravana</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+      <p class="text-sm text-gray-400">&copy; 2026 India Cities. All rights reserved.</p>
+      
+    </div>
+
+  </div>
+</footer>

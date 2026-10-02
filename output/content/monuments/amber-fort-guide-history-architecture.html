@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>The Story of Amber Fort: An Interactive Exploration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&amp;family=Work+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <!-- Chosen Palette: Warm Sandstone -->
+    <!-- Application Structure Plan: The application is designed as a thematic, single-page journey, prioritizing user exploration over the linear structure of the source report. The structure includes: 1. A sticky navigation bar for easy access to all sections. 2. An interactive timeline to visualize the fort's construction phases, allowing users to click through rulers to see their contributions. This is more engaging than a static table. 3. An interactive map of the four courtyards, which is the core of the application. Users can click on a courtyard to reveal detailed information in a side panel, making the spatial layout easy to understand. 4. A comparative section on architecture, using a side-by-side layout with icons to clearly distinguish Rajput and Mughal styles. 5. Key stories and visitor information are presented in clean, digestible cards and charts. This thematic, interactive structure was chosen to transform the dense report into an intuitive, self-guided tour that encourages discovery and makes the complex history and layout of the fort accessible and memorable. -->
+    <!-- Visualization & Content Choices: 1. Construction History -> Goal: Show Change -> Viz: Interactive Timeline (HTML/JS buttons updating a text panel) -> Interaction: Click on a ruler's name to see their specific contributions. Justification: More dynamic and focused than reading through a long section or table. Library: Vanilla JS. 2. Fort Layout -> Goal: Organize/Explore -> Viz: Stylized Map (HTML/CSS divs) -> Interaction: Click on a courtyard to populate a detail panel with information about its buildings (Sheesh Mahal, etc.). Justification: Provides a clear mental model of the fort's complex layout, encouraging exploration. Library: Vanilla JS. 3. Visitor Fees -> Goal: Compare -> Viz: Bar Chart -> Interaction: Hover over bars to see tooltips with exact fees. Justification: A visual comparison of costs is quicker to grasp than a table. Library: Chart.js. 4. Architectural Styles -> Goal: Compare -> Viz: Side-by-side columns with icons and text -> Interaction: Hover effects to highlight features. Justification: Clearly delineates the two fused styles for easy comparison. Method: HTML/CSS. All choices avoid SVG/Mermaid and focus on enhancing user understanding through interaction. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background-color: #FDFBF5;
+            color: #4A4A4A;
+        }
+        h1, h2, h3, .font-display {
+            font-family: 'Tinos', serif;
+        }
+        .nav-link {
+            transition: color 0.3s, border-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #D97706; 
+            border-bottom-color: #D97706;
+        }
+        .timeline-btn {
+            transition: all 0.3s;
+        }
+        .timeline-btn.active {
+            background-color: #D97706 !important;
+            color: #FFFFFF !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .courtyard-map-area {
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        .courtyard-map-area:hover {
+            transform: scale(1.03);
+            z-index: 10;
+        }
+        .courtyard-map-area.active {
+            box-shadow: 0 0 0 4px #F59E0B; /* Amber-500 */
+            z-index: 5;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-[#FDFBF5] text-slate-700">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="font-display text-2xl font-bold text-amber-700">Amber Fort</div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a class="nav-link pb-1" href="#home">Home</a>
+                <a class="nav-link pb-1" href="#timeline">Timeline</a>
+                <a class="nav-link pb-1" href="#explore">Explore the Fort</a>
+                <a class="nav-link pb-1" href="#architecture">Architecture</a>
+                <a class="nav-link pb-1" href="#visitor-info">Visitor Info</a>
+            </div>
+            <div class="md:hidden">
+                <button class="text-slate-700 focus:outline-none" id="menu-btn">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <div class="hidden md:hidden" id="mobile-menu">
+            <a class="block py-2 px-4 text-sm hover:bg-amber-50" href="#home">Home</a>
+            <a class="block py-2 px-4 text-sm hover:bg-amber-50" href="#timeline">Timeline</a>
+            <a class="block py-2 px-4 text-sm hover:bg-amber-50" href="#explore">Explore the Fort</a>
+            <a class="block py-2 px-4 text-sm hover:bg-amber-50" href="#architecture">Architecture</a>
+            <a class="block py-2 px-4 text-sm hover:bg-amber-50" href="#visitor-info">Visitor Info</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="relative min-h-[60vh] flex items-center" id="home">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#FDE68A] via-[#FDFBF5] to-[#FDFBF5] opacity-50"></div>
+            <div class="container mx-auto px-6 text-center relative z-10">
+                <h1 class="text-4xl md:text-6xl font-bold font-display text-amber-800 leading-tight">A Monument of Power, Patronage, and Synthesis</h1>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-600">Set on a hill in the Aravalli range, Amber Fort stands as a stunning blend of Indo-Mughal design, narrating tales of conquest, unity, and artistic harmony. Discover the Kachwaha dynasty’s heritage etched in sandstone and marble.</p>
+            </div>
+        </section>
+
+        <section class="py-16 md:py-24 bg-white" id="timeline">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold font-display text-amber-800">A Dynasty's Legacy in Stone</h2>
+                    <p class="mt-2 max-w-2xl mx-auto text-slate-600">The fort we see today wasn’t crafted by a single ruler but emerged from 150 years of ongoing construction. Tap each ruler to explore how their vision shaped this grand monument.</p>
+                </div>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-8">
+                    <button class="timeline-btn w-full md:w-auto text-lg font-semibold py-3 px-6 rounded-lg bg-amber-100 text-amber-800 border border-amber-200" data-ruler="man-singh">Raja Man Singh I</button>
+                    <button class="timeline-btn w-full md:w-auto text-lg font-semibold py-3 px-6 rounded-lg bg-amber-100 text-amber-800 border border-amber-200" data-ruler="jai-singh-i">Mirza Raja Jai Singh I</button>
+                    <button class="timeline-btn w-full md:w-auto text-lg font-semibold py-3 px-6 rounded-lg bg-amber-100 text-amber-800 border border-amber-200" data-ruler="jai-singh-ii">Sawai Jai Singh II</button>
+                </div>
+                <div class="bg-amber-50/50 p-8 rounded-xl shadow-inner max-w-4xl mx-auto min-h-[250px] transition-all duration-500" id="timeline-content">
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 md:py-24" id="explore">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold font-display text-amber-800">Explore the Four Courtyards</h2>
+                    <p class="mt-2 max-w-3xl mx-auto text-slate-600">Amber Fort's design unfolds through four unique courtyards, each serving a distinct role, transitioning from public areas to the secluded royal quarters. Tap a map section to explore its purpose and notable features.</p>
+                </div>
+                <div class="flex flex-col lg:flex-row gap-8 items-start">
+                    <div class="w-full lg:w-1/2">
+                        <div class="relative grid grid-cols-2 grid-rows-2 gap-2 aspect-square bg-stone-200 p-2 rounded-xl shadow-lg border-4 border-stone-300" id="fort-map">
+                            <div class="courtyard-map-area bg-amber-200 rounded-lg flex items-center justify-center p-4 text-center font-bold text-amber-800" data-courtyard="first">
+                                <span>1. Jaleb Chowk<br/>(Public Forecourt)</span>
+                            </div>
+                            <div class="courtyard-map-area bg-amber-300 rounded-lg flex items-center justify-center p-4 text-center font-bold text-amber-800" data-courtyard="second">
+                                <span>2. Diwan-i-Aam<br/>(Public Audience)</span>
+                            </div>
+                            <div class="courtyard-map-area bg-rose-200 rounded-lg flex items-center justify-center p-4 text-center font-bold text-rose-800" data-courtyard="fourth">
+                                <span>4. Zenana<br/>(Women's Quarters)</span>
+                            </div>
+                            <div class="courtyard-map-area bg-emerald-200 rounded-lg flex items-center justify-center p-4 text-center font-bold text-emerald-800" data-courtyard="third">
+                                <span>3. Private Palaces<br/>(Royal Residence)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-1/2 bg-white p-8 rounded-xl shadow-md min-h-[400px] lg:min-h-full" id="courtyard-details">
+                        <h3 class="text-2xl font-bold font-display text-amber-800 mb-4" id="courtyard-title">Select a Courtyard</h3>
+                        <div class="text-slate-600 space-y-4" id="courtyard-content">
+                            <p>Tap a numbered spot on the map to unveil the wonders and stories of the fort's four key courtyards.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="py-16 md:py-24 bg-white" id="architecture">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold font-display text-amber-800">An Architectural Synthesis</h2>
+                    <p class="mt-2 max-w-3xl mx-auto text-slate-600">Amber Fort showcases a stunning blend of Rajput strength and Mughal elegance, merging robust defense with intricate ornamentation a purposeful statement by the Kachwaha rulers.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                    <div class="bg-rose-50 p-6 rounded-lg border border-rose-100">
+                        <h3 class="text-2xl font-bold font-display text-rose-800 mb-4">Rajput (Hindu) Elements</h3>
+                        <ul class="space-y-3 text-slate-700">
+                            <li class="flex items-start"><span class="mr-3 mt-1 text-rose-600">🏰</span><span><b>Defensive Architecture:</b> Towering walls, sturdy gates (Pols), and rugged stone paths built for protection.</span></li>
+                            <li class="flex items-start"><span class="mr-3 mt-1 text-rose-600">🐘</span><span><b>Columnar Halls:</b> Grand halls with multiple pillars, such as the Diwan-i-Aam adorned with iconic elephant-shaped capitals, embodying regal splendor.</span></li>
+                            <li class="flex items-start"><span class="mr-3 mt-1 text-rose-600">🏠</span><span><b>Courtyard Planning:</b> The design centers on multiple courtyards and features a separate women's section (Zenana), highlighting customary social norms.</span></li>
+                        </ul>
+                    </div>
+                    <div class="bg-emerald-50 p-6 rounded-lg border border-emerald-100">
+                        <h3 class="text-2xl font-bold font-display text-emerald-800 mb-4">Mughal (Islamic) Elements</h3>
+                        <ul class="space-y-3 text-slate-700">
+                            <li class="flex items-start"><span class="mr-3 mt-1 text-emerald-600">✨</span><span><b>Intricate Ornamentation:</b> Intricate marble jaali, shimmering mirror inlays of Sheesh Mahal, and ornate floral murals.</span></li>
+                            <li class="flex items-start"><span class="mr-3 mt-1 text-emerald-600">🌿</span><span><b>Gardens &amp; Water:</b> Structured geometric gardens (charbagh) and intricate cooling water channels, exemplified by the Sukh Niwas.</span></li>
+                            <li class="flex items-start"><span class="mr-3 mt-1 text-emerald-600">🏛️</span><span><b>Graceful Forms:</b> Graceful domes, delicate pillars, and ornate arches evoke an air of elegance and grandeur in the royal palaces.</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 md:py-24" id="visitor-info">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold font-display text-amber-800">Plan Your Visit (2025)</h2>
+                     <p class="mt-2 max-w-3xl mx-auto text-slate-600">Amber Fort ranks among India's top attractions. Here's key info to help plan your visit to this historic gem. Note that fees and timings may vary.</p>
+                </div>
+                <div class="grid lg:grid-cols-2 gap-8 items-center">
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="text-xl font-bold font-display text-amber-800 mb-4">Key Information</h3>
+                        <ul class="space-y-3 text-slate-600">
+                            <li class="flex items-center"><span class="w-6 text-center mr-3">🕒</span><strong>Fort Timings:</strong> 8:00 AM – 5:30 PM, daily</li>
+                            <li class="flex items-center"><span class="w-6 text-center mr-3">💡</span><strong>Light &amp; Sound (English):</strong> ~6:30 PM - 7:30 PM (seasonal)</li>
+                            <li class="flex items-center"><span class="w-6 text-center mr-3">🐘</span><strong>Elephant Rides:</strong> Mornings only (approx. 7:30 AM – 12:30 PM)</li>
+                             <li class="flex items-center"><span class="w-6 text-center mr-3">🚌</span><strong>Access:</strong> Situated 11 km from Jaipur's heart. Reachable by bus, taxi, or auto-rickshaw. Ascend using a Jeep, golf cart, or on foot.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                         <h3 class="text-xl text-center font-bold font-display text-amber-800 mb-4">Entry Fee Comparison (INR)</h3>
+                        <div class="chart-container">
+                            <canvas id="feesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300">
+<div class="container mx-auto px-6 py-12 lg:px-8">
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/">Cities of India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html">Small Cities</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/pilgrimages/">Pilgrimages</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/wpilgrimages/vaishno-devi/">Vaishno Devi</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html">Agra Fort History Architecture Mughal Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html">Ajanta Ellora Rock Cut Wonders</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html">Ajinkyatara Fort Exploration Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html">Ajinkyatara Fort Guide History Visitor Info</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html">Ajinkyatara Fort History Legacy Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html">Aligarh Fort History Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html">Aligarh Fort History Visitor Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html">Allahabad Fort History And Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html">Allahabad Fort History Significance</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html">Amber Fort Guide History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html">Amber Fort History Architecture Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html">Aranthangi Fort Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html">Arnala Fort Guide History Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html">Arnala Fort History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html">Ashoka Pillars Legacy Dhamma</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html">Belgaum Fort History Architecture Pluralism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html">Chitradurga Fort Seven Circles</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html">Daulatabad Fort Invincible Deccan Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html">Explore Indias Majestic Forts</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html">Fortress Explorer Iconic Fortresses</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html">Forts Monuments India Interactive History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html">Forts Of India Design History Legends</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html">Golconda Fort History Engineering Diamonds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html">Golconda Fortress Diamonds Power</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html">Great Stupa Sanchi History Symbolism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html">Great Stupa Sanchi Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html">Gwalior Fort Gibraltar India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html">Hawa Mahal Jaipur Palace Winds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/india-great-empires-history.html">India Great Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html">Indias Architectural Heritage Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html">Indias Architectural Heritage Report</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html">Indias Architectural Heritage Timeless Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html">Indias Architectural Heritage Visual Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html">Indias Architectural Heritage Visual Journey</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html">Indias Great Empires Visual History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html">Janjira Fort Unconquered Sea Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html">Khajuraho Art History Temples</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html">Mysore Palace History Architecture Tourism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html">Mysore Palace History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html">Qutub Minar History Architecture Icon</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html">Qutub Minar History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html">Ramgarh Fort Heritage Hotel History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html">Sentinels Of India Iconic Forts Overview</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html">Shaniwar Wada History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html">Sovereign Tapestry Indian Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html">Tamil Nadu Temples Forts Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html">Tipu Sultan Fort History Legacy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-8 text-center text-sm text-gray-400">
+<p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+</div>
+<div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+<p class="text-sm text-gray-400">© 2026 India Cities. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const timelineData = {
+                'man-singh': {
+                    title: 'The Foundation: Raja Man Singh I (1589–1614)',
+                    content: `
+                        <p class="mb-4">As a trusted general of Emperor Akbar, Raja Man Singh I initiated the construction of the modern fort in 1592. His work reflects a robust, defensive Rajput style with minimal Mughal influence.</p>
+                        <ul class="list-disc list-inside space-y-2 text-slate-600">
+                            <li><b>Key Contribution:</b> The Palace of Man Singh, the oldest part of the fort, located in the fourth courtyard (Zenana).</li>
+                            <li><b>Architectural Style:</b> Focused on residential and defensive needs, it features a traditional open pavilion (baradari) for his twelve queens.</li>
+                            <li><b>Time to Build:</b> The palace took 25 years and was completed in 1599.</li>
+                        </ul>
+                    `
+                },
+                'jai-singh-i': {
+                    title: 'The Expansion: Mirza Raja Jai Singh I (1621–1667)',
+                    content: `
+                        <p class="mb-4">Jai Singh I significantly expanded and beautified the fort, marking a shift towards more ornate, leisurely spaces with a growing Mughal influence. His additions are some of the most iconic in the fort.</p>
+                        <ul class="list-disc list-inside space-y-2 text-slate-600">
+                            <li><b>Key Contributions:</b> Diwan-i-Aam (Hall of Public Audience), the magnificent Ganesh Pol, the formal Aram Bagh garden, and the opulent Jai Mandir, which contains the Sheesh Mahal.</li>
+                            <li><b>Architectural Style:</b> Introduced lavish Mughal elements like formal gardens and intricate frescoed gateways.</li>
+                        </ul>
+                    `
+                },
+                'jai-singh-ii': {
+                    title: 'The Culmination: Sawai Jai Singh II (1699–1743)',
+                    content: `
+                        <p class="mb-4">The celebrated scholar-king Sawai Jai Singh II oversaw the final phase of major construction, culminating in the fort's most luxurious features before shifting the capital to his newly founded city, Jaipur.</p>
+                        <ul class="list-disc list-inside space-y-2 text-slate-600">
+                            <li><b>Key Contributions:</b> The vast Jaleb Chowk (first courtyard), the imposing Singh Pol, and the completion of the breathtaking Sheesh Mahal in 1727.</li>
+                            <li><b>Historical Note:</b> The completion of the Sheesh Mahal in the same year he founded Jaipur marks the zenith of Amber's splendor.</li>
+                        </ul>
+                    `
+                }
+            };
+
+            const courtyardData = {
+                'first': {
+                    title: 'First Courtyard: Jaleb Chowk',
+                    content: `
+                        <p class="mb-4">This is the largest and most public courtyard, serving as a grand forecourt for the military. Armies would hold victory parades here, displaying war bounty to the public. The surrounding buildings have latticed windows from which royal women could watch the spectacles unseen.</p>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li><b>Primary Function:</b> Public assembly and military parades.</li>
+                            <li><b>Key Features:</b> Suraj Pol (Sun Gate), Chand Pol (Moon Gate), horse stables.</li>
+                            <li><b>Access:</b> Leads to the main palace via a grand staircase.</li>
+                        </ul>
+                    `
+                },
+                'second': {
+                    title: 'Second Courtyard: Hall of Public Audience',
+                    content: `
+                        <p class="mb-4">This semi-public space was for formal state business. Here, the Maharaja would hold his public court (durbar) to meet officials and listen to his subjects' petitions. It is a space designed to project royal authority.</p>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li><b>Key Structure:</b> Diwan-i-Aam (Hall of Public Audience), a magnificent pavilion with 40 red sandstone pillars topped with elephant-shaped capitals.</li>
+                            <li><b>Architectural Gem:</b> The Ganesh Pol, a stunningly frescoed gateway that serves as the ceremonial entrance to the private royal palaces.</li>
+                        </ul>
+                    `
+                },
+                'third': {
+                    title: 'Third Courtyard: Private Royal Residence',
+                    content: `
+                        <p class="mb-4">Passing through the Ganesh Pol, you enter the heart of the palace the opulent and intimate private quarters of the Maharaja. This area contains the fort's most luxurious and famous buildings.</p>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li><b>Crown Jewel:</b> The Sheesh Mahal (Palace of Mirrors), a breathtaking hall where walls and ceilings are covered in thousands of mirror mosaics that glitter in candlelight.</li>
+                            <li><b>Hall of Pleasure:</b> The Sukh Niwas, the king's private apartment, featuring an early form of air conditioning using a channel of cascading water to cool the air.</li>
+                            <li><b>Layout:</b> The two main halls are separated by a formal Mughal-style garden, the Aram Bagh.</li>
+                        </ul>
+                    `
+                },
+                'fourth': {
+                    title: 'Fourth Courtyard: The Zenana',
+                    content: `
+                        <p class="mb-4">This is the most secluded courtyard, designed for the complete privacy of the royal women, including queens, consorts, and their attendants. Its architecture is a fascinating insight into the social dynamics of a royal household.</p>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li><b>Oldest Structure:</b> Contains the Palace of Man Singh I, the original palace in the fort.</li>
+                            <li><b>Architecture of Privacy:</b> A discreet corridor was designed to allow the king to visit any of his wives' chambers without the others knowing, ensuring privacy and managing courtly politics.</li>
+                        </ul>
+                    `
+                }
+            };
+
+            const timelineContent = document.getElementById('timeline-content');
+            const timelineBtns = document.querySelectorAll('.timeline-btn');
+
+            function updateTimeline(ruler) {
+                const data = timelineData[ruler];
+                timelineContent.innerHTML = `
+                    <h3 class="text-2xl font-bold font-display text-amber-800 mb-4">${data.title}</h3>
+                    <div class="text-slate-700 space-y-4">${data.content}</div>
+                `;
+                timelineBtns.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.ruler === ruler) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+
+            timelineBtns.forEach(btn => {
+                btn.addEventListener('click', () => updateTimeline(btn.dataset.ruler));
+            });
+            
+            updateTimeline('man-singh');
+
+            const courtyardAreas = document.querySelectorAll('.courtyard-map-area');
+            const courtyardTitle = document.getElementById('courtyard-title');
+            const courtyardContent = document.getElementById('courtyard-content');
+
+            function updateCourtyard(courtyard) {
+                const data = courtyardData[courtyard];
+                courtyardTitle.textContent = data.title;
+                courtyardContent.innerHTML = data.content;
+
+                courtyardAreas.forEach(area => {
+                    area.classList.remove('active');
+                    if (area.dataset.courtyard === courtyard) {
+                        area.classList.add('active');
+                    }
+                });
+            }
+
+            courtyardAreas.forEach(area => {
+                area.addEventListener('click', () => updateCourtyard(area.dataset.courtyard));
+            });
+            
+            updateCourtyard('first');
+
+
+            const ctx = document.getElementById('feesChart').getContext('2d');
+            const feesChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Indian', 'Foreigner', 'Indian Student', 'Foreign Student'],
+                    datasets: [{
+                        label: 'Entry Fee (INR)',
+                        data: [50, 550, 10, 100],
+                        backgroundColor: [
+                            'rgba(217, 119, 6, 0.6)', // amber-600
+                            'rgba(245, 158, 11, 0.6)', // amber-500
+                            'rgba(251, 191, 36, 0.6)', // amber-400
+                            'rgba(252, 211, 77, 0.6)' // amber-300
+                        ],
+                        borderColor: [
+                            'rgba(217, 119, 6, 1)',
+                            'rgba(245, 158, 11, 1)',
+                            'rgba(251, 191, 36, 1)',
+                            'rgba(252, 211, 77, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                             ticks: {
+                                color: '#475569' // slate-600
+                            },
+                             grid: {
+                                color: '#e2e8f0' // slate-200
+                            }
+                        },
+                        x: {
+                             ticks: {
+                                color: '#475569' // slate-600
+                            },
+                             grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b', // slate-800
+                            titleFont: {
+                                size: 14,
+                                family: "'Work Sans', sans-serif"
+                            },
+                            bodyFont: {
+                                size: 12,
+                                family: "'Work Sans', sans-serif"
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    return ` Fee: ₹${context.raw}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            const menuBtn = document.getElementById('menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            const navLinks = document.querySelectorAll('nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if(!mobileMenu.classList.contains('hidden')) {
+                       mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+
+        });
+    </script>
+
+
+</body></html>

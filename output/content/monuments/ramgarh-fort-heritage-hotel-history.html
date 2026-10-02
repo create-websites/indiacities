@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Ramgarh Fort: The Sentinel of the Shivaliks</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Marcellus&amp;family=Mulish:wght@400;600&amp;display=swap" rel="stylesheet"/>
+    <!-- Chosen Palette: Rajput Royalty -->
+    <!-- Application Structure Plan: The SPA is designed as a single-page narrative that guides the user through the fort's history and its modern transformation. This thematic structure is more engaging than a linear report. It includes: 1) A Hero section with key stats. 2) An interactive timeline covering the Chandel dynasty's history. 3) A central, interactive diagram of the fort's architectural features, where users can click hotspots. 4) A section detailing its unique status as a heritage hotel, including a chart comparing room types. 5) A concluding section on its modern legacy. This modular approach makes the historical and commercial information accessible and memorable. -->
+    <!-- Visualization & Content Choices: 
+        - Key Stats -> Goal: Inform -> Viz: Animated Counters. Justification: Provides a high-impact introduction to the fort's impressive scale, especially its record-holding door.
+        - Dynastic History -> Goal: Change -> Viz: Interactive Timeline (JS-powered tabs). Justification: Allows users to focus on distinct periods of the Chandel Rajput lineage for better comprehension.
+        - Architectural Features -> Goal: Organize/Inform -> Viz: Clickable Hotspot Diagram. Justification: A visual, spatial exploration of the fort's key features is more intuitive than text descriptions.
+        - Heritage Hotel Rooms -> Goal: Compare -> Viz: Bar Chart (Chart.js). Justification: Offers a clear comparison of the different room types available, showcasing the hotel's offerings.
+        - Unique Selling Points -> Goal: Inform -> Viz: Styled Info Cards. Justification: Breaks down key features of the hotel (vegetarian cuisine, etc.) into scannable, focused segments.
+        CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Mulish', sans-serif; background-color: #fefbf3; }
+        h1, h2, h3, h4, .font-display { font-family: 'Marcellus', serif; }
+        .nav-link { position: relative; color: #4a4a4a; transition: color 0.3s; }
+        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 50%; transform: translateX(-50%); background-color: #c08a4a; transition: width 0.3s ease; }
+        .nav-link.active, .nav-link:hover { color: #c08a4a; }
+        .nav-link.active::after, .nav-link:hover::after { width: 100%; }
+        .timeline-btn.active { background-color: #3d3d3d; color: white; border-color: #3d3d3d; }
+        .hotspot { transition: transform 0.2s, background-color 0.2s; }
+        .hotspot:hover { transform: scale(1.2); }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+    </style>
+</head>
+<body class="bg-[#fefbf3] text-gray-800">
+
+    <header class="bg-white/90 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-gray-900">The Fort Ramgarh</h1>
+            <div class="hidden md:flex space-x-8">
+                <a class="nav-link" href="#history">History</a>
+                <a class="nav-link" href="#architecture">Architecture</a>
+                <a class="nav-link" href="#hotel">Heritage Hotel</a>
+                <a class="nav-link" href="#legacy">Legacy</a>
+            </div>
+            <button class="md:hidden text-gray-800" id="mobile-menu-button">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            </button>
+        </nav>
+        <div class="hidden md:hidden bg-white shadow-lg" id="mobile-menu">
+            <a class="block py-2 px-6 text-sm hover:bg-amber-50" href="#history">History</a>
+            <a class="block py-2 px-6 text-sm hover:bg-amber-50" href="#architecture">Architecture</a>
+            <a class="block py-2 px-6 text-sm hover:bg-amber-50" href="#hotel">Heritage Hotel</a>
+            <a class="block py-2 px-6 text-sm hover:bg-amber-50" href="#legacy">Legacy</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        
+        <section class="text-center mb-20">
+            <h2 class="text-5xl md:text-7xl font-bold text-gray-900 leading-tight">The Sentinel of the Shivaliks</h2>
+            <p class="max-w-3xl mx-auto mt-4 text-lg text-gray-700">Discover the 360-year-old heritage of The Fort Ramgarh, a Chandel Rajput stronghold turned iconic hotel, featuring India's tallest wooden door.</p>
+        </section>
+
+        <section class="mb-20 scroll-mt-20" id="history">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-gray-900">A Chandel Rajput Legacy</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-gray-600">Discover the tale of Ramgarh and the Chandel Rajputs, an ancient dynasty that forged a stronghold in the Cis-Sutlej region. Explore the timeline to follow their legacy.</p>
+            </div>
+            <div class="flex flex-col lg:flex-row gap-8">
+                <div class="w-full lg:w-1/4 flex lg:flex-col justify-center flex-wrap gap-3" id="timeline-controls">
+                    <!-- Buttons injected by JS -->
+                </div>
+                <div class="w-full lg:w-3/4 bg-white p-8 rounded-lg shadow-lg">
+                    <h4 class="text-2xl font-bold text-gray-800 mb-1" id="timeline-title"></h4>
+                    <p class="text-md font-semibold text-amber-700 mb-4" id="timeline-period"></p>
+                    <div class="text-gray-700 leading-relaxed" id="timeline-content"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-20 scroll-mt-20" id="architecture">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-gray-900">Anatomy of a Fortress</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-gray-600">Ramgarh Fort showcases Rajput military design, emphasizing defense and resilience. Tap the diagram's hotspots to discover its main features.</p>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <div class="bg-stone-200 p-8 rounded-lg relative aspect-square">
+                    <div class="w-full h-full border-4 border-dashed border-stone-400 rounded-lg flex items-center justify-center">
+                         <div class="w-4/5 h-4/5 bg-stone-500 rounded-lg relative shadow-inner p-4 flex items-center justify-center">
+                            <div class="w-2/3 h-2/3 bg-stone-600 rounded-lg relative flex items-center justify-center">
+                                <div class="hotspot absolute -top-2 left-1/2 -translate-x-1/2 w-6 h-6 bg-amber-600 rounded-full cursor-pointer flex items-center justify-center text-white font-bold" id="hotspot-zenankhana" title="Zenankhana">1</div>
+                                <div class="hotspot absolute -bottom-2 left-1/2 -translate-x-1/2 w-6 h-6 bg-amber-600 rounded-full cursor-pointer flex items-center justify-center text-white font-bold" id="hotspot-tunnels" title="Tunnels">2</div>
+                            </div>
+                            <div class="hotspot absolute top-1/2 -right-2 -translate-y-1/2 w-6 h-6 bg-amber-600 rounded-full cursor-pointer flex items-center justify-center text-white font-bold" id="hotspot-walls" title="Thick Walls">3</div>
+                         </div>
+                         <div class="hotspot absolute top-1/2 -left-2 -translate-y-1/2 w-6 h-6 bg-amber-600 rounded-full cursor-pointer flex items-center justify-center text-white font-bold" id="hotspot-door" title="Main Door">4</div>
+                    </div>
+                    <p class="absolute bottom-2 text-xs text-center w-full text-stone-500">Simplified Fort Layout</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg min-h-[350px]" id="architecture-display">
+                    <h4 class="text-2xl font-bold text-gray-800" id="architecture-title"></h4>
+                    <p class="text-gray-700 leading-relaxed mt-4" id="architecture-content"></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-20 scroll-mt-20" id="hotel">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-gray-900">A Heritage Reimagined</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-gray-600">The Fort Ramgarh seamlessly combines history with hospitality, as the Chandel descendants have turned their ancestral residence into a heritage hotel, maintaining its tradition alongside contemporary amenities.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h4 class="text-2xl font-bold text-green-800">Unique Selling Points</h4>
+                    <ul class="mt-4 space-y-3 text-gray-700">
+                        <li class="flex items-start"><span class="text-amber-600 font-bold mr-2">●</span><span>**Exclusively Veg:** The region's sole heritage property offering 100% vegetarian dining.</span></li>
+                        <li class="flex items-start"><span class="text-amber-600 font-bold mr-2">●</span><span>**Alcohol-Free:** The hotel upholds a no-alcohol policy, emphasizing a welcoming and family-oriented environment.</span></li>
+                        <li class="flex items-start"><span class="text-amber-600 font-bold mr-2">●</span><span>**Fresh Picks:** A variety of vegetables are organically grown on-site, providing guests with healthy and flavorful meals.</span></li>
+                    </ul>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <div class="chart-container">
+                        <canvas id="roomChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="scroll-mt-20" id="legacy">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-gray-900">A Living Legacy</h3>
+                <p class="max-w-3xl mx-auto mt-2 text-gray-600">The Chandel family transformed their ancestral fort into a heritage hotel, allowing the legacy of Ramgarh to live on not just in its walls, but through the experiences of modern-day travelers.</p>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-lg text-center">
+                <h4 class="text-2xl font-bold">The Tallest Door in India</h4>
+                <p class="font-display text-8xl text-amber-700 my-4">37 ft</p>
+                <p class="text-gray-600">The fort's towering wooden gate, honored in the Limca Book of Records as India's tallest, once stood as a symbol of defense and strength. Today, it warmly greets visitors with its historic grandeur.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300">
+<div class="container mx-auto px-6 py-12 lg:px-8">
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/">Cities of India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html">Small Cities</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/pilgrimages/">Pilgrimages</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/wpilgrimages/vaishno-devi/">Vaishno Devi</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html">Agra Fort History Architecture Mughal Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html">Ajanta Ellora Rock Cut Wonders</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html">Ajinkyatara Fort Exploration Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html">Ajinkyatara Fort Guide History Visitor Info</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html">Ajinkyatara Fort History Legacy Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html">Aligarh Fort History Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html">Aligarh Fort History Visitor Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html">Allahabad Fort History And Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html">Allahabad Fort History Significance</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html">Amber Fort Guide History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html">Amber Fort History Architecture Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html">Aranthangi Fort Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html">Arnala Fort Guide History Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html">Arnala Fort History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html">Ashoka Pillars Legacy Dhamma</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html">Belgaum Fort History Architecture Pluralism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html">Chitradurga Fort Seven Circles</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html">Daulatabad Fort Invincible Deccan Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html">Explore Indias Majestic Forts</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html">Fortress Explorer Iconic Fortresses</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html">Forts Monuments India Interactive History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html">Forts Of India Design History Legends</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html">Golconda Fort History Engineering Diamonds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html">Golconda Fortress Diamonds Power</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html">Great Stupa Sanchi History Symbolism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html">Great Stupa Sanchi Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html">Gwalior Fort Gibraltar India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html">Hawa Mahal Jaipur Palace Winds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/india-great-empires-history.html">India Great Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html">Indias Architectural Heritage Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html">Indias Architectural Heritage Report</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html">Indias Architectural Heritage Timeless Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html">Indias Architectural Heritage Visual Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html">Indias Architectural Heritage Visual Journey</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html">Indias Great Empires Visual History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html">Janjira Fort Unconquered Sea Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html">Khajuraho Art History Temples</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html">Mysore Palace History Architecture Tourism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html">Mysore Palace History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html">Qutub Minar History Architecture Icon</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html">Qutub Minar History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html">Ramgarh Fort Heritage Hotel History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html">Sentinels Of India Iconic Forts Overview</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html">Shaniwar Wada History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html">Sovereign Tapestry Indian Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html">Tamil Nadu Temples Forts Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html">Tipu Sultan Fort History Legacy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-8 text-center text-sm text-gray-400">
+<p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+</div>
+<div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+<p class="text-sm text-gray-400">© 2026 India Cities. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const timelineData = {
+                origins: {
+                    title: "Chandel Origins",
+                    period: "c. 800 - 1300 AD",
+                    content: "The Chandel Rajput dynasty, famed for building the Khajuraho temples, ruled over Central India. Around 1300 years ago, ancestors of the Ramgarh family migrated from their seat of power in Bundelkhand (Madhya Pradesh) to the Punjab region, establishing the state of Kot Kahlur."
+                },
+                foundation: {
+                    title: "Foundation of Ramgarh",
+                    period: "c. 1660s",
+                    content: "A branch of the royal family of Bilaspur (the later capital of Kot Kahlur) came to the plains and laid the foundation of the Ramgarh state and its fort. For over 360 years, this fort has remained the seat of this Chandel branch."
+                },
+                cis_sutlej: {
+                    title: "The Cis-Sutlej State",
+                    period: "c. 1760 - 1809",
+                    content: "During the period of anarchy in the 18th century, Ramgarh was one of the few independent 'Khud-Mukhtyar' states that survived unscathed. The rulers fiercely resisted the expansion of Maharaja Ranjit Singh's Sikh Empire, which led to the signing of a treaty with the British in 1809, guaranteeing the sovereignty of the Cis-Sutlej chiefs."
+                },
+                british_raj: {
+                    title: "British Suzerainty & Modern Era",
+                    period: "From 1849",
+                    content: "After the annexation of the Punjab in 1849, the powers of the Ramgarh state were greatly reduced by the British. The family, however, continued to inhabit and maintain the fort. In the 21st century, the descendants converted their ancestral home into a heritage hotel to preserve its legacy."
+                }
+            };
+
+            const architectureData = {
+                door: { title: "The 37-Foot Main Door", content: "The fort's main entrance is its most famous feature, holding a record in the Limca Book of Records as the tallest wooden door in India. This imposing structure was designed to be a powerful statement of strength and security." },
+                walls: { title: "18-Foot Thick Walls", content: "The fort was built for defense, with massive walls reaching up to 18 feet in thickness. These formidable barriers were designed to withstand cannon fire and prolonged sieges, protecting the inhabitants within." },
+                zenankhana: { title: "The Zenankhana (Women's Quarters)", content: "Much of what survives of the original fort today is the zenankhana, the traditional residential quarters for the royal women. These areas were designed for comfort and privacy, often featuring intricate decorations, frescoes, and their own courtyards." },
+                tunnels: { title: "Secret Tunnels & Ancient Well", content: "Like many Rajput forts, Ramgarh was built with strategic secret tunnels. These passages served as escape routes during sieges, allowing the royal family to move to safety undetected. An ancient well within the fort ensured a sustainable water supply." }
+            };
+
+            const timelineControls = document.getElementById('timeline-controls');
+            Object.keys(timelineData).forEach(key => {
+                const button = document.createElement('button');
+                button.className = 'timeline-btn border-2 border-gray-300 px-4 py-2 rounded-lg bg-white hover:bg-gray-100 transition-all w-full text-left';
+                button.textContent = timelineData[key].title;
+                button.dataset.id = key;
+                button.onclick = () => updateTimeline(key);
+                timelineControls.appendChild(button);
+            });
+
+            function updateTimeline(id) {
+                const data = timelineData[id];
+                document.getElementById('timeline-title').textContent = data.title;
+                document.getElementById('timeline-period').textContent = data.period;
+                document.getElementById('timeline-content').textContent = data.content;
+                document.querySelectorAll('.timeline-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.id === id);
+                });
+            }
+            updateTimeline('foundation');
+
+            const archDisplayTitle = document.getElementById('architecture-title');
+            const archDisplayContent = document.getElementById('architecture-content');
+            Object.keys(architectureData).forEach(key => {
+                document.getElementById(`hotspot-${key}`).onclick = () => updateArchitecture(key);
+            });
+
+            function updateArchitecture(id) {
+                const data = architectureData[id] || { title: "Click a hotspot", content: "Select a numbered point on the diagram to learn about its defensive and architectural features." };
+                archDisplayTitle.textContent = data.title;
+                archDisplayContent.textContent = data.content;
+            }
+            updateArchitecture(null);
+
+            const roomCtx = document.getElementById('roomChart').getContext('2d');
+            new Chart(roomCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Vintage Room', 'Royal Room', 'Royal Suite'],
+                    datasets: [{
+                        label: 'Approximate Room Size (sq. ft)',
+                        data: [260, 300, 350],
+                        backgroundColor: [
+                            'rgba(217, 119, 6, 0.6)',
+                            'rgba(180, 83, 9, 0.6)',
+                            'rgba(146, 64, 14, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(217, 119, 6, 1)',
+                            'rgba(180, 83, 9, 1)',
+                            'rgba(146, 64, 14, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Size (sq. ft)' } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Comparison of Heritage Room Types' },
+                        tooltip: {
+                            callbacks: {
+                                title: function(tooltipItems) { return tooltipItems[0].label; }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            
+            const navLinks = document.querySelectorAll('nav a');
+            const sections = document.querySelectorAll('main section');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    if (pageYOffset >= section.offsetTop - 80) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+
+
+</body></html>

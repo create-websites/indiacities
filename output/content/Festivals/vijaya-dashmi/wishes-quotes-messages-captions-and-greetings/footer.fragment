@@ -1,0 +1,59 @@
+<footer class="bg-gray-800 text-gray-300">
+  <div class="container mx-auto px-6 py-12 lg:px-8">
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/" class="hover:text-white hover:underline transition-colors duration-200">Cities of India</a></li>
+          <li><a href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Small Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+          <li><a href="https://www.indiacities.net/wpilgrimages/vaishno-devi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishno Devi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/100-happy-dussehra-wishes-for-family-and-friends.html" class="hover:text-white hover:underline transition-colors duration-200">100 Happy Dussehra Wishes For Family And Friends</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/dussehra-facebook-captions-and-social-posts.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Facebook Captions And Social Posts</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/dussehra-image-caption-and-poster-text-ideas.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Image Caption And Poster Text Ideas</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/dussehra-instagram-captions.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Instagram Captions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/dussehra-quotes-about-good-over-evil-and-new-beginnings.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Quotes About Good Over Evil And New Beginnings</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/dussehra-whatsapp-status-ideas.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Whatsapp Status Ideas</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/dussehra-wishes-for-friends-and-colleagues.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Wishes For Friends And Colleagues</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/dussehra-wishes-for-husband-wife-and-family.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Wishes For Husband Wife And Family</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/dussehra-wishes-for-parents-and-elders.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Wishes For Parents And Elders</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/dussehra-wishes-in-english.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Wishes In English</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/dussehra-wishes-in-hindi.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Wishes In Hindi</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/dussehra-wishes-in-kannada.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Wishes In Kannada</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/dussehra-wishes-in-marathi.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Wishes In Marathi</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/dussehra-wishes-in-tamil.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Wishes In Tamil</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/dussehra-wishes-in-telugu.html" class="hover:text-white hover:underline transition-colors duration-200">Dussehra Wishes In Telugu</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/happy-dussehra-2027-wishes-quotes-messages-and-captions.html" class="hover:text-white hover:underline transition-colors duration-200">Happy Dussehra 2027 Wishes Quotes Messages And Captions</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/professional-dussehra-greetings-for-clients-and-employees.html" class="hover:text-white hover:underline transition-colors duration-200">Professional Dussehra Greetings For Clients And Employees</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/short-dussehra-wishes-for-whatsapp-and-sms.html" class="hover:text-white hover:underline transition-colors duration-200">Short Dussehra Wishes For Whatsapp And Sms</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/vijayadashami-greeting-card-messages.html" class="hover:text-white hover:underline transition-colors duration-200">Vijayadashami Greeting Card Messages</a></li>
+          <li><a href="https://www.indiacities.net/Festivals/vijaya-dashmi/wishes-quotes-messages-captions-and-greetings/vijayadashami-wishes-in-bengali.html" class="hover:text-white hover:underline transition-colors duration-200">Vijayadashami Wishes In Bengali</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+      <p class="text-sm text-gray-400">&copy; 2026 India Cities. All rights reserved.</p>
+      
+    </div>
+
+  </div>
+</footer>

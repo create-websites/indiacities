@@ -1,0 +1,63 @@
+<footer class="bg-gray-800 text-gray-300">
+  <div class="container mx-auto px-6 py-12 lg:px-8">
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/" class="hover:text-white hover:underline transition-colors duration-200">Cities of India</a></li>
+          <li><a href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html" class="hover:text-white hover:underline transition-colors duration-200">Small Cities</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+          <li><a href="https://www.indiacities.net/wpilgrimages/vaishno-devi/" class="hover:text-white hover:underline transition-colors duration-200">Vaishno Devi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Folders</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/uttar-pradesh/pilgrimages/" class="hover:text-white hover:underline transition-colors duration-200">Pilgrimages</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+        <ul class="space-y-2">
+          <li><a href="https://www.indiacities.net/uttar-pradesh/Agra.html" class="hover:text-white hover:underline transition-colors duration-200">Agra</a></li>
+          <li><a href="https://www.indiacities.net/uttar-pradesh/Allahabad.html" class="hover:text-white hover:underline transition-colors duration-200">Allahabad</a></li>
+          <li><a href="https://www.indiacities.net/uttar-pradesh/Amethi.html" class="hover:text-white hover:underline transition-colors duration-200">Amethi</a></li>
+          <li><a href="https://www.indiacities.net/uttar-pradesh/Azamgarh.html" class="hover:text-white hover:underline transition-colors duration-200">Azamgarh</a></li>
+          <li><a href="https://www.indiacities.net/uttar-pradesh/Chandra Prabha Sanctuary.html" class="hover:text-white hover:underline transition-colors duration-200">Chandra Prabha Sanctuary</a></li>
+          <li><a href="https://www.indiacities.net/uttar-pradesh/Dudhwa National Park.html" class="hover:text-white hover:underline transition-colors duration-200">Dudhwa National Park</a></li>
+          <li><a href="https://www.indiacities.net/uttar-pradesh/Ghaziabad.html" class="hover:text-white hover:underline transition-colors duration-200">Ghaziabad</a></li>
+          <li><a href="https://www.indiacities.net/uttar-pradesh/Jhansi.html" class="hover:text-white hover:underline transition-colors duration-200">Jhansi</a></li>
+          <li><a href="https://www.indiacities.net/uttar-pradesh/Kanpur.html" class="hover:text-white hover:underline transition-colors duration-200">Kanpur</a></li>
+          <li><a href="https://www.indiacities.net/uttar-pradesh/Katrnighat Wildlife Sanctuary.html" class="hover:text-white hover:underline transition-colors duration-200">Katrnighat Wildlife Sanctuary</a></li>
+          <li><a href="https://www.indiacities.net/uttar-pradesh/Lucknow.html" class="hover:text-white hover:underline transition-colors duration-200">Lucknow</a></li>
+          <li><a href="https://www.indiacities.net/uttar-pradesh/Mahavir Sanctuary.html" class="hover:text-white hover:underline transition-colors duration-200">Mahavir Sanctuary</a></li>
+          <li><a href="https://www.indiacities.net/uttar-pradesh/Mathura.html" class="hover:text-white hover:underline transition-colors duration-200">Mathura</a></li>
+          <li><a href="https://www.indiacities.net/uttar-pradesh/Moradabad.html" class="hover:text-white hover:underline transition-colors duration-200">Moradabad</a></li>
+          <li><a href="https://www.indiacities.net/uttar-pradesh/Mussoorie.html" class="hover:text-white hover:underline transition-colors duration-200">Mussoorie</a></li>
+          <li><a href="https://www.indiacities.net/uttar-pradesh/National Chambal Sanctuary.html" class="hover:text-white hover:underline transition-colors duration-200">National Chambal Sanctuary</a></li>
+          <li><a href="https://www.indiacities.net/uttar-pradesh/Ranipur Sanctuary.html" class="hover:text-white hover:underline transition-colors duration-200">Ranipur Sanctuary</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+    </div>
+
+    <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+      <p class="text-sm text-gray-400">&copy; 2026 India Cities. All rights reserved.</p>
+      
+    </div>
+
+  </div>
+</footer>

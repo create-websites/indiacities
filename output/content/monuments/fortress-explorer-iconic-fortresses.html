@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Fortress Explorer: The World's Enduring Sentinels</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+    <!-- Chosen Palette: Calm Harmony (Warm Neutrals & Earth Tones) -->
+    <!-- Application Structure Plan: The application is designed as an interactive "Fortress Explorer," transforming the report into a dynamic discovery tool. The core user flow is organized around thematic exploration rather than linear reading. It starts with a section on the "Evolution of Defense," using interactive cards to explain the shift from concentric to bastion forts. The main section, the "Global Pantheon," allows users to filter a grid of forts by "Architectural Style" or "Traveler Experience," making the data instantly accessible and personal. Clicking a fort opens a modal with detailed, tabbed information. This is more engaging than a simple list and allows for comparative analysis. The app concludes with a dedicated section on "Living Heritage," exploring the modern roles and preservation challenges of these sites. This structure guides the user from understanding core concepts to exploring examples and finally to appreciating their modern relevance. -->
+    <!-- Visualization & Content Choices: Report Info: Defensive Philosophies (Concentric vs. Bastion) -> Goal: Compare/Inform -> Viz/Method: Interactive 'before-and-after' style cards with diagrams created using HTML/CSS. -> Interaction: Hovering or clicking reveals details about each design. -> Justification: Simplifies a complex architectural evolution into a clear, visual comparison. Method: HTML/Tailwind/JS. | Report Info: Table of Featured Fortifications -> Goal: Organize & Filter -> Viz/Method: A filterable grid of cards. -> Interaction: Users click filter buttons to dynamically sort the grid. -> Justification: Turns a static table into a powerful, user-driven discovery tool. Method: HTML/Tailwind/JS. | Report Info: Fort Details -> Goal: Inform -> Viz/Method: A detailed modal with tabbed content. -> Justification: Organizes extensive information (History, Architecture, Visitor Guide) into a clean, digestible format without leaving the main page. Method: HTML/Tailwind/JS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f7f2; color: #44403c; }
+        .hero-bg { background-color: #dcd9c6; background-image: linear-gradient(315deg, #dcd9c6 0%, #f8f7f2 74%); }
+        .filter-btn { transition: all 0.2s ease-in-out; }
+        .filter-btn.active { background-color: #845c43; color: white; box-shadow: 0 4px 14px 0 rgb(132 92 67 / 30%); }
+        .card-enter { animation: card-enter 0.5s ease-out forwards; opacity: 0; transform: translateY(20px); }
+        @keyframes card-enter { to { opacity: 1; transform: translateY(0); } }
+        .modal { display: none; }
+        .modal.is-open { display: flex; }
+        .tab-btn.active { border-color: #845c43; color: #845c43; }
+        .diagram-container { position: relative; width: 100%; aspect-ratio: 16 / 9; max-width: 400px; margin: auto; }
+        .diagram-wall { position: absolute; border: 4px solid #a8a29e; background-color: #e7e5e4; }
+        .diagram-tower { position: absolute; border: 4px solid #a8a29e; background-color: #e7e5e4; border-radius: 50%; }
+        .diagram-bastion { position: absolute; background-color: #e7e5e4; border: 4px solid #a8a29e; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+        .diagram-fireline { position: absolute; width: 2px; background-color: rgba(239, 68, 68, 0.6); transform-origin: top left; opacity: 0; transition: all 0.5s ease-out; }
+        .diagram-container:hover .diagram-fireline { opacity: 1; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-sm sticky top-0 z-40 border-b border-gray-200">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a class="text-2xl font-bold text-stone-700" href="#">Fortress Explorer</a>
+            <div class="hidden md:flex space-x-6 text-sm font-medium">
+                <a class="text-gray-600 hover:text-stone-800" href="#evolution">Evolution</a>
+                <a class="text-gray-600 hover:text-stone-800" href="#pantheon">Pantheon</a>
+                <a class="text-gray-600 hover:text-stone-800" href="#heritage">Living Heritage</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-10">
+        <section class="text-center py-16">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-stone-800 tracking-tight">The World's Enduring Sentinels</h1>
+            <p class="mt-4 max-w-2xl mx-auto text-lg text-stone-600">Uncover history's most remarkable fortresses, where stone and mortar transcend into symbols of innovation, struggle, and heritage. Dive into their tales and marvel at the craftsmanship that has preserved them through the ages.</p>
+        </section>
+
+        <section class="py-20" id="evolution">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-stone-800">From Stone Walls to Star Forts</h2>
+                <p class="mt-3 max-w-3xl mx-auto text-stone-600">Military architecture has evolved through a dynamic arms race. The advent of cannon fire in the 15th century rendered medieval castles ineffective, driving a shift from towering defenses to innovative geometric strategies in fortification design.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 text-center">
+                    <h3 class="text-xl font-bold text-stone-700 mb-4">Concentric Castle (Pre-Cannon)</h3>
+                    <div class="diagram-container mb-4">
+                        <div class="diagram-wall" style="top: 10%; left: 10%; width: 80%; height: 80%;"></div>
+                        <div class="diagram-wall" style="top: 25%; left: 25%; width: 50%; height: 50%;"></div>
+                        <div class="diagram-tower" style="top: 5%; left: 5%; width: 10%; height: 10%;"></div>
+                        <div class="diagram-tower" style="top: 5%; right: 5%; width: 10%; height: 10%;"></div>
+                        <div class="diagram-tower" style="bottom: 5%; left: 5%; width: 10%; height: 10%;"></div>
+                        <div class="diagram-tower" style="bottom: 5%; right: 5%; width: 10%; height: 10%;"></div>
+                    </div>
+                    <p class="text-sm text-stone-600">Focused on **tiered fortification**. Tall, stacked barriers aimed to deter climbers, shielding a central stronghold. Susceptible to siege weapons below.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 text-center">
+                    <h3 class="text-xl font-bold text-stone-700 mb-4">Bastion 'Star' Fort (Post-Cannon)</h3>
+                    <div class="diagram-container mb-4">
+                        <div class="diagram-wall" style="top: 25%; left: 25%; width: 50%; height: 50%;"></div>
+                        <div class="diagram-bastion" style="top: 15%; left: 15%; width: 20%; height: 20%;"></div>
+                        <div class="diagram-bastion" style="top: 15%; right: 15%; width: 20%; height: 20%;"></div>
+                        <div class="diagram-bastion" style="bottom: 15%; left: 15%; width: 20%; height: 20%;"></div>
+                        <div class="diagram-bastion" style="bottom: 15%; right: 15%; width: 20%; height: 20%;"></div>
+                        <div class="diagram-fireline" style="height: 55%; top: 25%; left: 25%; transform: rotate(-45deg);"></div>
+                        <div class="diagram-fireline" style="height: 55%; top: 25%; right: 25%; transform: rotate(45deg);"></div>
+                    </div>
+                    <p class="text-sm text-stone-600">Centered on **geometric fortification**. Robust, low walls paired with jutting bastions formed interlocking fields of fire, removing vulnerable zones.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200 mt-16" id="pantheon">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-stone-700 mb-4">The Global Pantheon of Forts</h2>
+                <p class="mt-2 max-w-2xl mx-auto text-stone-600">Explore the finest fortifications on Earth by their design essence or the unique experiences they provide today’s traveler.</p>
+                <div class="my-4 border-t border-gray-200"></div>
+                <div class="flex flex-wrap justify-center gap-3" id="filters"></div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="forts-grid">
+                 <p class="col-span-full text-center text-gray-500 py-10">Select a filter above to explore the forts.</p>
+            </div>
+        </section>
+        
+        <section class="py-20" id="heritage">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-stone-800">Forts as Living Heritage</h2>
+                <p class="mt-3 max-w-3xl mx-auto text-stone-600">These structures serve as vibrant cultural icons, hubs for tourism, and emblems of national pride, each grappling with distinct challenges of conservation and relevance in today's world.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                    <h3 class="font-bold text-lg text-stone-700 mb-2">Symbol of Myth &amp; Identity</h3>
+                    <p class="text-sm text-stone-600"><strong>Masada, Israel:</strong> The tale of a valiant final stand evolved into a core myth for modern Israel, once a symbol of resistance, now seen through a nuanced historical lens.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                    <h3 class="font-bold text-lg text-stone-700 mb-2">A Painful, Sacred Legacy</h3>
+                    <p class="text-sm text-stone-600"><strong>Castles of Ghana:</strong> These forts stand as powerful symbols of pilgrimage and memory, marking the origins of the African Diaspora and the tragedies of the slave trade.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                    <h3 class="font-bold text-lg text-stone-700 mb-2">Tourism as Preservation</h3>
+                    <p class="text-sm text-stone-600"><strong>Mehrangarh, India:</strong> A world leader in heritage preservation, leveraging tourism to fund conservation efforts and uplift the local community, sustaining the fort as a vibrant cultural center.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300">
+<div class="container mx-auto px-6 py-12 lg:px-8">
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/">Cities of India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html">Small Cities</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/pilgrimages/">Pilgrimages</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/wpilgrimages/vaishno-devi/">Vaishno Devi</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html">Agra Fort History Architecture Mughal Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html">Ajanta Ellora Rock Cut Wonders</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html">Ajinkyatara Fort Exploration Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html">Ajinkyatara Fort Guide History Visitor Info</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html">Ajinkyatara Fort History Legacy Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html">Aligarh Fort History Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html">Aligarh Fort History Visitor Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html">Allahabad Fort History And Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html">Allahabad Fort History Significance</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html">Amber Fort Guide History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html">Amber Fort History Architecture Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html">Aranthangi Fort Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html">Arnala Fort Guide History Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html">Arnala Fort History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html">Ashoka Pillars Legacy Dhamma</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html">Belgaum Fort History Architecture Pluralism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html">Chitradurga Fort Seven Circles</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html">Daulatabad Fort Invincible Deccan Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html">Explore Indias Majestic Forts</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html">Fortress Explorer Iconic Fortresses</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html">Forts Monuments India Interactive History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html">Forts Of India Design History Legends</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html">Golconda Fort History Engineering Diamonds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html">Golconda Fortress Diamonds Power</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html">Great Stupa Sanchi History Symbolism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html">Great Stupa Sanchi Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html">Gwalior Fort Gibraltar India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html">Hawa Mahal Jaipur Palace Winds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/india-great-empires-history.html">India Great Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html">Indias Architectural Heritage Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html">Indias Architectural Heritage Report</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html">Indias Architectural Heritage Timeless Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html">Indias Architectural Heritage Visual Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html">Indias Architectural Heritage Visual Journey</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html">Indias Great Empires Visual History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html">Janjira Fort Unconquered Sea Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html">Khajuraho Art History Temples</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html">Mysore Palace History Architecture Tourism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html">Mysore Palace History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html">Qutub Minar History Architecture Icon</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html">Qutub Minar History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html">Ramgarh Fort Heritage Hotel History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html">Sentinels Of India Iconic Forts Overview</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html">Shaniwar Wada History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html">Sovereign Tapestry Indian Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html">Tamil Nadu Temples Forts Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html">Tipu Sultan Fort History Legacy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-8 text-center text-sm text-gray-400">
+<p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+</div>
+<div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+<p class="text-sm text-gray-400">© 2026 India Cities. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+
+    <!-- Modal Structure -->
+    <div class="modal fixed inset-0 bg-black bg-opacity-60 z-50 items-center justify-center p-4" id="fort-modal">
+        <div class="bg-white w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-xl flex flex-col">
+            <div class="p-5 border-b border-gray-200 flex justify-between items-start">
+                <div>
+                    <h2 class="text-2xl font-bold text-stone-800" id="modal-title"></h2>
+                    <p class="text-stone-500" id="modal-subtitle"></p>
+                </div>
+                <button class="text-stone-500 hover:text-stone-800 text-3xl" id="modal-close">×</button>
+            </div>
+            <div class="flex-shrink-0 px-5 border-b border-gray-200">
+                <div class="flex -mb-px" id="modal-tabs"></div>
+            </div>
+            <div class="p-6 overflow-y-auto" id="modal-content"></div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const data = {
+        forts: [
+            { id: 1, name: 'Krak des Chevaliers', location: 'Syria', style: 'Crusader Concentric', experience: ['Architectural Purist', 'History Buff'], status: 'UNESCO (In Danger)' },
+            { id: 2, name: 'Edinburgh Castle', location: 'Scotland', style: 'Evolving/Composite', experience: ['History Buff'], status: 'UNESCO' },
+            { id: 3, name: 'Malbork Castle', location: 'Poland', style: 'Teutonic Brick Gothic', experience: ['Architectural Purist'], status: 'UNESCO' },
+            { id: 4, name: 'Himeji Castle', location: 'Japan', style: 'Japanese Feudal', experience: ['Architectural Purist'], status: 'UNESCO' },
+            { id: 5, name: 'Mehrangarh Fort', location: 'India', style: 'Rajput', experience: ['Seeker of Myth', 'History Buff'], status: 'Tentative' },
+            { id: 6, name: 'Red Fort', location: 'India', style: 'Mughal', experience: ['History Buff'], status: 'UNESCO' },
+            { id: 7, name: 'Castillo San Felipe del Morro', location: 'Puerto Rico', style: 'Spanish Colonial/Bastion', experience: ['History Buff'], status: 'UNESCO' },
+            { id: 8, name: 'Valdivian Fort System', location: 'Chile', style: 'Hispanic-American School', experience: ['Adventurous Explorer'], status: 'Tentative' },
+            { id: 9, name: 'Fasil Ghebbi', location: 'Ethiopia', style: 'Gondarine', experience: ['Adventurous Explorer'], status: 'UNESCO' },
+            { id: 10, name: 'Castles of Ghana', location: 'Ghana', style: 'European Colonial', experience: ['History Buff'], status: 'UNESCO' },
+            { id: 11, name: 'Masada', location: 'Israel', style: 'Herodian-Roman', experience: ['Seeker of Myth'], status: 'UNESCO' }
+        ],
+        details: {
+            1: {
+                history: `Arguably the most significant and best-preserved Crusader castle, its legendary status began in 1142 when given to the Knights Hospitaller. It commanded the critical Homs Gap and earned a reputation for impregnability, withstanding numerous attacks before falling to a deception in 1271.`,
+                architecture: `The quintessential concentric castle, with two massive defensive walls separated by a moat. This layered defense allowed defenders on the taller inner wall to fire over those on the outer wall. It represents the pinnacle of Crusader military engineering.`,
+                guide: `Located near Homs, Syria. Due to the ongoing civil war, the country is a high-risk area. Any visit should only be considered with extreme caution through official, reputable tour operators with up-to-date security knowledge. The site is on the UNESCO List of World Heritage in Danger.`
+            },
+            2: {
+                history: `A focal point of Scottish history since the 11th century, it has been a royal residence, military garrison, and a prison, enduring numerous sieges during the Wars of Scottish Independence. It remains an active military base and a powerful symbol of the nation.`,
+                architecture: `Its primary defense is its natural position atop an extinct volcanic plug. The architecture is a composite, reflecting centuries of additions. Key structures include the 12th-century St. Margaret's Chapel (oldest building in Edinburgh) and the 16th-century Half Moon Battery.`,
+                guide: `Located at the top of the Royal Mile in Edinburgh. Open daily, but booking tickets online in advance is essential. The terrain is steep and cobbled. A mobility vehicle is available on request to access upper levels.`
+            },
+            4: {
+                history: `Known as the "White Heron Castle," it is the finest surviving example of 17th-century Japanese castle architecture. Miraculously, it was never damaged in battle and survived WWII bombing, making it one of only twelve original castles left in Japan.`,
+                architecture: `A masterpiece of function and form. Its brilliant white, fire-resistant plaster exterior and elegant design are complemented by a labyrinthine defensive layout of gates and paths designed to trap and confuse attackers, exposing them to fire from loopholes and stone-dropping windows.`,
+                guide: `Located in Himeji City, accessible via a short walk or bus ride from the Shinkansen station. A tour takes 1.5-2 hours. The keep has very steep, narrow wooden stairs.`
+            },
+            5: {
+                history: `The "Fort of the Sun" has been the stronghold of the Rathore clan since 1459. It looms over Jodhpur from a 125m cliff and its walls bear the marks of cannonball fire, a testament to centuries of conflict with rival clans and the Mughal Empire.`,
+                architecture: `A quintessential Rajput hill fort that blends seamlessly with the landscape. Inside the imposing walls are a series of magnificent palaces renowned for their intricate sandstone carvings and delicate latticed screens (jalis), showcasing the zenith of Rajput craftsmanship.`,
+                guide: `Open daily. The entry fee includes an excellent audio guide. An elevator is available to assist with the steep ascent. Plan 2-3 hours to explore the museum and palaces.`
+            },
+            7: {
+                history: `For over 400 years, "El Morro" was Spain's most critical military outpost in the Caribbean. Starting as a simple tower in 1539, it evolved into a formidable six-level bastion fort designed to create a devastating crossfire against any ship entering San Juan Bay.`,
+                architecture: `An outstanding example of Spanish colonial military engineering. Its design is a direct response to naval artillery, with massive 18-foot-thick walls and tiered batteries. The iconic domed sentry boxes, or garitas, have become a cultural symbol of Puerto Rico.`,
+                guide: `Part of the San Juan National Historic Site. The entrance fee is valid for 24 hours and includes access to the nearby Castillo San Cristóbal. Payments are cashless. Allow 1-2 hours for a self-guided tour.`
+            },
+            11: {
+                history: `Famed for two historical layers: first as a magnificent palace-fortress built by Herod the Great around 37 BCE, and second as the site of the legendary last stand of 960 Jewish rebels against the Romans in 73 CE, who chose mass suicide over capture.`,
+                architecture: `A natural fortress on an isolated rock plateau. Herod augmented its sheer cliffs with a casemate wall and built a stunning three-tiered Northern Palace that hangs off the cliff face. The most complete Roman siege works in the world, including a massive assault ramp, survive at its base.`,
+                guide: `Located near the Dead Sea. Ascend via the steep "Snake Path" hike or by cable car. Visit early in the morning to avoid intense desert heat. A museum and sound & light show are also on site.`
+            }
+        },
+        filters: [
+            { name: 'Architectural Style', values: ['Crusader Concentric', 'Japanese Feudal', 'Mughal', 'Rajput', 'Spanish Colonial/Bastion', 'Teutonic Brick Gothic', 'Evolving/Composite'] },
+            { name: 'Traveler Experience', values: ['Architectural Purist', 'History Buff', 'Seeker of Myth', 'Adventurous Explorer'] }
+        ]
+    };
+
+    const filtersEl = document.getElementById('filters');
+    const fortsGrid = document.getElementById('forts-grid');
+    const modal = document.getElementById('fort-modal');
+    const modalClose = document.getElementById('modal-close');
+    const modalTitle = document.getElementById('modal-title');
+    const modalSubtitle = document.getElementById('modal-subtitle');
+    const modalTabs = document.getElementById('modal-tabs');
+    const modalContent = document.getElementById('modal-content');
+
+    let activeFilters = {};
+
+    function renderFilters() {
+        let html = '';
+        data.filters.forEach(filterGroup => {
+            html += `<div class="mb-4">
+                <h4 class="font-semibold text-stone-500 text-sm uppercase tracking-wider mb-2">${filterGroup.name}</h4>
+                <div class="flex flex-wrap justify-center gap-2">
+                    ${filterGroup.values.map(val => `<button data-group="${filterGroup.name}" data-value="${val}" class="filter-btn px-3 py-1 bg-white text-stone-600 rounded-full shadow-sm border border-gray-200 hover:bg-gray-100 text-sm font-medium">${val}</button>`).join('')}
+                </div>
+            </div>`;
+        });
+        html += `<button id="reset-filters" class="filter-btn px-4 py-2 bg-stone-700 text-white rounded-full shadow-sm hover:bg-stone-800 font-semibold">Reset Filters</button>`;
+        filtersEl.innerHTML = html;
+
+        document.querySelectorAll('.filter-btn[data-group]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const group = btn.dataset.group;
+                const value = btn.dataset.value;
+                
+                // Toggle single active button per group
+                const currentActive = document.querySelector(`.filter-btn[data-group="${group}"].active`);
+                if (currentActive && currentActive !== btn) {
+                    currentActive.classList.remove('active');
+                }
+                btn.classList.toggle('active');
+
+                // Update filters
+                if (btn.classList.contains('active')) {
+                    activeFilters[group] = value;
+                } else {
+                    delete activeFilters[group];
+                }
+                renderForts();
+            });
+        });
+
+        document.getElementById('reset-filters').addEventListener('click', () => {
+            activeFilters = {};
+            document.querySelectorAll('.filter-btn.active').forEach(b => b.classList.remove('active'));
+            renderForts();
+        });
+    }
+    
+    function renderForts() {
+        let fortsToRender = data.forts;
+
+        if (Object.keys(activeFilters).length > 0) {
+            fortsToRender = data.forts.filter(fort => {
+                return Object.entries(activeFilters).every(([group, value]) => {
+                    if (group === 'Architectural Style') {
+                        return fort.style.includes(value);
+                    }
+                    if (group === 'Traveler Experience') {
+                        return fort.experience.includes(value);
+                    }
+                    return true;
+                });
+            });
+        }
+
+        fortsGrid.innerHTML = '';
+        if (fortsToRender.length === 0) {
+            fortsGrid.innerHTML = `<p class="col-span-full text-center text-gray-500 py-10">No forts match the selected filters.</p>`;
+            return;
+        }
+        
+        fortsToRender.forEach((fort, index) => {
+            const statusColors = { 'UNESCO': 'bg-green-100 text-green-800', 'UNESCO (In Danger)': 'bg-red-100 text-red-800', 'Tentative': 'bg-yellow-100 text-yellow-800' };
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-lg shadow-sm border border-gray-200 p-5 cursor-pointer hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col card-enter';
+            card.style.animationDelay = `${index * 50}ms`;
+            card.dataset.id = fort.id;
+
+            card.innerHTML = `
+                <div class="flex-grow">
+                    <h3 class="text-xl font-bold text-stone-800">${fort.name}</h3>
+                    <p class="text-sm text-stone-500 mb-3">${fort.location}</p>
+                    <p class="text-xs text-stone-400 mt-4"><span class="font-semibold">Style:</span> ${fort.style}</p>
+                </div>
+                <div class="mt-4 pt-4 border-t border-gray-100 flex justify-end">
+                    <span class="px-2 py-1 rounded-full text-xs font-medium ${statusColors[fort.status]}">${fort.status}</span>
+                </div>
+            `;
+            card.addEventListener('click', () => openModal(fort.id));
+            fortsGrid.appendChild(card);
+        });
+    }
+
+    function openModal(id) {
+        const fort = data.forts.find(f => f.id == id);
+        if (!fort) return;
+        const details = data.details[id] || { history: 'Details not available.', architecture: 'Details not available.', guide: 'Details not available.' };
+        
+        modalTitle.textContent = fort.name;
+        modalSubtitle.textContent = fort.location;
+
+        modalTabs.innerHTML = `
+            <button class="tab-btn py-3 px-4 text-sm font-medium text-stone-500 border-b-2 border-transparent hover:border-gray-300 hover:text-stone-700 active" data-content-key="history">History & Significance</button>
+            <button class="tab-btn py-3 px-4 text-sm font-medium text-stone-500 border-b-2 border-transparent hover:border-gray-300 hover:text-stone-700" data-content-key="architecture">Architecture & Defense</button>
+            <button class="tab-btn py-3 px-4 text-sm font-medium text-stone-500 border-b-2 border-transparent hover:border-gray-300 hover:text-stone-700" data-content-key="guide">Visitor's Guide</button>
+        `;
+
+        function renderTabContent(key) {
+            modalContent.innerHTML = `<div class="prose max-w-none text-stone-600">${details[key]}</div>`;
+        }
+
+        modalTabs.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                modalTabs.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderTabContent(btn.dataset.contentKey);
+            });
+        });
+
+        renderTabContent('history');
+        modal.classList.add('is-open');
+    }
+
+    // Initial Setup
+    renderFilters();
+    renderForts(); // Initially empty until a filter is selected
+    
+    modalClose.addEventListener('click', () => modal.classList.remove('is-open'));
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('is-open');
+        }
+    });
+});
+    </script>
+
+
+</body></html>

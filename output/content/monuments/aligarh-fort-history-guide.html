@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Aligarh Fort: An Interactive History</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&amp;family=Source+Sans+3:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+    <!-- Chosen Palette: Historic Earth -->
+    <!-- Application Structure Plan: The SPA is designed as a thematic, non-linear exploration hub. A sticky top navigation allows users to jump to sections of interest: an interactive Timeline, a breakdown of The Fortress architecture, a focus on The Siege of 1803, its Modern Life, and a Visitor Guide. The core is the interactive timeline, where clicking an era dynamically updates a content panel, visualizing the fort's layered history. This structure was chosen over a linear report format to empower users to explore the rich, multifaceted history based on their curiosity, making the dense information more digestible and engaging. -->
+    <!-- Visualization & Content Choices: 
+        - Timeline (History): Report Info -> Chronology of rulers, names, modifications. Goal -> Show change. Viz -> Interactive horizontal timeline. Interaction -> Click era to update content panel. Justification -> Best way to visualize a layered "palimpsest" history. Library -> Vanilla JS.
+        - Siege Casualties (Comparison): Report Info -> British vs. Maratha losses. Goal -> Compare and show battle's cost. Viz -> Bar Chart. Interaction -> Hover for tooltips. Justification -> Clear, immediate visual comparison of numbers. Library -> Chart.js.
+        - Fortress Architecture (Organization): Report Info -> Bastions, moat, layout. Goal -> Explain complex features. Viz -> Interactive diagram via HTML/CSS. Interaction -> Click hotspots to reveal info. Justification -> More engaging than static text for deconstructing the fort's design. Library -> Vanilla JS.
+        - Textual Content (Information): Report Info -> All narratives. Goal -> Inform. Viz -> Styled text in cards. Interaction -> Dynamically shown/hidden by navigation. Justification -> Prevents information overload. Library -> Vanilla JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            background-color: #FDFBF8;
+            color: #4A4A4A;
+        }
+        h1, h2, h3 {
+            font-family: 'Merriweather', serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s, border-color 0.3s;
+        }
+        .nav-link.active {
+            color: #C53030;
+            border-bottom-color: #C53030;
+        }
+        .timeline-item {
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .timeline-item:hover {
+            transform: translateY(-4px);
+        }
+        .timeline-item.active {
+            background-color: #A52A2A;
+            color: white;
+        }
+        .diagram-hotspot {
+            transition: background-color 0.3s, transform 0.3s;
+            cursor: pointer;
+        }
+        .diagram-hotspot:hover {
+            transform: scale(1.05);
+            background-color: rgba(197, 48, 48, 0.8);
+        }
+    </style>
+</head>
+<body class="bg-[#FDFBF8]">
+
+    <header class="text-center py-12 px-4 bg-stone-100 border-b-4 border-stone-300">
+        <h1 class="text-4xl md:text-6xl font-bold text-stone-800">Aligarh Fort</h1>
+        <p class="mt-4 text-lg md:text-xl text-stone-600 max-w-3xl mx-auto">A keeper of tales, from Lodi reigns to French flair, uncover the depths of a North Indian icon.</p>
+    </header>
+
+    <nav class="sticky top-0 bg-[#FDFBF8]/80 backdrop-blur-md z-50 shadow-md" id="navbar">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-center space-x-2 md:space-x-8 py-4 overflow-x-auto">
+                <a class="nav-link text-stone-700 hover:text-red-800 font-semibold py-2 border-b-2 border-transparent text-sm md:text-base" href="#timeline">Timeline</a>
+                <a class="nav-link text-stone-700 hover:text-red-800 font-semibold py-2 border-b-2 border-transparent text-sm md:text-base" href="#fortress">The Fortress</a>
+                <a class="nav-link text-stone-700 hover:text-red-800 font-semibold py-2 border-b-2 border-transparent text-sm md:text-base" href="#siege">The Siege (1803)</a>
+                <a class="nav-link text-stone-700 hover:text-red-800 font-semibold py-2 border-b-2 border-transparent text-sm md:text-base" href="#modern">Modern Life</a>
+                <a class="nav-link text-stone-700 hover:text-red-800 font-semibold py-2 border-b-2 border-transparent text-sm md:text-base" href="#visitor">Visitor Guide</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-8">
+
+        <section class="pt-16 -mt-16" id="timeline">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-stone-800">An Interactive Timeline</h2>
+                <p class="mt-4 text-stone-600 max-w-3xl mx-auto">The fort’s story is layered, each ruler leaving their mark. Select an era below to explore its evolution in name, rulers, and design.</p>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 md:gap-4 mb-8" id="timeline-controls"></div>
+
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg transition-all duration-500 min-h-[300px]" id="timeline-content">
+            </div>
+        </section>
+
+        <hr class="my-16 border-stone-200"/>
+
+        <section class="pt-16 -mt-16" id="fortress">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-stone-800">Anatomy of a Fortress</h2>
+                <p class="mt-4 text-stone-600 max-w-3xl mx-auto">Aligarh Fort showcases a brilliant blend of Indian strategic design and 18th-century European military tactics. Discover its key defensive features that established it as a top Indian stronghold by exploring the diagram's highlighted sections.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="relative w-full max-w-lg mx-auto aspect-square bg-stone-200 border-4 border-stone-400 rounded-lg p-4 flex items-center justify-center">
+                    <div class="absolute w-full h-full border-8 border-stone-300 rotate-45"></div>
+                    <div class="relative w-5/6 h-5/6 bg-stone-100 border-4 border-stone-400 flex items-center justify-center text-center">
+                        <span class="font-bold text-stone-600">Main Fort Area</span>
+                    </div>
+                    <div class="diagram-hotspot absolute top-[-10px] left-[-10px] w-16 h-16 bg-red-800/70 rounded-full flex items-center justify-center text-white font-bold text-xs" data-feature="bastion">Bastion</div>
+                    <div class="diagram-hotspot absolute bottom-[-10px] right-[-10px] w-16 h-16 bg-red-800/70 rounded-full flex items-center justify-center text-white font-bold text-xs" data-feature="bastion">Bastion</div>
+                    <div class="diagram-hotspot absolute top-[-10px] right-[-10px] w-16 h-16 bg-red-800/70 rounded-full flex items-center justify-center text-white font-bold text-xs" data-feature="bastion">Bastion</div>
+                    <div class="diagram-hotspot absolute bottom-[-10px] left-[-10px] w-16 h-16 bg-red-800/70 rounded-full flex items-center justify-center text-white font-bold text-xs" data-feature="bastion">Bastion</div>
+                    <div class="diagram-hotspot absolute top-1/2 left-[-40px] -translate-y-1/2 w-20 h-8 bg-blue-800/70 rounded-md flex items-center justify-center text-white font-bold text-xs" data-feature="moat">Moat</div>
+                    <div class="diagram-hotspot absolute top-1/2 right-[-40px] -translate-y-1/2 w-20 h-8 bg-blue-800/70 rounded-md flex items-center justify-center text-white font-bold text-xs" data-feature="moat">Moat</div>
+                    <div class="diagram-hotspot absolute left-1/2 top-[-40px] -translate-x-1/2 w-8 h-20 bg-green-800/70 rounded-md flex items-center justify-center text-white font-bold text-xs writing-mode-vertical-rl" data-feature="ravine">Ravine</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg min-h-[250px]" id="fortress-info">
+                    <h3 class="font-bold text-xl text-stone-800 mb-2">Architectural Brilliance</h3>
+                    <p class="text-stone-600">Select a feature in the diagram to explore its strategic role.</p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-16 border-stone-200"/>
+
+        <section class="pt-16 -mt-16" id="siege">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-stone-800">The Siege of Aligarh, 1803</h2>
+                <p class="mt-4 text-stone-600 max-w-3xl mx-auto">A crucial and fierce clash of the Second Anglo-Maratha War. The British aimed to dismantle Daulatrao Scindia's French-trained forces, with the fort as their stronghold. The battle showcased the fort's resilience, delivering heavy losses to the assailants.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="font-bold text-xl text-stone-800 mb-4">The Belligerents</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-red-800">British East India Company</h4>
+                            <p class="text-sm text-stone-600">Led by the fierce General Lord Gerard Lake, the elite 76th Regiment of Foot spearheaded the attack.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-blue-800">Maratha Confederacy</h4>
+                            <p class="text-sm text-stone-600">The garrison, led by French mercenary Colonel Pedron and overseen by Pierre Perron, had troops trained and structured in European fashion.</p>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-xl text-stone-800 mt-6 mb-4">A Fortress of Death</h3>
+                    <p class="text-stone-600">The French-crafted defenses were both clever and ruthless, featuring 14 trenches, spiked barriers (*chevaux-de-frise*), and even released tigers and lions.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="font-bold text-xl text-stone-800 mb-4 text-center">The Bloody Price of Victory</h3>
+                    <div class="chart-container h-64 sm:h-80">
+                        <canvas id="siegeChart"></canvas>
+                    </div>
+                    <p class="text-center text-sm text-stone-500 mt-2">The future Duke of Wellington deemed it 'Among the most remarkable achievements of the British in Northern India.'</p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-16 border-stone-200"/>
+
+        <section class="pt-16 -mt-16" id="modern">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-stone-800">The Living Fort</h2>
+                <p class="mt-4 text-stone-600 max-w-3xl mx-auto">Today, the fort has evolved into a vibrant hub for science, nature, and culture, guided by Aligarh Muslim University's stewardship.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="font-bold text-xl text-green-800 mb-2">Botanical Garden</h3>
+                    <p class="text-stone-600">The AMU Department of Botany manages the grounds, showcasing diverse flora that transformed a once-military zone into a peaceful hub for learning and nature.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="font-bold text-xl text-blue-800 mb-2">Ecological Refuge</h3>
+                    <p class="text-stone-600">The gardens offer a tranquil refuge for birds such as Indian Grey Hornbills, peacocks, and diverse wildlife, serving as a vital hub for urban ornithological studies.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="font-bold text-xl text-purple-800 mb-2">Folklore &amp; Identity</h3>
+                    <p class="text-stone-600">Locally dubbed 'Bonay Chor ka Kila' (Fort of the Dwarf Thief), it draws from a legendary bandit's tale, offering a vibrant contrast to its state-sanctioned history.</p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-16 border-stone-200"/>
+
+        <section class="pt-16 -mt-16" id="visitor">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-stone-800">Visitor Guide</h2>
+                <p class="mt-4 text-stone-600 max-w-3xl mx-auto">Visiting soon? Here's what to know before you arrive. Keep in mind, this isn’t just a landmark it’s a vibrant university campus.</p>
+            </div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-red-700">
+                    <h3 class="font-bold text-lg mb-2">Permission Required</h3>
+                    <p class="text-stone-600 font-semibold">IMPORTANT: Authorization from the AMU Botany Department is required to access the fort grounds. This is mandatory.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-700">
+                    <h3 class="font-bold text-lg mb-2">Entry &amp; Timings</h3>
+                    <p class="text-stone-600">Admission is free. Regular hours run 8:00 AM - 6:00 PM, but may vary per university rules.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-700">
+                    <h3 class="font-bold text-lg mb-2">How to Reach</h3>
+                    <p class="text-stone-600">Situated on GT Road, ~5 km from Aligarh Junction. Easy access to local transport.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-yellow-600">
+                    <h3 class="font-bold text-lg mb-2">Best Time to Visit</h3>
+                    <p class="text-stone-600">The cooler months, November through March, bring ideal weather for enjoying the grounds.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="bg-gray-800 text-gray-300">
+<div class="container mx-auto px-6 py-12 lg:px-8">
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">India Cities</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/">Cities of India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/https://www.indiacities.net/small-cities-tour.html">Small Cities</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pilgrimages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/pilgrimages/">Pilgrimages</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/wpilgrimages/vaishno-devi/">Vaishno Devi</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-lg font-semibold text-white mb-4">Pages</h5>
+<ul class="space-y-2">
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/agra-fort-history-architecture-mughal-legacy.html">Agra Fort History Architecture Mughal Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders-guide.html">Ajanta Ellora Rock Cut Wonders Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajanta-ellora-rock-cut-wonders.html">Ajanta Ellora Rock Cut Wonders</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-exploration-guide.html">Ajinkyatara Fort Exploration Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-guide-history-visitor-info.html">Ajinkyatara Fort Guide History Visitor Info</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ajinkyatara-fort-history-legacy-guide.html">Ajinkyatara Fort History Legacy Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-guide.html">Aligarh Fort History Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aligarh-fort-history-visitor-guide.html">Aligarh Fort History Visitor Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-and-legacy.html">Allahabad Fort History And Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/allahabad-fort-history-significance.html">Allahabad Fort History Significance</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-guide-history-architecture.html">Amber Fort Guide History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/amber-fort-history-architecture-guide.html">Amber Fort History Architecture Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/aranthangi-fort-guide.html">Aranthangi Fort Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-guide-history-legacy.html">Arnala Fort Guide History Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/arnala-fort-history-architecture-legacy.html">Arnala Fort History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ashoka-pillars-legacy-dhamma.html">Ashoka Pillars Legacy Dhamma</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/belgaum-fort-history-architecture-pluralism.html">Belgaum Fort History Architecture Pluralism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/chitradurga-fort-seven-circles.html">Chitradurga Fort Seven Circles</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/daulatabad-fort-invincible-deccan-fortress.html">Daulatabad Fort Invincible Deccan Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/explore-indias-majestic-forts.html">Explore Indias Majestic Forts</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/fortress-explorer-iconic-fortresses.html">Fortress Explorer Iconic Fortresses</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-monuments-india-interactive-history.html">Forts Monuments India Interactive History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/forts-of-india-design-history-legends.html">Forts Of India Design History Legends</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fort-history-engineering-diamonds.html">Golconda Fort History Engineering Diamonds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/golconda-fortress-diamonds-power.html">Golconda Fortress Diamonds Power</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-history-symbolism.html">Great Stupa Sanchi History Symbolism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/great-stupa-sanchi-infographic.html">Great Stupa Sanchi Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/gwalior-fort-gibraltar-india.html">Gwalior Fort Gibraltar India</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/hawa-mahal-jaipur-palace-winds.html">Hawa Mahal Jaipur Palace Winds</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/india-great-empires-history.html">India Great Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-infographic.html">Indias Architectural Heritage Infographic</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-report.html">Indias Architectural Heritage Report</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-timeless-legacy.html">Indias Architectural Heritage Timeless Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-guide.html">Indias Architectural Heritage Visual Guide</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-architectural-heritage-visual-journey.html">Indias Architectural Heritage Visual Journey</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/indias-great-empires-visual-history.html">Indias Great Empires Visual History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/janjira-fort-unconquered-sea-fortress.html">Janjira Fort Unconquered Sea Fortress</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/khajuraho-art-history-temples.html">Khajuraho Art History Temples</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture-tourism.html">Mysore Palace History Architecture Tourism</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/mysore-palace-history-architecture.html">Mysore Palace History Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/pillars-of-ashoka-symbols-peace-legacy.html">Pillars Of Ashoka Symbols Peace Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-icon.html">Qutub Minar History Architecture Icon</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/qutub-minar-history-architecture-legacy.html">Qutub Minar History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/ramgarh-fort-heritage-hotel-history.html">Ramgarh Fort Heritage Hotel History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/rise-of-shri-ram-janmabhoomi-mandir.html">Rise Of Shri Ram Janmabhoomi Mandir</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sentinels-of-india-iconic-forts-overview.html">Sentinels Of India Iconic Forts Overview</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shaniwar-wada-history-architecture-legacy.html">Shaniwar Wada History Architecture Legacy</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/shri-ram-janmabhoomi-mandir-exploration.html">Shri Ram Janmabhoomi Mandir Exploration</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/sovereign-tapestry-indian-empires-history.html">Sovereign Tapestry Indian Empires History</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tamil-nadu-temples-forts-architecture.html">Tamil Nadu Temples Forts Architecture</a></li>
+<li><a class="hover:text-white hover:underline transition-colors duration-200" href="https://www.indiacities.net/monuments/tipu-sultan-fort-history-legacy.html">Tipu Sultan Fort History Legacy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-8 text-center text-sm text-gray-400">
+<p class="text-sm text-gray-400">Cities ofIndia - Travel, Medical Tourism and Festivals</p>
+</div>
+<div class="mt-12 border-t border-gray-700 pt-8 flex flex-col items-center justify-between sm:flex-row">
+<p class="text-sm text-gray-400">© 2026 India Cities. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const timelineData = {
+        lodi: {
+            name: "Lodi Sultanate",
+            date: "1524-25",
+            title: "The Foundation: Muhammadgarh",
+            ruler: "Sultan Ibrahim Lodi",
+            builder: "Muhammad, son of Umar (Governor)",
+            details: "The formal genesis of the fort. The governor Muhammad constructed a new fort at Kol, naming the surrounding city Muhammadgarh after himself. This set a precedent of renaming the fort that would last for centuries.",
+            color: "#6D2828"
+        },
+        mughal: {
+            name: "Mughal Empire",
+            date: "Early 18th C.",
+            title: "Reconstruction: Sabitgarh",
+            ruler: "Farrukh Siyar / Muhammad Shah",
+            builder: "Sabit Khan (Governor)",
+            details: "Under the later Mughals, the regional governor Sabit Khan undertook a significant reconstruction of the Lodi-era fort, renaming the town Sabitgarh in his own honor.",
+            color: "#8B4513"
+        },
+        jat: {
+            name: "Jat Kingdom",
+            date: "1753",
+            title: "Expansion: Ramgarh",
+            ruler: "Maharaja Surajmal",
+            builder: "Lt. Banasaur (Commander)",
+            details: "The formidable Jat ruler Maharaja Surajmal captured the fort and renamed it Ramgarh. Under his commander, it was expanded three times with practical military upgrades like a basement, an explosives warehouse, and an air-cooled kitchen.",
+            color: "#2E8B57"
+        },
+        maratha: {
+            name: "Maratha Confederacy",
+            date: "c. 1785-1803",
+            title: "The Zenith: A European Bastion",
+            ruler: "Mahadji Scindia",
+            builder: "Benoît de Boigne & Pierre Perron (French Engineers)",
+            details: "The Scindias transformed the fort into their primary military depot. French engineers redesigned it into one of India's strongest European-style bastion forts, a key node in the Maratha strategy to resist British expansion.",
+            color: "#4682B4"
+        },
+        british: {
+            name: "British Raj",
+            date: "Post-1803",
+            title: "Conquest & Consolidation: Aligarh Fort",
+            ruler: "British East India Company",
+            builder: "General Gerard Lake (Conqueror)",
+            details: "After a bloody siege in 1803, the British captured the fort. Respecting its strength, they further improved its fortifications. During the 1857 Rebellion, the sepoys here mutinied but allowed their British officers to escape.",
+            color: "#C53030"
+        },
+        modern: {
+            name: "Modern India",
+            date: "Post-1947",
+            title: "A New Life: University & Refuge",
+            ruler: "Govt. of India / Aligarh Muslim University",
+            builder: "AMU Dept. of Botany",
+            details: "After independence, the fort came under the care of Aligarh Muslim University. Its military significance waned, and it was transformed into a botanical garden, an urban ecological refuge, and a site for scientific research.",
+            color: "#556B2F"
+        }
+    };
+
+    const fortressFeatureData = {
+        bastion: {
+            title: "Bastions: Interlocking Fire",
+            text: "The core of the European *trace italienne* system. These projecting structures at every angle of the polygon allowed defenders to create interlocking fields of fire (enfilade), sweeping the walls and moat with cannon fire, leaving no safe approach for attackers."
+        },
+        moat: {
+            title: "The Moat: A Formidable Barrier",
+            text: "Described as 'very broad and deep,' the moat was the primary obstacle. It was designed to halt infantry assaults and prevent siege equipment like towers and battering rams from reaching the main curtain walls."
+        },
+        ravine: {
+            title: "Strategic Topography: Natural Defenses",
+            text: "The fort was built on a natural rise, amplified by steep ravines on all sides, some over 30 feet high. This natural elevation made any direct assault a perilous uphill struggle for attacking forces."
+        }
+    };
+
+    const timelineControlsContainer = document.getElementById('timeline-controls');
+    const timelineContentContainer = document.getElementById('timeline-content');
+
+    Object.keys(timelineData).forEach(key => {
+        const data = timelineData[key];
+        const button = document.createElement('button');
+        button.className = 'timeline-item p-3 rounded-lg text-white text-sm font-bold shadow-md';
+        button.textContent = data.name;
+        button.style.backgroundColor = data.color;
+        button.dataset.key = key;
+        timelineControlsContainer.appendChild(button);
+    });
+
+    function updateTimelineContent(key) {
+        const data = timelineData[key];
+        timelineContentContainer.innerHTML = `
+            <h3 class="text-2xl font-bold mb-2" style="color: ${data.color};">${data.title} (${data.date})</h3>
+            <div class="text-sm text-stone-500 mb-4">
+                <span class="font-semibold">Key Figure(s):</span> ${data.ruler} & ${data.builder}
+            </div>
+            <p class="text-stone-700 leading-relaxed">${data.details}</p>
+        `;
+        
+        document.querySelectorAll('.timeline-item').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.key === key);
+        });
+    }
+
+    timelineControlsContainer.addEventListener('click', (e) => {
+        if (e.target.matches('.timeline-item')) {
+            updateTimelineContent(e.target.dataset.key);
+        }
+    });
+
+    updateTimelineContent('lodi');
+
+    const fortressInfoContainer = document.getElementById('fortress-info');
+    document.querySelectorAll('.diagram-hotspot').forEach(hotspot => {
+        hotspot.addEventListener('click', () => {
+            const featureKey = hotspot.dataset.feature;
+            const data = fortressFeatureData[featureKey];
+            fortressInfoContainer.innerHTML = `
+                <h3 class="font-bold text-xl text-stone-800 mb-2">${data.title}</h3>
+                <p class="text-stone-600">${data.text}</p>
+            `;
+        });
+    });
+
+    const siegeCtx = document.getElementById('siegeChart').getContext('2d');
+    new Chart(siegeCtx, {
+        type: 'bar',
+        data: {
+            labels: ['British Casualties', 'Maratha Casualties'],
+            datasets: [{
+                label: 'Estimated Casualties',
+                data: [900, 300],
+                backgroundColor: [
+                    'rgba(197, 48, 48, 0.7)',
+                    'rgba(70, 130, 180, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(197, 48, 48, 1)',
+                    'rgba(70, 130, 180, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return ` Estimated: ${context.parsed.y} killed & wounded`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Casualties'
+                    }
+                }
+            }
+        }
+    });
+    
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('main section');
+    const navbar = document.getElementById('navbar');
+    const navbarHeight = navbar.offsetHeight;
+
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - navbarHeight - 20;
+            if (pageYOffset >= sectionTop) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href').substring(1) === current) {
+                link.classList.add('active');
+            }
+        });
+    });
+    
+    navLinks.forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            window.scrollTo({
+                top: targetElement.offsetTop - navbarHeight,
+                behavior: 'smooth'
+            });
+        });
+    });
+});
+</script>
+
+
+
+</body></html>
